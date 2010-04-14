@@ -40,7 +40,6 @@ public abstract class BaseMetricCalculator implements Serializable {
 
 	public abstract boolean isReplaceable();
 
-	// TODO make IJavaElement dependency, an abstraction
 	public abstract String calculateMetricValue(IJavaElement element);
 
 }

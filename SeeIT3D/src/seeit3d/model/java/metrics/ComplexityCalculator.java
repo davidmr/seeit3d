@@ -37,7 +37,6 @@ public class ComplexityCalculator extends AbstractContinuousMetricCalculator {
 			} else if (element instanceof ICompilationUnit) {
 				ICompilationUnit compilationUnit = (ICompilationUnit) element;
 				IType type = compilationUnit.findPrimaryType();
-				// TODO find out why this happens on struts2
 				if (type != null) {
 					methods.addAll(Arrays.asList(type.getMethods()));
 				}

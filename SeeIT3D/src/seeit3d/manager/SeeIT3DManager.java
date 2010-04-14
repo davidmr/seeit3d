@@ -34,20 +34,6 @@ import com.sun.j3d.utils.scenegraph.io.UnsupportedUniverseException;
  * 
  */
 
-// TODO find a way to avoid serialize javaelements
-// TODO validate for existing file of visualization and ovewrite if necesary
-// TODO ask for location to load visualization file
-// TODO icons to save/load visualization
-// TODO open editor on double click
-// TODO save/open visualization state in workspace
-// TODO organize and document code (container and polycyliner transient)
-// TODO develop infrastructure to support relationships
-// TODO implement relationships base common, lines, arcs, groups,...
-// TODO handle max zoom out, limit to bounds (partially solved)
-// TODO perform memory optimizations. Add log information in order to avoid unnecesary calls
-// TODO containers of different components (container as a method to show relationships) ??
-// TODO translation of polycylinders from container to container ??
-// TODO extension point so other plugins can extend the visualization ??
 public class SeeIT3DManager {
 
 	/**
@@ -120,7 +106,6 @@ public class SeeIT3DManager {
 			sceneGraphHandler.removeFromSceneGraph(container);
 			container.updateVisualRepresentation();
 			container.setSelected(true);
-			// TODO update one container not all visualization
 			refreshVisualization();
 		}
 		updateMappingView();
@@ -364,7 +349,6 @@ public class SeeIT3DManager {
 			container.setSortingProperty(state.getSortingProperty());
 			container.setSorted(true);
 			container.updateVisualRepresentation();
-			// TODO update one container not all visualization
 			refreshVisualization();
 		}
 	}

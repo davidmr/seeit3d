@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<site>
+   <feature url="features/seeit3d.feature.visualization_0.2.6.jar" id="seeit3d.feature.visualization" version="0.2.6">
+      <category name="seeit3d.category"/>
+   </feature>
+   <category-def name="seeit3d.category" label="SeeIT 3D"/>
+</site>

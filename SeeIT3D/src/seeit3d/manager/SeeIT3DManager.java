@@ -15,7 +15,7 @@ import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.PlatformUI;
 
 import seeit3d.colorscale.IColorScale;
-import seeit3d.colorscale.imp.ColdToHotColorScale;
+import seeit3d.colorscale.imp.BlueTone;
 import seeit3d.metrics.BaseMetricCalculator;
 import seeit3d.model.EclipseResourceRepresentation;
 import seeit3d.model.representation.*;
@@ -63,7 +63,7 @@ public class SeeIT3DManager {
 		preferences = Preferences.getInstance();
 		sceneGraphHandler = new SceneGraphHandler(this, preferences);
 		state = new VisualizationState(this);
-		colorScale = new ColdToHotColorScale();
+		colorScale = new BlueTone();
 	}
 
 	private IMappingView mappingView = null;

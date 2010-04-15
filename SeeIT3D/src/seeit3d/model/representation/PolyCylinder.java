@@ -48,7 +48,7 @@ public class PolyCylinder implements Serializable {
 
 	private Color3f baseColor;
 
-	private final EclipseResourceRepresentation representation;
+	private transient EclipseResourceRepresentation representation;
 
 	private boolean selected;
 
@@ -237,6 +237,7 @@ public class PolyCylinder implements Serializable {
 	private void readObject(ObjectInputStream ois) throws IOException, ClassNotFoundException {
 		ois.defaultReadObject();
 		preferences = Preferences.getInstance();
+		representation = new NoEclipseRepresentation();
 	}
 
 }

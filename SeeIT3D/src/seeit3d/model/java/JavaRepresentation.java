@@ -24,29 +24,37 @@ public class JavaRepresentation implements ContainerRepresentedObject {
 
 	private static final List<String> granularityLevels = newArrayList(PROJECT, PACKAGE, CLASS, METHOD, LINE, "No Representation");
 
-	private final IJavaElement javaElement;
+	private final String elementName;
+
+	private final String granularityLevel;
 
 	public JavaRepresentation(IJavaElement javaElement) {
-		this.javaElement = javaElement;
+		elementName = javaElement.getElementName();
+		granularityLevel = selectGranularityLevel(javaElement);
+	}
+
+	private String selectGranularityLevel(IJavaElement javaElement) {
+		if (javaElement instanceof IMethod) {
+			return METHOD;
+		} else if (javaElement instanceof IType || javaElement instanceof ICompilationUnit) {
+			return CLASS;
+		} else if (javaElement instanceof IPackageFragment) {
+			return PACKAGE;
+		} else if (javaElement instanceof IJavaProject) {
+			return PROJECT;
+		} else {
+			return "Undefined";
+		}
 	}
 
 	@Override
 	public String getName() {
-		return javaElement.getElementName();
+		return elementName;
 	}
 
 	@Override
 	public String granularityLevelName(int countLevelsDown) {
-		int baseIndex = granularityLevels.size() - 1;
-		if (javaElement instanceof IMethod) {
-			baseIndex = granularityLevels.indexOf(METHOD);
-		} else if (javaElement instanceof IType || javaElement instanceof ICompilationUnit) {
-			baseIndex = granularityLevels.indexOf(CLASS);
-		} else if (javaElement instanceof IPackageFragment) {
-			baseIndex = granularityLevels.indexOf(PACKAGE);
-		} else if (javaElement instanceof IJavaProject) {
-			baseIndex = granularityLevels.indexOf(PROJECT);
-		}
+		int baseIndex = granularityLevels.indexOf(granularityLevel);
 		int validatedLevel = Math.min(granularityLevels.size() - 1, baseIndex + countLevelsDown);
 		return granularityLevels.get(validatedLevel);
 	}

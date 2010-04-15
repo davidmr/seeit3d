@@ -34,7 +34,7 @@ public class Utils {
 
 	private static long polyCylinderIdentifier = 0L;
 
-	public static final boolean isDebug = true;
+	public static final boolean isDebug = false;
 
 	public static LineOfCode[] buildLinesFromMethod(IMethod method) throws JavaModelException {
 		String source = method.getSource();

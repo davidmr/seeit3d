@@ -1,19 +1,18 @@
 package seeit3d.commands;
 
-import java.io.IOException;
-
-import javax.media.j3d.DanglingReferenceException;
+import java.io.*;
 
 import org.eclipse.core.commands.*;
-import org.eclipse.core.resources.*;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.resources.IWorkspaceRoot;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.FileDialog;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.handlers.HandlerUtil;
 
 import seeit3d.error.ErrorHandler;
 import seeit3d.manager.SeeIT3DManager;
 import seeit3d.utils.ViewConstants;
-
-import com.sun.j3d.utils.scenegraph.io.UnsupportedUniverseException;
 
 public class SaveCurrentVisualizationCommand extends AbstractHandler {
 
@@ -25,36 +24,34 @@ public class SaveCurrentVisualizationCommand extends AbstractHandler {
 
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
-		try {
 
-			String currentProject = manager.getCurrentProject();
-			if (currentProject == null) {
-				ErrorHandler.error("None project to store file was selected");
-				return null;
+		Shell shell = HandlerUtil.getActiveShell(event);
+
+		FileDialog saveDialog = new FileDialog(shell, SWT.SAVE);
+		saveDialog.setFileName("visualization");
+		saveDialog.setOverwrite(true);
+
+		IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
+		String workspaceLocation = root.getLocation().makeAbsolute().toOSString();
+		saveDialog.setFilterPath(workspaceLocation);
+		saveDialog.setFilterExtensions(new String[] { "*.s3d" });
+		String filename = saveDialog.open();
+		if (filename != null) {
+			try {
+				if (!filename.endsWith("." + ViewConstants.VISUALIZATION_EXTENSION)) {
+					filename += "." + ViewConstants.VISUALIZATION_EXTENSION;
+				}
+				FileOutputStream output = new FileOutputStream(filename);
+				manager.saveVisualization(output);
+			} catch (FileNotFoundException e) {
+				ErrorHandler.error("Visualization file not found");
+				e.printStackTrace();
+			} catch (IOException e) {
+				ErrorHandler.error("Error while writing visualization file");
+				e.printStackTrace();
 			}
-			IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
-			IProject project = root.getProject(currentProject);
-			IPath path = project.getFullPath();
-			IPath newPath = path.append(ViewConstants.VISUALIZATION_FILENAME).addFileExtension(ViewConstants.VISUALIZATION_EXTENSION);
-			IFile file = root.getFile(newPath);
-
-			manager.saveVisualization(file);
-		
-		} catch (CoreException e) {
-			ErrorHandler.error("Error while saving visualization");
-			e.printStackTrace();
-		} catch (IOException e) {
-			ErrorHandler.error("Error while saving visualization");
-			e.printStackTrace();
-		} catch (DanglingReferenceException e) {
-			ErrorHandler.error("Error while saving visualization");
-			e.printStackTrace();
-		} catch (UnsupportedUniverseException e) {
-			ErrorHandler.error("Error while saving visualization");
-			e.printStackTrace();
 		}
 
 		return null;
 	}
-
 }

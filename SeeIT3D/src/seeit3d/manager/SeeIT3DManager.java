@@ -6,8 +6,6 @@ import java.util.*;
 import javax.media.j3d.*;
 import javax.vecmath.Vector3f;
 
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.widgets.Display;
@@ -24,8 +22,6 @@ import seeit3d.utils.Utils;
 import seeit3d.utils.ViewConstants;
 import seeit3d.view.SeeIT3DCanvas;
 import seeit3d.view.listeners.LabelInformation;
-
-import com.sun.j3d.utils.scenegraph.io.UnsupportedUniverseException;
 
 /**
  * Class that will handle the interactions between modules (view, model, mapping etc.)
@@ -56,8 +52,6 @@ public class SeeIT3DManager {
 	private final Preferences preferences;
 
 	private IColorScale colorScale;
-
-	private String currentProject;
 
 	public SeeIT3DManager() {
 		preferences = Preferences.getInstance();
@@ -470,17 +464,9 @@ public class SeeIT3DManager {
 
 	}
 
-	public void setCurrentProject(String currentProject) {
-		this.currentProject = currentProject;
-	}
-
-	public synchronized String getCurrentProject() {
-		return currentProject;
-	}
-
 	@SuppressWarnings("unchecked")
-	public synchronized void loadUniverse(IFile file) throws IOException, CoreException {
-		ObjectInputStream in = new ObjectInputStream(file.getContents());
+	public synchronized void loadUniverse(InputStream input) throws IOException {
+		ObjectInputStream in = new ObjectInputStream(input);
 		try {
 			List<Container> containers = (List<Container>) in.readObject();
 			for (Container container : containers) {
@@ -490,25 +476,18 @@ public class SeeIT3DManager {
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		}
-		sceneGraphHandler.loadUniverse(file);
 	}
 
-	public void saveVisualization(IFile file) throws IOException, UnsupportedUniverseException, CoreException {
-		// sceneGraphHandler.saveVisualization(file);
-		ByteArrayOutputStream output = new ByteArrayOutputStream();
+	public void saveVisualization(OutputStream output) throws IOException {
 		ObjectOutputStream out = new ObjectOutputStream(output);
 		List<Container> allContainers = new ArrayList<Container>();
 		Iterator<Container> iterator = iteratorOnAllContainers();
-		while(iterator.hasNext()){
+		while (iterator.hasNext()) {
 			Container container = iterator.next();
 			allContainers.add(container);
 		}
 		out.writeObject(allContainers);
 		out.close();
-
-		ByteArrayInputStream input = new ByteArrayInputStream(output.toByteArray());
-		file.create(input, true, null);
-
 	}
 
 }

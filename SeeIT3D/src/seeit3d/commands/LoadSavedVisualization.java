@@ -1,14 +1,17 @@
 package seeit3d.commands;
-import java.io.IOException;
+
+import java.io.*;
 
 import org.eclipse.core.commands.*;
-import org.eclipse.core.resources.*;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.resources.IWorkspaceRoot;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.FileDialog;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.handlers.HandlerUtil;
 
 import seeit3d.error.ErrorHandler;
 import seeit3d.manager.SeeIT3DManager;
-import seeit3d.utils.ViewConstants;
 
 public class LoadSavedVisualization extends AbstractHandler {
 
@@ -21,28 +24,25 @@ public class LoadSavedVisualization extends AbstractHandler {
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 
-		String currentProject = manager.getCurrentProject();
-		if (currentProject == null) {
-			ErrorHandler.error("None project to load file was selected");
-			return null;
-		}
+		Shell shell = HandlerUtil.getActiveShell(event);
 
+		FileDialog saveDialog = new FileDialog(shell, SWT.OPEN);
 		IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
-		IProject project = root.getProject(currentProject);
-		IPath path = project.getFullPath();
-		IPath newPath = path.append(ViewConstants.VISUALIZATION_FILENAME).addFileExtension(ViewConstants.VISUALIZATION_EXTENSION);
-		IFile file = root.getFile(newPath);
-
-		if (file.exists()) {
+		String workspaceLocation = root.getLocation().makeAbsolute().toOSString();
+		saveDialog.setFilterPath(workspaceLocation);
+		saveDialog.setFilterExtensions(new String[] { "*.s3d" });
+		String filename = saveDialog.open();
+		if (filename != null) {
 			try {
-				manager.loadUniverse(file);
-			} catch (IOException e) {
+				FileInputStream input = new FileInputStream(filename);
+				manager.loadUniverse(input);
+			} catch (FileNotFoundException e) {
+				ErrorHandler.error("Visualization file not found");
 				e.printStackTrace();
-			} catch (CoreException e1) {
-				e1.printStackTrace();
+			} catch (IOException e) {
+				ErrorHandler.error("Error while reading visualization file. Possibly wrong format or type");
+				e.printStackTrace();
 			}
-		} else {
-			ErrorHandler.error("Visualization file not found within project " + currentProject);
 		}
 
 		return null;

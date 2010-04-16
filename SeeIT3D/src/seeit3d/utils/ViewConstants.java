@@ -10,8 +10,6 @@ import javax.vecmath.Color3f;
  */
 public class ViewConstants {
 
-	public static final String VISUALIZATION_FILENAME = "visualization";
-
 	public static final String VISUALIZATION_EXTENSION = "s3d";
 
 	public static final Color3f WHITE = new Color3f(1.0f, 1.0f, 1.0f);

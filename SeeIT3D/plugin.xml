@@ -127,13 +127,13 @@
             categoryId="seeit3d.commands"
             defaultHandler="seeit3d.commands.SaveCurrentVisualizationCommand"
             id="seeit3d.saveCurrentVisualization"
-            name="Save Visualization in Workbench">
+            name="Save Visualization">
       </command>
       <command
             categoryId="seeit3d.commands"
             defaultHandler="seeit3d.commands.LoadSavedVisualization"
             id="seeit3d.loadSavedVisualization"
-            name="Load Visualization from file">
+            name="Load Visualization">
       </command>d>ommand>
    </extension>
    <extension
@@ -285,14 +285,14 @@
          </menu>
       </menuContribution>
       <menuContribution
-            locationURI="toolbar:seeit3d.seeit3dview">
+            locationURI="menu:seeit3d.seeit3dview">
          <command
                commandId="seeit3d.saveCurrentVisualization"
                style="push">
          </command>
       </menuContribution>
       <menuContribution
-            locationURI="toolbar:seeit3d.seeit3dview">
+            locationURI="menu:seeit3d.seeit3dview">
          <command
                commandId="seeit3d.loadSavedVisualization"
                style="push">
@@ -381,6 +381,18 @@
             contextId="seeit3d.seeit3dviewContext"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
             sequence="Shift+R">
+      </key>
+      <key
+            commandId="seeit3d.loadSavedVisualization"
+            contextId="seeit3d.seeit3dviewContext"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="Ctrl+O">
+      </key>
+      <key
+            commandId="seeit3d.saveCurrentVisualization"
+            contextId="seeit3d.seeit3dviewContext"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="Ctrl+S">
       </key>
    </extension>
    <extension
@@ -514,6 +526,14 @@
       <image
             commandId="seeit3d.resetCommand"
             icon="icons/reset.gif">
+      </image>
+      <image
+            commandId="seeit3d.saveCurrentVisualization"
+            icon="icons/save_visualization.gif">
+      </image>
+      <image
+            commandId="seeit3d.loadSavedVisualization"
+            icon="icons/open_visualization.gif">
       </image>
    </extension>
    <extension

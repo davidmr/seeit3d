@@ -7,7 +7,6 @@ import org.eclipse.core.runtime.*;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.ISelectionService;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.commands.ICommandService;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
@@ -19,7 +18,6 @@ import seeit3d.error.ErrorHandler;
 import seeit3d.metrics.MetricsRegistry;
 import seeit3d.metrics.NoOpMetricCalculator;
 import seeit3d.model.java.metrics.*;
-import seeit3d.observers.ProjectSelectionObserver;
 import seeit3d.observers.WorkspaceClosedObserver;
 import seeit3d.preferences.Preferences;
 
@@ -67,8 +65,6 @@ public class Activator extends AbstractUIPlugin {
 	private void registerGlobalListener() {
 		IWorkspace workspace = ResourcesPlugin.getWorkspace();
 		workspace.addResourceChangeListener(new WorkspaceClosedObserver());
-		ISelectionService selection = (ISelectionService) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getService(ISelectionService.class);
-		selection.addSelectionListener(new ProjectSelectionObserver());
 	}
 
 	private void initializeSortRadio() {

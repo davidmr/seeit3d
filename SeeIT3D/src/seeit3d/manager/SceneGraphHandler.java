@@ -1,14 +1,10 @@
 package seeit3d.manager;
 
-import java.io.*;
 import java.util.Enumeration;
 import java.util.Iterator;
 
 import javax.media.j3d.*;
 import javax.vecmath.*;
-
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.runtime.CoreException;
 
 import seeit3d.behavior.*;
 import seeit3d.error.exception.SeeIT3DException;
@@ -20,7 +16,6 @@ import seeit3d.view.SeeIT3DCanvas;
 
 import com.sun.j3d.utils.behaviors.vp.OrbitBehavior;
 import com.sun.j3d.utils.picking.behaviors.PickMouseBehavior;
-import com.sun.j3d.utils.scenegraph.io.*;
 import com.sun.j3d.utils.universe.SimpleUniverse;
 import com.sun.j3d.utils.universe.ViewingPlatform;
 
@@ -220,37 +215,6 @@ public class SceneGraphHandler {
 		t3d.lookAt(new Point3d(xMax * 2, xMax, xMax * 2), new Point3d(0, 0, 0), new Vector3d(0, 1, 0));
 		t3d.invert();
 		tg.setTransform(t3d);
-	}
-
-	public void saveVisualization(IFile file) throws IOException, UnsupportedUniverseException, CoreException {
-		ByteArrayOutputStream output = new ByteArrayOutputStream();
-		SceneGraphStreamWriter writer = new SceneGraphStreamWriter(output);
-		// writer.writeUniverse(universe, true);
-		try {
-			writer.writeBranchGraph(rootObj, null);
-		} catch (DanglingReferenceException e) {
-			e.printStackTrace();
-		} catch (NamedObjectException e) {
-			e.printStackTrace();
-		}
-		writer.close();
-		output.close();
-
-		InputStream input = new ByteArrayInputStream(output.toByteArray());
-		input.close();
-
-		file.create(input, true, null);
-		System.out.println("save");
-	}
-
-	public synchronized void loadUniverse(IFile file) throws IOException, CoreException {
-		SceneGraphStreamReader reader = new SceneGraphStreamReader(file.getContents());
-		BranchGroup root = reader.readBranchGraph(null);
-		if (rootObj != null) {
-			universe.getLocale().removeBranchGraph(rootObj);
-		}
-		rootObj = root;
-		rootObj.compile();
 	}
 
 }

@@ -6,14 +6,17 @@ import java.util.*;
 import javax.media.j3d.*;
 import javax.vecmath.Vector3f;
 
+import org.eclipse.core.resources.*;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.ui.IViewPart;
-import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.*;
+import org.eclipse.ui.part.FileEditorInput;
 
 import seeit3d.colorscale.IColorScale;
 import seeit3d.colorscale.imp.BlueTone;
+import seeit3d.error.ErrorHandler;
 import seeit3d.metrics.BaseMetricCalculator;
 import seeit3d.model.EclipseResourceRepresentation;
 import seeit3d.model.representation.*;
@@ -490,4 +493,30 @@ public class SeeIT3DManager {
 		out.close();
 	}
 
+	public synchronized void openEditor(final PolyCylinder selectedPolyCylinder) {
+		Display.getDefault().asyncExec(new Runnable() {
+			@Override
+			public void run() {
+				EclipseResourceRepresentation resource = selectedPolyCylinder.getRepresentation();
+				IResource associatedResource = resource.getAssociatedResource();
+				if (associatedResource != null) {
+					IPath path = associatedResource.getFullPath();
+					IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
+					final IFile file = root.getFile(path);
+					final IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+					final IEditorDescriptor desc = PlatformUI.getWorkbench().getEditorRegistry().getDefaultEditor(file.getName());
+
+					try {
+						page.openEditor(new FileEditorInput(file), desc.getId());
+					} catch (Exception e) {
+						ErrorHandler.error("Error opening editor");
+						e.printStackTrace();
+					}
+
+				} else {
+					ErrorHandler.error("The selected polycylinder does not have an associated resource in the workspace");
+				}
+			}
+		});
+	}
 }

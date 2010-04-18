@@ -7,9 +7,10 @@ import javax.media.j3d.*;
 import javax.vecmath.*;
 
 import seeit3d.behavior.*;
+import seeit3d.colorscale.IColorScale;
 import seeit3d.error.exception.SeeIT3DException;
 import seeit3d.model.representation.Container;
-import seeit3d.preferences.Preferences;
+import seeit3d.preferences.IPreferencesListener;
 import seeit3d.utils.Utils;
 import seeit3d.utils.ViewConstants;
 import seeit3d.view.SeeIT3DCanvas;
@@ -19,11 +20,9 @@ import com.sun.j3d.utils.picking.behaviors.PickMouseBehavior;
 import com.sun.j3d.utils.universe.SimpleUniverse;
 import com.sun.j3d.utils.universe.ViewingPlatform;
 
-public class SceneGraphHandler {
+public class SceneGraphHandler implements IPreferencesListener {
 
 	private final SeeIT3DManager manager;
-
-	private final Preferences preferences;
 
 	private SeeIT3DCanvas canvas = null;
 
@@ -37,9 +36,10 @@ public class SceneGraphHandler {
 
 	private OrbitBehavior orbit = null;
 
-	public SceneGraphHandler(SeeIT3DManager manager, Preferences preferences) {
+	private Color3f backgroundColor;
+
+	public SceneGraphHandler(SeeIT3DManager manager) {
 		this.manager = manager;
-		this.preferences = preferences;
 	}
 
 	public void addChildToGroup(BranchGroup branchGroup) {
@@ -144,7 +144,7 @@ public class SceneGraphHandler {
 		rootObj.addChild(dLight4);
 
 		/************* BACKGROUND ****************/
-		Background back = new Background(preferences.getBackgroundColor());
+		Background back = new Background(backgroundColor);
 		back.setApplicationBounds(bounds);
 		rootObj.addChild(back);
 
@@ -216,5 +216,31 @@ public class SceneGraphHandler {
 		t3d.invert();
 		tg.setTransform(t3d);
 	}
+
+	@Override
+	public void backgroundColorChanged(Color3f newBackgroundColor) {
+		this.backgroundColor = newBackgroundColor;
+	}
+
+	@Override
+	public void scaleStepChanged(double newScale) {}
+
+	@Override
+	public void colorScaleChanged(IColorScale newColorScale) {}
+
+	@Override
+	public void containersPerRowChanged(int containersPerRow) {}
+
+	@Override
+	public void relationMarkColorChanged(Color3f newRelationMarkColor) {}
+
+	@Override
+	public void highlightColorChanged(Color3f newHighlightColor) {}
+
+	@Override
+	public void polycylindersPerRowChanged(int newPolycylinderPerRow) {}
+
+	@Override
+	public void transparencyStepChanged(float transparencyStepChanged) {}
 
 }

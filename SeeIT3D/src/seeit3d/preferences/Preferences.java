@@ -1,11 +1,18 @@
 package seeit3d.preferences;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.vecmath.Color3f;
 
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.swt.graphics.RGB;
+
+import seeit3d.colorscale.ColorScaleFactory;
+import seeit3d.colorscale.IColorScale;
+import seeit3d.colorscale.imp.ColdToHotColorScale;
 
 public class Preferences implements IPropertyChangeListener {
 
@@ -23,6 +30,8 @@ public class Preferences implements IPropertyChangeListener {
 
 	public static final String TRANSPARENCY_STEP = "transparencyStep";
 
+	public static final String COLOR_SCALE = "colorScale";
+
 	private static final Preferences instance;
 
 	static {
@@ -32,6 +41,8 @@ public class Preferences implements IPropertyChangeListener {
 	public static synchronized Preferences getInstance() {
 		return instance;
 	}
+
+	private final List<IPreferencesListener> listeners;
 
 	private Color3f backgroundColor;
 
@@ -46,6 +57,16 @@ public class Preferences implements IPropertyChangeListener {
 	private Color3f relationMarkColor;
 
 	private float transparencyStep;
+
+	private IColorScale colorScale;
+
+	public Preferences() {
+		listeners = new ArrayList<IPreferencesListener>();
+	}
+
+	public void registerListener(IPreferencesListener listener) {
+		listeners.add(listener);
+	}
 
 	@Override
 	public void propertyChange(PropertyChangeEvent event) {
@@ -89,6 +110,9 @@ public class Preferences implements IPropertyChangeListener {
 		} else if (property.equals(TRANSPARENCY_STEP)) {
 			Integer newValue = (Integer) event.getNewValue();
 			updateTransparencyStep(newValue);
+		} else if (property.equals(COLOR_SCALE)) {
+			String colorScaleName = (String) event.getNewValue();
+			updateColorScale(colorScaleName);
 		}
 	}
 
@@ -120,24 +144,30 @@ public class Preferences implements IPropertyChangeListener {
 		return transparencyStep;
 	}
 
+	public IColorScale getColorScale() {
+		return colorScale;
+	}
+
 	public void setPreferencesDefaults(IPreferenceStore preferenceStore) {
-		preferenceStore.setDefault(Preferences.CONTAINERS_PER_ROW, 3);
-		preferenceStore.setDefault(Preferences.POLYCYLINDERS_PER_ROW, 20);
-		preferenceStore.setDefault(Preferences.BACKGROUND_COLOR, "255,255,238");
-		preferenceStore.setDefault(Preferences.HIGHLIGHT_COLOR, "0,255,0");
-		preferenceStore.setDefault(Preferences.RELATION_COLOR, "255,255,0");
-		preferenceStore.setDefault(Preferences.SCALE_STEP, 20);
-		preferenceStore.setDefault(Preferences.TRANSPARENCY_STEP, 10);
+		preferenceStore.setDefault(CONTAINERS_PER_ROW, 3);
+		preferenceStore.setDefault(POLYCYLINDERS_PER_ROW, 20);
+		preferenceStore.setDefault(BACKGROUND_COLOR, "255,255,238");
+		preferenceStore.setDefault(HIGHLIGHT_COLOR, "0,255,0");
+		preferenceStore.setDefault(RELATION_COLOR, "255,255,0");
+		preferenceStore.setDefault(SCALE_STEP, 20);
+		preferenceStore.setDefault(TRANSPARENCY_STEP, 10);
+		preferenceStore.setDefault(COLOR_SCALE, new ColdToHotColorScale().getName());
 	}
 
 	public void loadStoredPreferences(IPreferenceStore preferenceStore) {
-		int containersPerRow = preferenceStore.getInt(Preferences.CONTAINERS_PER_ROW);
-		int polycylindersPerRow = preferenceStore.getInt(Preferences.POLYCYLINDERS_PER_ROW);
-		String backgroundColor = preferenceStore.getString(Preferences.BACKGROUND_COLOR);
-		String highlightColor = preferenceStore.getString(Preferences.HIGHLIGHT_COLOR);
-		String relationColor = preferenceStore.getString(Preferences.RELATION_COLOR);
-		int scaleStep = preferenceStore.getInt(Preferences.SCALE_STEP);
-		int transparencyStep = preferenceStore.getInt(Preferences.TRANSPARENCY_STEP);
+		int containersPerRow = preferenceStore.getInt(CONTAINERS_PER_ROW);
+		int polycylindersPerRow = preferenceStore.getInt(POLYCYLINDERS_PER_ROW);
+		String backgroundColor = preferenceStore.getString(BACKGROUND_COLOR);
+		String highlightColor = preferenceStore.getString(HIGHLIGHT_COLOR);
+		String relationColor = preferenceStore.getString(RELATION_COLOR);
+		int scaleStep = preferenceStore.getInt(SCALE_STEP);
+		int transparencyStep = preferenceStore.getInt(TRANSPARENCY_STEP);
+		String colorScaleName = preferenceStore.getString(COLOR_SCALE);
 
 		updateContainersPerRow(containersPerRow);
 		updatePolycylindersPerRow(polycylindersPerRow);
@@ -146,55 +176,93 @@ public class Preferences implements IPropertyChangeListener {
 		updateRelationColor(relationColor);
 		updateScaleStep(scaleStep);
 		updateTransparencyStep(transparencyStep);
+		updateColorScale(colorScaleName);
+
 	}
 
 	private void updateContainersPerRow(int containersPerRow) {
 		this.containersPerRow = containersPerRow;
-
+		for (IPreferencesListener listener : listeners) {
+			listener.containersPerRowChanged(containersPerRow);
+		}
 	}
 
 	private void updatePolycylindersPerRow(int polycylindersPerRow) {
 		this.polycylindersPerRow = polycylindersPerRow;
+		for (IPreferencesListener listener : listeners) {
+			listener.polycylindersPerRowChanged(polycylindersPerRow);
+		}
 
 	}
 
 	private void updateBackgroundColor(String backgroundColor) {
 		Color3f color = extractColorFromString(backgroundColor);
 		this.backgroundColor = color;
+		for (IPreferencesListener listener : listeners) {
+			listener.backgroundColorChanged(this.backgroundColor);
+		}
 	}
 
 	private void updateBackgroundColor(RGB newColor) {
 		Color3f color = extractColorFromRGB(newColor);
 		this.backgroundColor = color;
+		for (IPreferencesListener listener : listeners) {
+			listener.backgroundColorChanged(this.backgroundColor);
+		}
 	}
 
 	private void updateHighlightColor(String highlightColor) {
 		Color3f color = extractColorFromString(highlightColor);
 		this.highlightColor = color;
+		for (IPreferencesListener listener : listeners) {
+			listener.highlightColorChanged(this.highlightColor);
+		}
 	}
 
 	private void updateHighlightColor(RGB newColor) {
 		Color3f color = extractColorFromRGB(newColor);
 		this.highlightColor = color;
+		for (IPreferencesListener listener : listeners) {
+			listener.highlightColorChanged(this.highlightColor);
+		}
 	}
 
 	private void updateRelationColor(String relationColor) {
 		Color3f color = extractColorFromString(relationColor);
 		this.relationMarkColor = color;
+		for (IPreferencesListener listener : listeners) {
+			listener.relationMarkColorChanged(relationMarkColor);
+		}
 	}
 
 	private void updateRelationColor(RGB newColor) {
 		Color3f color = extractColorFromRGB(newColor);
 		this.relationMarkColor = color;
+		for (IPreferencesListener listener : listeners) {
+			listener.relationMarkColorChanged(relationMarkColor);
+		}
 	}
 
 	private void updateScaleStep(int scaleStep) {
 		this.scaleStep = scaleStep / 100f;
-
+		for (IPreferencesListener listener : listeners) {
+			listener.scaleStepChanged(this.scaleStep);
+		}
 	}
 
 	private void updateTransparencyStep(int transparencyStep) {
 		this.transparencyStep = transparencyStep / 100f;
+		for (IPreferencesListener listener : listeners) {
+			listener.transparencyStepChanged(this.transparencyStep);
+		}
+	}
+
+	private void updateColorScale(String colorScale) {
+		IColorScale scale = ColorScaleFactory.findByName(colorScale);
+		this.colorScale = scale;
+		for (IPreferencesListener listener : listeners) {
+			listener.colorScaleChanged(scale);
+		}
 	}
 
 	private Color3f extractColorFromString(String colorStr) {

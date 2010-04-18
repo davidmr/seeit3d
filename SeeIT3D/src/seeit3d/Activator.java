@@ -15,6 +15,7 @@ import org.osgi.framework.BundleContext;
 
 import seeit3d.commands.ChangeSortingPolyCylindersCriteriaCommand;
 import seeit3d.error.ErrorHandler;
+import seeit3d.manager.SeeIT3DManager;
 import seeit3d.metrics.MetricsRegistry;
 import seeit3d.metrics.NoOpMetricCalculator;
 import seeit3d.model.java.metrics.*;
@@ -57,6 +58,8 @@ public class Activator extends AbstractUIPlugin {
 	private void initializePreferences() {
 		IPreferenceStore preferenceStore = getPreferenceStore();
 		Preferences preferences = Preferences.getInstance();
+		preferences.registerListener(SeeIT3DManager.getInstance());
+		preferences.registerListener(SeeIT3DManager.getInstance().getSceneGraphHandler());
 		preferences.setPreferencesDefaults(preferenceStore);
 		preferences.loadStoredPreferences(preferenceStore);
 		preferenceStore.addPropertyChangeListener(preferences);

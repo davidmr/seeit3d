@@ -6,9 +6,9 @@ import java.util.*;
 import javax.media.j3d.*;
 import javax.vecmath.Color3f;
 
+import seeit3d.manager.SeeIT3DManager;
 import seeit3d.metrics.*;
 import seeit3d.model.EclipseResourceRepresentation;
-import seeit3d.preferences.Preferences;
 import seeit3d.utils.Utils;
 import seeit3d.utils.ViewConstants;
 
@@ -32,7 +32,7 @@ public class PolyCylinder implements Serializable {
 
 	private transient TransformGroup polyCylinderTG;
 
-	private transient Preferences preferences;
+	private transient SeeIT3DManager manager;
 
 	private final long identifier;
 
@@ -57,7 +57,7 @@ public class PolyCylinder implements Serializable {
 		this.representation = representation;
 		visualPropertyValues = new ArrayList<VisualPropertyValue>();
 		identifier = Utils.generatePolyCylinderIdentifier();
-		preferences = Preferences.getInstance();
+		manager = SeeIT3DManager.getInstance();
 		propertiesMap = HashBiMap.create();
 	}
 
@@ -149,7 +149,7 @@ public class PolyCylinder implements Serializable {
 
 	private void activateHighlight() {
 		if (boxColor != null) {
-			boxColor.setDiffuseColor(preferences.getHighlightColor());
+			boxColor.setDiffuseColor(manager.getHighlightColor());
 		}
 	}
 
@@ -204,9 +204,9 @@ public class PolyCylinder implements Serializable {
 			float currentTransparency = transparency.getTransparency();
 			float newTransparency = 0.0f;
 			if (moreTransparent) {
-				newTransparency = currentTransparency + preferences.getTransparencyStep();
+				newTransparency = currentTransparency + manager.getTransparencyStep();
 			} else {
-				newTransparency = currentTransparency - preferences.getTransparencyStep();
+				newTransparency = currentTransparency - manager.getTransparencyStep();
 			}
 
 			if (newTransparency >= 0.0f && newTransparency <= 1.0f) {
@@ -236,7 +236,7 @@ public class PolyCylinder implements Serializable {
 
 	private void readObject(ObjectInputStream ois) throws IOException, ClassNotFoundException {
 		ois.defaultReadObject();
-		preferences = Preferences.getInstance();
+		manager = SeeIT3DManager.getInstance();
 		representation = new NoEclipseRepresentation();
 	}
 

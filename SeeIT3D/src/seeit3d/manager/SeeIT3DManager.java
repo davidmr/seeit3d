@@ -4,6 +4,7 @@ import java.io.*;
 import java.util.*;
 
 import javax.media.j3d.*;
+import javax.vecmath.Color3f;
 import javax.vecmath.Vector3f;
 
 import org.eclipse.core.resources.*;
@@ -15,12 +16,12 @@ import org.eclipse.ui.*;
 import org.eclipse.ui.part.FileEditorInput;
 
 import seeit3d.colorscale.IColorScale;
-import seeit3d.colorscale.imp.BlueTone;
+import seeit3d.colorscale.imp.ColdToHotColorScale;
 import seeit3d.error.ErrorHandler;
 import seeit3d.metrics.BaseMetricCalculator;
 import seeit3d.model.EclipseResourceRepresentation;
 import seeit3d.model.representation.*;
-import seeit3d.preferences.Preferences;
+import seeit3d.preferences.IPreferencesListener;
 import seeit3d.utils.Utils;
 import seeit3d.utils.ViewConstants;
 import seeit3d.view.SeeIT3DCanvas;
@@ -33,7 +34,7 @@ import seeit3d.view.listeners.LabelInformation;
  * 
  */
 
-public class SeeIT3DManager {
+public class SeeIT3DManager implements IPreferencesListener {
 
 	/**
 	 * Singleton
@@ -52,22 +53,31 @@ public class SeeIT3DManager {
 
 	private final SceneGraphHandler sceneGraphHandler;
 
-	private final Preferences preferences;
-
 	private IColorScale colorScale;
-
-	public SeeIT3DManager() {
-		preferences = Preferences.getInstance();
-		sceneGraphHandler = new SceneGraphHandler(this, preferences);
-		state = new VisualizationState(this);
-		colorScale = new BlueTone();
-	}
 
 	private IMappingView mappingView = null;
 
 	private boolean isSynchronzationWithPackageExplorerSet = false;
 
 	private SelectionInformationAware selectionInformatioAware;
+
+	private double scaleStep;
+
+	private int containersPerRow;
+
+	private int polycylindersPerRow;
+
+	private Color3f highlightColor;
+
+	private Color3f relationMarkColor;
+
+	private float transparencyStep;
+
+	public SeeIT3DManager() {
+		sceneGraphHandler = new SceneGraphHandler(this);
+		state = new VisualizationState(this);
+		colorScale = new ColdToHotColorScale();
+	}
 
 	public synchronized void addContainerToView(Container container) {
 		state.addContainerToView(container);
@@ -267,9 +277,9 @@ public class SeeIT3DManager {
 			Transform3D transform = new Transform3D();
 			transformGroup.getTransform(transform);
 			if (scaleUp) {
-				transform.setScale(transform.getScale() + preferences.getScaleStep());
+				transform.setScale(transform.getScale() + scaleStep);
 			} else {
-				transform.setScale(transform.getScale() - preferences.getScaleStep());
+				transform.setScale(transform.getScale() - scaleStep);
 			}
 			transformGroup.setTransform(transform);
 		}
@@ -425,8 +435,24 @@ public class SeeIT3DManager {
 		sceneGraphHandler.initializeVisualization(canvas);
 	}
 
-	public IColorScale getColorScale() {
+	public synchronized IColorScale getColorScale() {
 		return colorScale;
+	}
+
+	public synchronized int getPolycylindersPerRow() {
+		return polycylindersPerRow;
+	}
+
+	public synchronized Color3f getHighlightColor() {
+		return highlightColor;
+	}
+
+	public synchronized Color3f getRelationMarkColor() {
+		return relationMarkColor;
+	}
+
+	public synchronized float getTransparencyStep() {
+		return transparencyStep;
 	}
 
 	public synchronized void setColorScale(IColorScale colorScale) {
@@ -452,7 +478,7 @@ public class SeeIT3DManager {
 			added++;
 			Vector3f newPosition = new Vector3f(currentXPosition + container.getWidth() / 2, 0.0f, currentZPosition + container.getDepth() / 2);
 
-			if (added % preferences.getContainersPerRow() == 0) {
+			if (added % containersPerRow == 0) {
 				currentZPosition += container.getDepth() + ViewConstants.CONTAINERS_SPACING;
 				currentXPosition = 0.0f;
 			} else {
@@ -518,5 +544,44 @@ public class SeeIT3DManager {
 				}
 			}
 		});
+	}
+
+	@Override
+	public void scaleStepChanged(double newScale) {
+		scaleStep = newScale;
+	}
+
+	@Override
+	public synchronized void colorScaleChanged(IColorScale newColorScale) {
+		this.colorScale = newColorScale;
+	}
+
+	@Override
+	public synchronized void containersPerRowChanged(int containersPerRow) {
+		this.containersPerRow = containersPerRow;
+	}
+
+	@Override
+	public void backgroundColorChanged(Color3f newBackgroundColor) {
+	}
+
+	@Override
+	public synchronized void relationMarkColorChanged(Color3f newRelationMarkColor) {
+		relationMarkColor = newRelationMarkColor;
+	}
+
+	@Override
+	public synchronized void highlightColorChanged(Color3f newHighlightColor) {
+		highlightColor = newHighlightColor;
+	}
+
+	@Override
+	public synchronized void polycylindersPerRowChanged(int newPolycylinderPerRow) {
+		polycylindersPerRow = newPolycylinderPerRow;
+	}
+
+	@Override
+	public synchronized void transparencyStepChanged(float transparencyStepChanged) {
+		transparencyStep = transparencyStepChanged;
 	}
 }

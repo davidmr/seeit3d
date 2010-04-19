@@ -1,12 +1,24 @@
+/**
+ * Copyright (C) 2010  David Montaño
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package seeit3d.commands;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
-import org.eclipse.core.commands.AbstractHandler;
-import org.eclipse.core.commands.ExecutionEvent;
-import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.core.commands.*;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jface.viewers.ITreeSelection;
@@ -16,6 +28,12 @@ import org.eclipse.ui.handlers.HandlerUtil;
 import seeit3d.commands.jobs.VisualizeJob;
 import seeit3d.model.IModelCreator;
 
+/**
+ * Basic algorithm to visualize IJavaElements from different views in the IDE.
+ * 
+ * @author David Montaño
+ * 
+ */
 public abstract class AbstractVisualizeJavaElement extends AbstractHandler {
 
 	@SuppressWarnings("unchecked")

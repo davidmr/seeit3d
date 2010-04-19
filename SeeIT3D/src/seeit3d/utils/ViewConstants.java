@@ -1,3 +1,19 @@
+/**
+ * Copyright (C) 2010  David Montaño
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package seeit3d.utils;
 
 import javax.vecmath.Color3f;
@@ -33,24 +49,5 @@ public class ViewConstants {
 	public static final float CONTAINERS_SPACING = 0.5f;
 
 	public static final float HIGHLIGHT_PADDING = 0.1f;
-
-	public static final Color3f[] colors216 = new Color3f[218];
-
-	static {
-
-		colors216[0] = WHITE;
-		int i = 1;
-		for (float red = 0; red <= 255; red += 51) {
-			for (float green = 0; green <= 255; green += 51) {
-				for (float blue = 0; blue <= 255; blue += 51) {
-					Color3f newColor = new Color3f(red / 256.0f, green / 256.0f, blue / 256.0f);
-					colors216[i] = newColor;
-					i++;
-				}
-			}
-		}
-		colors216[colors216.length - 1] = BLACK;
-
-	}
 
 }

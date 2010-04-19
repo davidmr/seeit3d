@@ -1,3 +1,19 @@
+/**
+ * Copyright (C) 2010  David Montaño
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package seeit3d.manager;
 
 import java.util.*;
@@ -5,6 +21,12 @@ import java.util.*;
 import seeit3d.error.exception.IllegalVisualizationStateException;
 import seeit3d.model.representation.*;
 
+/**
+ * This class keeps track of the visualization state, like the selected containers in the view, checks of visualization state and sorting property
+ * 
+ * @author David Montaño
+ * 
+ */
 public class VisualizationState {
 
 	private final List<Container> containersInView;
@@ -141,6 +163,9 @@ public class VisualizationState {
 				}
 			}
 		}
+		if (nextIndex == -1) {
+			return containersInView.get(0);
+		}
 		return containersInView.get(nextIndex);
 
 	}
@@ -156,6 +181,9 @@ public class VisualizationState {
 					prevIndex = i - 1;
 				}
 			}
+		}
+		if (prevIndex == -1) {
+			return containersInView.get(0);
 		}
 		return containersInView.get(prevIndex);
 	}

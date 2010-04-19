@@ -1,3 +1,19 @@
+/**
+ * Copyright (C) 2010  David Montaño
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package seeit3d.manager;
 
 import java.io.*;
@@ -28,12 +44,11 @@ import seeit3d.view.SeeIT3DCanvas;
 import seeit3d.view.listeners.LabelInformation;
 
 /**
- * Class that will handle the interactions between modules (view, model, mapping etc.)
+ * Class that handles the interactions between the different parts of SeeIT3D. It tracks the general state of the visualization system.
  * 
- * @author David
+ * @author David Montaño
  * 
  */
-
 public class SeeIT3DManager implements IPreferencesListener {
 
 	/**
@@ -79,8 +94,48 @@ public class SeeIT3DManager implements IPreferencesListener {
 		colorScale = new ColdToHotColorScale();
 	}
 
+	/**************************************/
+	/******* OPERATIONS ON VIEW PROPERTIES **/
+	public synchronized void registerMappingView(IMappingView newMappingView) {
+		mappingView = newMappingView;
+	}
+
+	public void registerSelectionInformatioAware(LabelInformation selectionInformatioAware) {
+		this.selectionInformatioAware = selectionInformatioAware;
+	}
+
 	public synchronized void addContainerToView(Container container) {
 		state.addContainerToView(container);
+	}
+
+	public synchronized void doContainerLayout() {
+		Iterator<Container> iterator = manager.iteratorOnAllContainers();
+	
+		float currentXPosition = 0.0f;
+		float currentZPosition = 0.0f;
+	
+		float maxX = Float.MIN_VALUE;
+	
+		int added = 0;
+		Container container = null;
+		while (iterator.hasNext()) {
+			container = iterator.next();
+			added++;
+			Vector3f newPosition = new Vector3f(currentXPosition + container.getWidth() / 2, 0.0f, currentZPosition + container.getDepth() / 2);
+	
+			if (added % containersPerRow == 0) {
+				currentZPosition += container.getDepth() + ViewConstants.CONTAINERS_SPACING;
+				currentXPosition = 0.0f;
+			} else {
+				currentXPosition += container.getWidth() + ViewConstants.CONTAINERS_SPACING;
+			}
+			maxX = Math.max(maxX, currentXPosition + container.getWidth());
+	
+			container.setPosition(newPosition);
+		}
+	
+		sceneGraphHandler.setViewersPosition(maxX);
+	
 	}
 
 	public synchronized void clearContainers() {
@@ -118,32 +173,6 @@ public class SeeIT3DManager implements IPreferencesListener {
 		updateMappingView();
 	}
 
-	public synchronized List<Container> getCurrentSelectedContainers() {
-		Iterator<Container> iteratorOnSelectedContainers = state.iteratorOnSelectedContainers();
-		List<Container> selectedContainers = new ArrayList<Container>();
-		while (iteratorOnSelectedContainers.hasNext()) {
-			selectedContainers.add(iteratorOnSelectedContainers.next());
-		}
-		return Collections.unmodifiableList(selectedContainers);
-	}
-
-	public synchronized String getCurrentSelectedContainersAsString() {
-
-		List<String> names = new ArrayList<String>();
-
-		Iterator<Container> iterator = state.iteratorOnSelectedContainers();
-		while (iterator.hasNext()) {
-			Container container = iterator.next();
-			names.add(container.getName());
-		}
-
-		if (names.isEmpty()) {
-			names.add("None Selected");
-		}
-
-		return names.toString();
-	}
-
 	public synchronized void deleteSelectedContainers() {
 		Iterator<Container> iterator = state.iteratorOnSelectedContainers();
 		while (iterator.hasNext()) {
@@ -159,16 +188,6 @@ public class SeeIT3DManager implements IPreferencesListener {
 		state.clearContainers();
 		sceneGraphHandler.clearScene();
 		updateMappingView();
-	}
-
-	/**************************************/
-	/******* OPERATIONS ON VIEW PROPERTIES **/
-	public synchronized void registerMappingView(IMappingView newMappingView) {
-		mappingView = newMappingView;
-	}
-
-	public void registerSelectionInformatioAware(LabelInformation selectionInformatioAware) {
-		this.selectionInformatioAware = selectionInformatioAware;
 	}
 
 	public synchronized void changeSelectionAndUpdateMappingView(Container newContainer, PolyCylinder polycylinder, boolean toggleContainerSelection, boolean togglePolycylinderSelection) {
@@ -206,6 +225,11 @@ public class SeeIT3DManager implements IPreferencesListener {
 		if (mappingNeedsRefresh) {
 			updateMappingView();
 		}
+	}
+
+	private synchronized void setSelectionToView(String viewId, ISelection newSelection) {
+		IViewPart view = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView(viewId);
+		view.getSite().getSelectionProvider().setSelection(newSelection);
 	}
 
 	public synchronized void showRelatedContainers() {
@@ -299,6 +323,10 @@ public class SeeIT3DManager implements IPreferencesListener {
 		}
 	}
 
+	public synchronized void initializeVisualization(SeeIT3DCanvas canvas) {
+		sceneGraphHandler.initializeVisualization(canvas);
+	}
+
 	public synchronized void resetVisualization() {
 		state.reset();
 		sceneGraphHandler.buildAllVisualization();
@@ -335,11 +363,6 @@ public class SeeIT3DManager implements IPreferencesListener {
 		});
 	}
 
-	private synchronized void setSelectionToView(String viewId, ISelection newSelection) {
-		IViewPart view = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView(viewId);
-		view.getSite().getSelectionProvider().setSelection(newSelection);
-	}
-
 	public synchronized void changeTransparencyPolyCylindersSelection(boolean moreTransparent) {
 		Iterator<PolyCylinder> iterator = state.iteratorOnSelectedPolycylinders();
 		while (iterator.hasNext()) {
@@ -372,14 +395,6 @@ public class SeeIT3DManager implements IPreferencesListener {
 
 	public synchronized void changeCurrentSortingPolyCylindersProperty(VisualProperty visualProperty) {
 		state.setSortingProperty(visualProperty);
-	}
-
-	public synchronized VisualProperty getCurrentSortingProperty() {
-		return state.getSortingProperty();
-	}
-
-	public Iterator<Container> iteratorOnAllContainers() {
-		return state.iteratorOnAllContainers();
 	}
 
 	public synchronized void refreshVisualization() {
@@ -431,70 +446,8 @@ public class SeeIT3DManager implements IPreferencesListener {
 		return false;
 	}
 
-	public synchronized void initializeVisualization(SeeIT3DCanvas canvas) {
-		sceneGraphHandler.initializeVisualization(canvas);
-	}
-
-	public synchronized IColorScale getColorScale() {
-		return colorScale;
-	}
-
-	public synchronized int getPolycylindersPerRow() {
-		return polycylindersPerRow;
-	}
-
-	public synchronized Color3f getHighlightColor() {
-		return highlightColor;
-	}
-
-	public synchronized Color3f getRelationMarkColor() {
-		return relationMarkColor;
-	}
-
-	public synchronized float getTransparencyStep() {
-		return transparencyStep;
-	}
-
-	public synchronized void setColorScale(IColorScale colorScale) {
-		this.colorScale = colorScale;
-	}
-
-	public synchronized SceneGraphHandler getSceneGraphHandler() {
-		return sceneGraphHandler;
-	}
-
-	public synchronized void doContainerLayout() {
-		Iterator<Container> iterator = manager.iteratorOnAllContainers();
-
-		float currentXPosition = 0.0f;
-		float currentZPosition = 0.0f;
-
-		float maxX = Float.MIN_VALUE;
-
-		int added = 0;
-		Container container = null;
-		while (iterator.hasNext()) {
-			container = iterator.next();
-			added++;
-			Vector3f newPosition = new Vector3f(currentXPosition + container.getWidth() / 2, 0.0f, currentZPosition + container.getDepth() / 2);
-
-			if (added % containersPerRow == 0) {
-				currentZPosition += container.getDepth() + ViewConstants.CONTAINERS_SPACING;
-				currentXPosition = 0.0f;
-			} else {
-				currentXPosition += container.getWidth() + ViewConstants.CONTAINERS_SPACING;
-			}
-			maxX = Math.max(maxX, currentXPosition + container.getWidth());
-
-			container.setPosition(newPosition);
-		}
-
-		sceneGraphHandler.setViewersPosition(maxX);
-
-	}
-
 	@SuppressWarnings("unchecked")
-	public synchronized void loadUniverse(InputStream input) throws IOException {
+	public synchronized void loadVisualization(InputStream input) throws IOException {
 		ObjectInputStream in = new ObjectInputStream(input);
 		try {
 			List<Container> containers = (List<Container>) in.readObject();
@@ -531,14 +484,14 @@ public class SeeIT3DManager implements IPreferencesListener {
 					final IFile file = root.getFile(path);
 					final IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
 					final IEditorDescriptor desc = PlatformUI.getWorkbench().getEditorRegistry().getDefaultEditor(file.getName());
-
+	
 					try {
 						page.openEditor(new FileEditorInput(file), desc.getId());
 					} catch (Exception e) {
 						ErrorHandler.error("Error opening editor");
 						e.printStackTrace();
 					}
-
+	
 				} else {
 					ErrorHandler.error("The selected polycylinder does not have an associated resource in the workspace");
 				}
@@ -546,6 +499,71 @@ public class SeeIT3DManager implements IPreferencesListener {
 		});
 	}
 
+	public Iterator<Container> iteratorOnAllContainers() {
+		return state.iteratorOnAllContainers();
+	}
+
+	public synchronized List<Container> getCurrentSelectedContainers() {
+		Iterator<Container> iteratorOnSelectedContainers = state.iteratorOnSelectedContainers();
+		List<Container> selectedContainers = new ArrayList<Container>();
+		while (iteratorOnSelectedContainers.hasNext()) {
+			selectedContainers.add(iteratorOnSelectedContainers.next());
+		}
+		return Collections.unmodifiableList(selectedContainers);
+	}
+
+	public synchronized VisualProperty getCurrentSortingProperty() {
+		return state.getSortingProperty();
+	}
+
+	public synchronized String getCurrentSelectedContainersAsString() {
+	
+		List<String> names = new ArrayList<String>();
+	
+		Iterator<Container> iterator = state.iteratorOnSelectedContainers();
+		while (iterator.hasNext()) {
+			Container container = iterator.next();
+			names.add(container.getName());
+		}
+	
+		if (names.isEmpty()) {
+			names.add("None Selected");
+		}
+	
+		return names.toString();
+	}
+
+	public synchronized IColorScale getColorScale() {
+		return colorScale;
+	}
+
+	public synchronized int getPolycylindersPerRow() {
+		return polycylindersPerRow;
+	}
+
+	public synchronized Color3f getHighlightColor() {
+		return highlightColor;
+	}
+
+	public synchronized Color3f getRelationMarkColor() {
+		return relationMarkColor;
+	}
+
+	public synchronized float getTransparencyStep() {
+		return transparencyStep;
+	}
+
+	public synchronized void setColorScale(IColorScale colorScale) {
+		this.colorScale = colorScale;
+	}
+
+	public synchronized SceneGraphHandler getSceneGraphHandler() {
+		return sceneGraphHandler;
+	}
+
+	/**
+	 * Listen preferences
+	 */
 	@Override
 	public void scaleStepChanged(double newScale) {
 		scaleStep = newScale;

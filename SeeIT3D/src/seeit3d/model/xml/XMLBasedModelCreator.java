@@ -1,10 +1,23 @@
+/**
+ * Copyright (C) 2010  David Montaño
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package seeit3d.model.xml;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import seeit3d.manager.SeeIT3DManager;
 import seeit3d.metrics.BaseMetricCalculator;
@@ -12,14 +25,16 @@ import seeit3d.model.ContainerRepresentedObject;
 import seeit3d.model.IModelCreator;
 import seeit3d.model.representation.Container;
 import seeit3d.model.representation.PolyCylinder;
-import seeit3d.model.xml.internal.EntryMetricValue;
-import seeit3d.model.xml.internal.MetricDescription;
-import seeit3d.model.xml.internal.MetricsList;
-import seeit3d.model.xml.internal.MetricsValue;
-import seeit3d.model.xml.internal.Polycylinder;
+import seeit3d.model.xml.internal.*;
 import seeit3d.model.xml.metrics.XMLCategorizedMetricCalculator;
 import seeit3d.model.xml.metrics.XMLContinuousMetricCalculator;
 
+/**
+ * Model creator for XML based visualization. It takes the model that was read by JAXB and translate it into the model of SeeIT3D
+ * 
+ * @author David Montaño
+ * 
+ */
 public class XMLBasedModelCreator implements IModelCreator {
 
 	private final SeeIT3DManager manager;

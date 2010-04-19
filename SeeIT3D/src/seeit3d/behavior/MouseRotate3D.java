@@ -1,3 +1,19 @@
+/**
+ * Copyright (C) 2010  David Montaño
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package seeit3d.behavior;
 
 import static java.lang.Math.*;
@@ -9,6 +25,12 @@ import javax.vecmath.*;
 
 import com.sun.j3d.utils.universe.ViewingPlatform;
 
+/**
+ * This class handles the rotation of elements in the scene, taking into account the position of the user in the world
+ * 
+ * @author David Montaño
+ * 
+ */
 public class MouseRotate3D extends MouseOperationBehavior {
 
 	private static final float factor = 0.02f;

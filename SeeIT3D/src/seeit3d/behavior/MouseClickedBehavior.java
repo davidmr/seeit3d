@@ -1,3 +1,19 @@
+/**
+ * Copyright (C) 2010  David Montaño
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package seeit3d.behavior;
 
 import javax.media.j3d.*;
@@ -13,9 +29,9 @@ import com.sun.j3d.utils.picking.PickTool;
 import com.sun.j3d.utils.picking.behaviors.PickMouseBehavior;
 
 /**
- * This class is called when an object in the scene is selected
+ * This class is called when an object in the scene is selected, and handle the input correctly to open or not the text editor.
  * 
- * @author David
+ * @author David Montaño
  * 
  */
 public class MouseClickedBehavior extends PickMouseBehavior {
@@ -59,11 +75,6 @@ public class MouseClickedBehavior extends PickMouseBehavior {
 		lastPressedTime = System.currentTimeMillis();
 	}
 
-	private boolean doubleClick() {
-		long currentTime = System.currentTimeMillis();
-		return currentTime - lastPressedTime < DELTA_PRESS_MBUTTON;
-	}
-
 	private Container findContainerAssociated(PickResult pickResult) {
 		TransformGroup containerTransformGroup = (TransformGroup) pickResult.getNode(PickResult.TRANSFORM_GROUP);
 		if (containerTransformGroup != null) {
@@ -82,6 +93,11 @@ public class MouseClickedBehavior extends PickMouseBehavior {
 			}
 		}
 		return null;
+	}
+
+	private boolean doubleClick() {
+		long currentTime = System.currentTimeMillis();
+		return currentTime - lastPressedTime < DELTA_PRESS_MBUTTON;
 	}
 
 }

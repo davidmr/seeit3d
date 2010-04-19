@@ -1,3 +1,19 @@
+/**
+ * Copyright (C) 2010  David Montaño
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package seeit3d.behavior;
 
 import java.awt.AWTEvent;
@@ -10,15 +26,20 @@ import javax.vecmath.Matrix3d;
 import com.sun.j3d.utils.behaviors.mouse.MouseBehavior;
 import com.sun.j3d.utils.universe.ViewingPlatform;
 
+/**
+ * Class to provide basic functionality for changing transformations on selected objects in the scene. This class is based on the PickMouseBehavior of Java 3D
+ * 
+ * @author David Montaño
+ */
 public abstract class MouseOperationBehavior extends MouseBehavior {
 
 	private static final int MIN_VALUE_TO_TRIGGER = 50;
 
 	private final ViewingPlatform viewingPlatform;
 
-	private int pressedButton = MouseEvent.NOBUTTON;
-
 	private final int mouseButtonToWakeUp;
+
+	private int pressedButton = MouseEvent.NOBUTTON;
 
 	public MouseOperationBehavior(int format, ViewingPlatform viewingPlatform) {
 		super(format);

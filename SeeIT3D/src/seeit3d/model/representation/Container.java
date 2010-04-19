@@ -1,3 +1,19 @@
+/**
+ * Copyright (C) 2010  David Montaño
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package seeit3d.model.representation;
 
 import java.io.*;
@@ -20,9 +36,9 @@ import com.google.common.collect.HashBiMap;
 import com.sun.j3d.utils.geometry.Box;
 
 /**
- * Represent a container in the view, with its own mapping characteristics
+ * Represent a container in the view, with its own mapping characteristics and represented object.
  * 
- * @author David
+ * @author David Montaño
  * 
  */
 public class Container implements Serializable {
@@ -30,6 +46,12 @@ public class Container implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	private transient SeeIT3DManager manager;
+
+	private transient BranchGroup containerBG;
+
+	private transient Switch highlighRootNode;
+
+	private transient Switch relationMarkNode;
 
 	private final long identifier;
 
@@ -52,12 +74,6 @@ public class Container implements Serializable {
 	private final List<BaseMetricCalculator> metrics;
 
 	private final BiMap<BaseMetricCalculator, VisualProperty> propertiesMap;
-
-	private transient BranchGroup containerBG;
-
-	private transient Switch highlighRootNode;
-
-	private transient Switch relationMarkNode;
 
 	private VisualProperty sortingProperty;
 
@@ -97,6 +113,22 @@ public class Container implements Serializable {
 		}
 	}
 
+	private void validateForVisualState() {
+		if (highlighRootNode == null || relationMarkNode == null || containerBG == null) {
+			buildBranchGroup();
+		}
+	}
+
+	private void initializePolycylinders() {
+		for (PolyCylinder polyCylinder : polycylinders) {
+			polyCylinder.initializePolyCylinder(propertiesMap);
+		}
+	}
+
+	public int countPolyCylinders() {
+		return polycylinders.size();
+	}
+
 	public Container buildContainerForPreviousLevel() {
 		if (parent == null) {
 			return this;
@@ -104,13 +136,6 @@ public class Container implements Serializable {
 			Vector3f position = extractPosition();
 			parent.setPosition(position);
 			return parent;
-		}
-	}
-
-	public void setPosition(Vector3f position) {
-		if (containerBG != null) {
-			TransformGroup child = (TransformGroup) containerBG.getChild(0);
-			Utils.translateTranformGroup(child, position);
 		}
 	}
 
@@ -150,16 +175,8 @@ public class Container implements Serializable {
 		children.add(this);
 	}
 
-	private boolean hasChildren() {
-		return !children.isEmpty();
-	}
-
-	public boolean hasPolycylinder(PolyCylinder polycylinder) {
-		return polycylinders.contains(polycylinder);
-	}
-
-	public int countPolyCylinders() {
-		return polycylinders.size();
+	public void updateVisualRepresentation() {
+		buildBranchGroup();
 	}
 
 	private void buildBranchGroup() {
@@ -239,12 +256,6 @@ public class Container implements Serializable {
 		return widestPoly;
 	}
 
-	private void initializePolycylinders() {
-		for (PolyCylinder polyCylinder : polycylinders) {
-			polyCylinder.initializePolyCylinder(propertiesMap);
-		}
-	}
-
 	private void calculateDimensions() {
 		float widestPoly = findWidestPolycylinderValue();
 		int polySize = polycylinders.size();
@@ -261,6 +272,12 @@ public class Container implements Serializable {
 			float polyHeight = poly.getHeight();
 			height = Math.max(height, polyHeight);
 		}
+	}
+
+	private void resetDimensions() {
+		height = -1;
+		width = -1;
+		depth = -1;
 	}
 
 	private Vector3f extractPosition() {
@@ -441,13 +458,17 @@ public class Container implements Serializable {
 
 	}
 
-	public BranchGroup getContainerBG() {
-		validateForVisualState();
-		return containerBG;
-	}
-
-	public void updateVisualRepresentation() {
-		buildBranchGroup();
+	private void addPointsFromShape(Shape3D shape, List<Point3f> points) {
+	
+		TriangleStripArray geometry = (TriangleStripArray) shape.getGeometry();
+		int vertexCount = geometry.getVertexCount();
+		for (int i = 0; i < vertexCount; i++) {
+			Point3f point = new Point3f();
+			geometry.getCoordinate(i, point);
+			if (!points.contains(point)) {
+				points.add(point);
+			}
+		}
 	}
 
 	/**
@@ -516,25 +537,6 @@ public class Container implements Serializable {
 		}
 	}
 
-	private void resetDimensions() {
-		height = -1;
-		width = -1;
-		depth = -1;
-	}
-
-	public void setSelected(boolean isSelected) {
-		this.isSelected = isSelected;
-		if (isSelected) {
-			activateHighlight();
-		} else {
-			deactiveHighlight();
-		}
-	}
-
-	public boolean isSelected() {
-		return isSelected;
-	}
-
 	private void activateHighlight() {
 		validateForVisualState();
 		changeSwitchNodeState(highlighRootNode, true);
@@ -553,19 +555,6 @@ public class Container implements Serializable {
 	public void deactivateRelationShipMark() {
 		validateForVisualState();
 		changeSwitchNodeState(relationMarkNode, false);
-	}
-
-	private void addPointsFromShape(Shape3D shape, List<Point3f> points) {
-
-		TriangleStripArray geometry = (TriangleStripArray) shape.getGeometry();
-		int vertexCount = geometry.getVertexCount();
-		for (int i = 0; i < vertexCount; i++) {
-			Point3f point = new Point3f();
-			geometry.getCoordinate(i, point);
-			if (!points.contains(point)) {
-				points.add(point);
-			}
-		}
 	}
 
 	private void changeSwitchNodeState(Switch node, boolean newState) {
@@ -588,10 +577,37 @@ public class Container implements Serializable {
 		}
 	}
 
-	private void validateForVisualState() {
-		if (highlighRootNode == null || relationMarkNode == null || containerBG == null) {
-			buildBranchGroup();
+	public void setPosition(Vector3f position) {
+		if (containerBG != null) {
+			TransformGroup child = (TransformGroup) containerBG.getChild(0);
+			Utils.translateTranformGroup(child, position);
 		}
+	}
+
+	public void setSelected(boolean isSelected) {
+		this.isSelected = isSelected;
+		if (isSelected) {
+			activateHighlight();
+		} else {
+			deactiveHighlight();
+		}
+	}
+
+	public boolean isSelected() {
+		return isSelected;
+	}
+
+	private boolean hasChildren() {
+		return !children.isEmpty();
+	}
+
+	public boolean hasPolycylinder(PolyCylinder polycylinder) {
+		return polycylinders.contains(polycylinder);
+	}
+
+	public BranchGroup getContainerBG() {
+		validateForVisualState();
+		return containerBG;
 	}
 
 	public List<BaseMetricCalculator> getMetrics() {

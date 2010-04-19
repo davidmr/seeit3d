@@ -1,8 +1,22 @@
+/**
+ * Copyright (C) 2010  David Montaño
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package seeit3d.view.dnd;
 
-import org.eclipse.swt.dnd.DND;
-import org.eclipse.swt.dnd.DropTargetEvent;
-import org.eclipse.swt.dnd.DropTargetListener;
+import org.eclipse.swt.dnd.*;
 import org.eclipse.swt.widgets.Group;
 
 import seeit3d.manager.SeeIT3DManager;
@@ -11,6 +25,12 @@ import seeit3d.model.representation.VisualProperty;
 import seeit3d.utils.DragAndDropHelper;
 import seeit3d.view.MappingViewComposite;
 
+/**
+ * This class listens for metrics dropped on a visual property group, indicating that the mapping needs to be changed
+ * 
+ * @author David Montaño
+ * 
+ */
 public class DropMetricOnVisualPropertyListener implements DropTargetListener {
 
 	private final Group groupToAdd;

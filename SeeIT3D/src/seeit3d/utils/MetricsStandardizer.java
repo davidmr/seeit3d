@@ -1,13 +1,16 @@
 package seeit3d.utils;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
-import seeit3d.metrics.AbstractCategorizedMetricCalculator;
-import seeit3d.metrics.AbstractContinuousMetricCalculator;
-import seeit3d.metrics.BaseMetricCalculator;
+import seeit3d.metrics.*;
 
+/**
+ * This class standardizes the values from metrics (i.e. translate them to 0..1). It also maintains a cache of the metrics that were standardize before, in order to keep consistency between different
+ * calculations of metric
+ * 
+ * @author David Montaño
+ * 
+ */
 public class MetricsStandardizer {
 
 	private static final Map<String, Map<String, Float>> classMetricsValuesMap;

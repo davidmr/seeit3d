@@ -38,10 +38,6 @@ public class ViewConstants {
 
 	public static final Color3f BLUE = new Color3f(0.0f, 0.0f, 1.0f);
 
-	public static final float RELATION_MARK_PADDING = 0.1f;
-
-	public static final float RELATION_MARK_SCALING = 1.2f;
-
 	public static final float PICKING_TOLERANCE = 0.0f;
 
 	public static final float POLYCYLINDER_SPACING = 0.15f;

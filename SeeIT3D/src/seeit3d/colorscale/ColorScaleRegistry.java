@@ -18,7 +18,7 @@ package seeit3d.colorscale;
 
 import static com.google.common.collect.Lists.*;
 
-import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import seeit3d.colorscale.imp.*;
@@ -29,12 +29,18 @@ import seeit3d.colorscale.imp.*;
  * @author David Montaño
  * 
  */
-public class ColorScaleFactory {
+public class ColorScaleRegistry {
 
-	private static final ArrayList<IColorScale> allColorScales;
+	private static final ColorScaleRegistry instance = new ColorScaleRegistry();
 
-	static {
-		allColorScales = newArrayList(
+	public static ColorScaleRegistry getInstance() {
+		return instance;
+	}
+
+	private final List<IColorScale> colorScales;
+
+	private ColorScaleRegistry() {
+		colorScales = newArrayList(
 				new BlueTone(),
 				new BlueToYellow(),
 				new ColdToHotColorScale(),
@@ -45,12 +51,16 @@ public class ColorScaleFactory {
 				new Rainbow());
 	}
 
-	public static List<IColorScale> createAllColorScales() {
-		return allColorScales;
+	public void registerColorScale(IColorScale colorScale) {
+		colorScales.add(colorScale);
 	}
 
-	public static IColorScale findByName(String colorScaleName) {
-		for (IColorScale colorScale : allColorScales) {
+	public Iterator<IColorScale> allColorScales() {
+		return colorScales.iterator();
+	}
+
+	public IColorScale findByName(String colorScaleName) {
+		for (IColorScale colorScale : colorScales) {
 			if (colorScale.getName().equals(colorScaleName)) {
 				return colorScale;
 			}

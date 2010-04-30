@@ -16,8 +16,7 @@
  */
 package seeit3d.manager;
 
-import java.util.Enumeration;
-import java.util.Iterator;
+import java.util.*;
 
 import javax.media.j3d.*;
 import javax.vecmath.*;
@@ -27,6 +26,7 @@ import seeit3d.colorscale.IColorScale;
 import seeit3d.error.exception.SeeIT3DException;
 import seeit3d.model.representation.Container;
 import seeit3d.preferences.IPreferencesListener;
+import seeit3d.relationships.RelationShipVisualGenerator;
 import seeit3d.utils.Utils;
 import seeit3d.utils.ViewConstants;
 import seeit3d.view.SeeIT3DCanvas;
@@ -39,7 +39,7 @@ import com.sun.j3d.utils.universe.ViewingPlatform;
 /**
  * Class that handles all the interactions with the scene graph in Java 3D. All the changes in general structure of the scene graph should be handle by this class.
  * 
- * @author David Montaï¿½o
+ * @author David Montaño
  * 
  */
 public class SceneGraphHandler implements IPreferencesListener {
@@ -59,6 +59,8 @@ public class SceneGraphHandler implements IPreferencesListener {
 	private OrbitBehavior orbit = null;
 
 	private Color3f backgroundColor;
+
+	private boolean addRelatedToView;
 
 	public SceneGraphHandler(SeeIT3DManager manager) {
 		this.manager = manager;
@@ -207,12 +209,30 @@ public class SceneGraphHandler implements IPreferencesListener {
 		containersGroup.addChild(containersTG);
 
 		Container container = null;
+		List<Container> newContainersToAdd = new ArrayList<Container>();
 		while (iterator.hasNext()) {
 			container = iterator.next();
 			container.updateVisualRepresentation();
 			BranchGroup bgContainer = container.getContainerBG();
+			RelationShipVisualGenerator generator = manager.getRelationShipVisualGenerator();
+			List<Container> relatedContainers = generator.generateVisualRelationShips(container);
+			if (addRelatedToView) {
+				for (Container related : relatedContainers) {
+					newContainersToAdd.add(related);
+					related.updateVisualRepresentation();
+					related.setSelected(false);
+					BranchGroup relatedBG = related.getContainerBG();
+					containersTG.addChild(relatedBG);
+				}
+			}
+
 			containersTG.addChild(bgContainer);
 		}
+
+		for (Container newContainer : newContainersToAdd) {
+			manager.addContainerToViewWithoutValidation(newContainer);
+		}
+
 		rootObj.addChild(containersGroup);
 
 	}
@@ -240,6 +260,15 @@ public class SceneGraphHandler implements IPreferencesListener {
 		tg.setTransform(t3d);
 	}
 
+	public void setRelatedContainersToView(boolean addRelatedToView) {
+		this.addRelatedToView = addRelatedToView;
+	}
+
+	public boolean getRelatedContainersToView() {
+		return addRelatedToView;
+	}
+
+
 	/**
 	 * Listen for preferences
 	 */
@@ -249,24 +278,32 @@ public class SceneGraphHandler implements IPreferencesListener {
 	}
 
 	@Override
-	public void scaleStepChanged(double newScale) {}
+	public void scaleStepChanged(double newScale) {
+	}
 
 	@Override
-	public void colorScaleChanged(IColorScale newColorScale) {}
+	public void colorScaleChanged(IColorScale newColorScale) {
+	}
 
 	@Override
-	public void containersPerRowChanged(int containersPerRow) {}
+	public void containersPerRowChanged(int containersPerRow) {
+	}
 
 	@Override
-	public void relationMarkColorChanged(Color3f newRelationMarkColor) {}
+	public void relationMarkColorChanged(Color3f newRelationMarkColor) {
+	}
 
 	@Override
-	public void highlightColorChanged(Color3f newHighlightColor) {}
+	public void highlightColorChanged(Color3f newHighlightColor) {
+	}
 
 	@Override
-	public void polycylindersPerRowChanged(int newPolycylinderPerRow) {}
+	public void polycylindersPerRowChanged(int newPolycylinderPerRow) {
+	}
 
 	@Override
-	public void transparencyStepChanged(float transparencyStepChanged) {}
+	public void transparencyStepChanged(float transparencyStepChanged) {
+	}
+
 
 }

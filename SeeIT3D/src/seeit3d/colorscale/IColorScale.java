@@ -25,8 +25,8 @@ import javax.vecmath.Color3f;
  * 
  */
 public interface IColorScale {
-	
-	public Color3f generateCuantitavieColor(float value);
 
-	public String getName();
+	public abstract Color3f generateCuantitavieColor(float value);
+
+	public abstract String getName();
 }

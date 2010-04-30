@@ -14,30 +14,22 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package seeit3d.commands;
+package seeit3d.relationships;
 
-import org.eclipse.core.commands.*;
+import java.util.List;
 
-import seeit3d.manager.SeeIT3DManager;
+import seeit3d.model.representation.Container;
 
 /**
- * Command to show the relation ships between the selected containers
+ * Interface representing a visualization generator for relationships
  * 
  * @author David Montaño
  * 
  */
-public class ShowRelatedContainersCommand extends AbstractHandler {
+public interface RelationShipVisualGenerator {
 
-	private final SeeIT3DManager manager;
+	public List<Container> generateVisualRelationShips(Container baseContainer);
 
-	public ShowRelatedContainersCommand() {
-		manager = SeeIT3DManager.getInstance();
-	}
-
-	@Override
-	public Object execute(ExecutionEvent event) throws ExecutionException {
-		manager.showRelatedContainers();
-		return null;
-	}
+	public String getName();
 
 }

@@ -16,27 +16,23 @@
  */
 package seeit3d.view.listeners;
 
-import java.util.Iterator;
-
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
-import org.eclipse.swt.widgets.Combo;
+import org.eclipse.swt.widgets.Button;
 
-import seeit3d.colorscale.ColorScaleRegistry;
-import seeit3d.colorscale.IColorScale;
 import seeit3d.manager.SeeIT3DManager;
 
 /**
- * This class listen for changes in color scale selection from mapping view
+ * Listener for the checkbox in mapping view to update if the related containers are going to be added to the view
  * 
  * @author David Montaño
  * 
  */
-public class ColorScaleSelectionListener implements SelectionListener {
+public class AddRelatedToViewListener implements SelectionListener {
 
 	private final SeeIT3DManager manager;
 
-	public ColorScaleSelectionListener() {
+	public AddRelatedToViewListener() {
 		manager = SeeIT3DManager.getInstance();
 	}
 
@@ -46,20 +42,11 @@ public class ColorScaleSelectionListener implements SelectionListener {
 	}
 
 	@Override
-	public void widgetSelected(SelectionEvent event) {
-		Combo combo = (Combo) event.widget;
-		String colorScaleName = combo.getItem(combo.getSelectionIndex());
-
-		Iterator<IColorScale> allColorScales = ColorScaleRegistry.getInstance().allColorScales();
-
-		while (allColorScales.hasNext()) {
-			IColorScale colorScale = allColorScales.next();
-			if (colorScaleName.equals(colorScale.getName())) {
-				manager.setColorScale(colorScale);
-				manager.refreshVisualization();
-				break;
-			}
-		}
+	public void widgetSelected(SelectionEvent e) {
+		Button check = (Button) e.widget;
+		boolean checked = check.getSelection();
+		manager.setRelatedContainersToView(checked);
+		manager.refreshVisualization();
 	}
 
 }

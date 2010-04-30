@@ -19,7 +19,8 @@ package seeit3d.manager;
 import java.io.*;
 import java.util.*;
 
-import javax.media.j3d.*;
+import javax.media.j3d.Transform3D;
+import javax.media.j3d.TransformGroup;
 import javax.vecmath.Color3f;
 import javax.vecmath.Vector3f;
 
@@ -38,6 +39,8 @@ import seeit3d.metrics.BaseMetricCalculator;
 import seeit3d.model.EclipseResourceRepresentation;
 import seeit3d.model.representation.*;
 import seeit3d.preferences.IPreferencesListener;
+import seeit3d.relationships.RelationShipVisualGenerator;
+import seeit3d.relationships.imp.NoRelationships;
 import seeit3d.utils.Utils;
 import seeit3d.utils.ViewConstants;
 import seeit3d.view.SeeIT3DCanvas;
@@ -70,6 +73,8 @@ public class SeeIT3DManager implements IPreferencesListener {
 
 	private IColorScale colorScale;
 
+	private RelationShipVisualGenerator relationShipVisualGenerator;
+
 	private IMappingView mappingView = null;
 
 	private boolean isSynchronzationWithPackageExplorerSet = false;
@@ -92,6 +97,7 @@ public class SeeIT3DManager implements IPreferencesListener {
 		sceneGraphHandler = new SceneGraphHandler(this);
 		state = new VisualizationState(this);
 		colorScale = new ColdToHotColorScale();
+		relationShipVisualGenerator = new NoRelationships();
 	}
 
 	/**************************************/
@@ -110,19 +116,19 @@ public class SeeIT3DManager implements IPreferencesListener {
 
 	public synchronized void doContainerLayout() {
 		Iterator<Container> iterator = manager.iteratorOnAllContainers();
-	
+
 		float currentXPosition = 0.0f;
 		float currentZPosition = 0.0f;
-	
+
 		float maxX = Float.MIN_VALUE;
-	
+
 		int added = 0;
 		Container container = null;
 		while (iterator.hasNext()) {
 			container = iterator.next();
 			added++;
 			Vector3f newPosition = new Vector3f(currentXPosition + container.getWidth() / 2, 0.0f, currentZPosition + container.getDepth() / 2);
-	
+
 			if (added % containersPerRow == 0) {
 				currentZPosition += container.getDepth() + ViewConstants.CONTAINERS_SPACING;
 				currentXPosition = 0.0f;
@@ -130,12 +136,12 @@ public class SeeIT3DManager implements IPreferencesListener {
 				currentXPosition += container.getWidth() + ViewConstants.CONTAINERS_SPACING;
 			}
 			maxX = Math.max(maxX, currentXPosition + container.getWidth());
-	
+
 			container.setPosition(newPosition);
 		}
-	
+
 		sceneGraphHandler.setViewersPosition(maxX);
-	
+
 	}
 
 	public synchronized void clearContainers() {
@@ -232,30 +238,6 @@ public class SeeIT3DManager implements IPreferencesListener {
 		view.getSite().getSelectionProvider().setSelection(newSelection);
 	}
 
-	public synchronized void showRelatedContainers() {
-
-		Iterator<Container> iteratorAll = state.iteratorOnAllContainers();
-		while (iteratorAll.hasNext()) {
-			Container container = iteratorAll.next();
-			container.deactivateRelationShipMark();
-		}
-
-		List<Container> relatedContainers = new ArrayList<Container>();
-
-		Iterator<Container> iteratorSelected = state.iteratorOnSelectedContainers();
-		while (iteratorSelected.hasNext()) {
-			Container container = iteratorSelected.next();
-			relatedContainers.addAll(container.getRelatedContainers());
-			container.activateRelationShipMark();
-		}
-
-		for (Container relatedContainer : relatedContainers) {
-			relatedContainer.activateRelationShipMark();
-			state.addContainerToView(relatedContainer);
-		}
-
-	}
-
 	private synchronized void updateCurrentSelectionValues(PolyCylinder poly) {
 		boolean hasMultipleSelection = state.hasMultiplePolyCylindersSelected();
 		Map<String, String> currentMetricsValuesFromSelection = new HashMap<String, String>();
@@ -296,8 +278,7 @@ public class SeeIT3DManager implements IPreferencesListener {
 		Iterator<Container> iterator = state.iteratorOnSelectedContainers();
 		while (iterator.hasNext()) {
 			Container container = iterator.next();
-			BranchGroup containerBG = container.getContainerBG();
-			TransformGroup transformGroup = (TransformGroup) containerBG.getChild(0);
+			TransformGroup transformGroup = container.getTransformGroup();
 			Transform3D transform = new Transform3D();
 			transformGroup.getTransform(transform);
 			if (scaleUp) {
@@ -484,19 +465,23 @@ public class SeeIT3DManager implements IPreferencesListener {
 					final IFile file = root.getFile(path);
 					final IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
 					final IEditorDescriptor desc = PlatformUI.getWorkbench().getEditorRegistry().getDefaultEditor(file.getName());
-	
+
 					try {
 						page.openEditor(new FileEditorInput(file), desc.getId());
 					} catch (Exception e) {
 						ErrorHandler.error("Error opening editor");
 						e.printStackTrace();
 					}
-	
+
 				} else {
 					ErrorHandler.error("The selected polycylinder does not have an associated resource in the workspace");
 				}
 			}
 		});
+	}
+
+	protected synchronized void addContainerToViewWithoutValidation(Container container) {
+		state.addContainerToViewWithoutValidation(container);
 	}
 
 	public Iterator<Container> iteratorOnAllContainers() {
@@ -517,20 +502,25 @@ public class SeeIT3DManager implements IPreferencesListener {
 	}
 
 	public synchronized String getCurrentSelectedContainersAsString() {
-	
+
 		List<String> names = new ArrayList<String>();
-	
+
 		Iterator<Container> iterator = state.iteratorOnSelectedContainers();
 		while (iterator.hasNext()) {
 			Container container = iterator.next();
 			names.add(container.getName());
 		}
-	
+
 		if (names.isEmpty()) {
 			names.add("None Selected");
 		}
-	
+
 		return names.toString();
+	}
+
+
+	public synchronized RelationShipVisualGenerator getRelationShipVisualGenerator() {
+		return relationShipVisualGenerator;
 	}
 
 	public synchronized IColorScale getColorScale() {
@@ -557,8 +547,20 @@ public class SeeIT3DManager implements IPreferencesListener {
 		this.colorScale = colorScale;
 	}
 
+	public synchronized void setRelationShipVisualGenerator(RelationShipVisualGenerator relationShipVisualGenerator) {
+		this.relationShipVisualGenerator = relationShipVisualGenerator;
+	}
+
 	public synchronized SceneGraphHandler getSceneGraphHandler() {
 		return sceneGraphHandler;
+	}
+
+	public synchronized void setRelatedContainersToView(boolean addRelatedToView) {
+		sceneGraphHandler.setRelatedContainersToView(addRelatedToView);
+	}
+
+	public synchronized boolean getRelatedContainersToView() {
+		return sceneGraphHandler.getRelatedContainersToView();
 	}
 
 	/**
@@ -602,4 +604,6 @@ public class SeeIT3DManager implements IPreferencesListener {
 	public synchronized void transparencyStepChanged(float transparencyStepChanged) {
 		transparencyStep = transparencyStepChanged;
 	}
+
+
 }

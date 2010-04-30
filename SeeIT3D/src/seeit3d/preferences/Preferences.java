@@ -26,7 +26,7 @@ import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.swt.graphics.RGB;
 
-import seeit3d.colorscale.ColorScaleFactory;
+import seeit3d.colorscale.ColorScaleRegistry;
 import seeit3d.colorscale.IColorScale;
 import seeit3d.colorscale.imp.ColdToHotColorScale;
 
@@ -280,7 +280,7 @@ public class Preferences implements IPropertyChangeListener {
 	}
 
 	private void updateColorScale(String colorScale) {
-		IColorScale scale = ColorScaleFactory.findByName(colorScale);
+		IColorScale scale = ColorScaleRegistry.getInstance().findByName(colorScale);
 		this.colorScale = scale;
 		for (IPreferencesListener listener : listeners) {
 			listener.colorScaleChanged(scale);

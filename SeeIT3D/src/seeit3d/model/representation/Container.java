@@ -20,7 +20,6 @@ import java.io.*;
 import java.util.*;
 
 import javax.media.j3d.*;
-import javax.vecmath.Point3f;
 import javax.vecmath.Vector3f;
 
 import seeit3d.error.exception.SeeIT3DException;
@@ -50,8 +49,6 @@ public class Container implements Serializable {
 	private transient BranchGroup containerBG;
 
 	private transient Switch highlighRootNode;
-
-	private transient Switch relationMarkNode;
 
 	private final long identifier;
 
@@ -114,7 +111,7 @@ public class Container implements Serializable {
 	}
 
 	private void validateForVisualState() {
-		if (highlighRootNode == null || relationMarkNode == null || containerBG == null) {
+		if (highlighRootNode == null || containerBG == null) {
 			buildBranchGroup();
 		}
 	}
@@ -237,7 +234,6 @@ public class Container implements Serializable {
 		}
 
 		buildHighlight(containerTG);
-		buildRelationShipMark(containerTG);
 
 		if (isSelected) {
 			activateHighlight();
@@ -299,7 +295,7 @@ public class Container implements Serializable {
 		float boxDepth = depth + ViewConstants.HIGHLIGHT_PADDING;
 		Box surroundingBox = new Box(boxWidth, boxHeight, boxDepth, null);
 
-		Shape3D highlightBox = buildShapeFromBox(surroundingBox);
+		Shape3D highlightBox = Utils.buildShapeFromBox(surroundingBox, manager.getHighlightColor());
 
 		TransformGroup highlightBoxTG = new TransformGroup();
 		highlightBoxTG.addChild(highlightBox);
@@ -311,165 +307,7 @@ public class Container implements Serializable {
 		containerTG.addChild(highlighRootNode);
 	}
 
-	private Shape3D buildShapeFromBox(Box box) {
-
-		List<Point3f> points = new ArrayList<Point3f>();
-
-		Appearance app = new Appearance();
-		app.setColoringAttributes(new ColoringAttributes(manager.getHighlightColor(), ColoringAttributes.SHADE_FLAT));
-		app.setLineAttributes(new LineAttributes(1.2f, LineAttributes.PATTERN_SOLID, false));
-
-		addPointsFromShape(box.getShape(Box.BACK), points);
-		addPointsFromShape(box.getShape(Box.BOTTOM), points);
-		addPointsFromShape(box.getShape(Box.FRONT), points);
-		addPointsFromShape(box.getShape(Box.LEFT), points);
-		addPointsFromShape(box.getShape(Box.RIGHT), points);
-		addPointsFromShape(box.getShape(Box.TOP), points);
-
-		LineArray boxInLines = new LineArray(24, LineArray.COORDINATES);
-
-		Point3f frontLowerLeft = points.iterator().next();
-		for (Point3f point : points) {
-			if (point.x <= frontLowerLeft.x && point.y <= frontLowerLeft.y && point.z >= frontLowerLeft.z) {
-				frontLowerLeft = point;
-			}
-		}
-		Point3f frontLowerRight = points.iterator().next();
-		for (Point3f point : points) {
-			if (point.x >= frontLowerRight.x && point.y <= frontLowerRight.y && point.z >= frontLowerRight.z) {
-				frontLowerRight = point;
-			}
-		}
-
-		Point3f frontUpperLeft = points.iterator().next();
-		for (Point3f point : points) {
-			if (point.x <= frontUpperLeft.x && point.y >= frontUpperLeft.y && point.z >= frontUpperLeft.z) {
-				frontUpperLeft = point;
-			}
-		}
-
-		Point3f frontUpperRight = points.iterator().next();
-		for (Point3f point : points) {
-			if (point.x >= frontUpperRight.x && point.y >= frontUpperRight.y && point.z >= frontUpperRight.z) {
-				frontUpperRight = point;
-			}
-		}
-
-		Point3f backLowerLeft = points.iterator().next();
-		for (Point3f point : points) {
-			if (point.x <= backLowerLeft.x && point.y <= backLowerLeft.y && point.z <= backLowerLeft.z) {
-				backLowerLeft = point;
-			}
-		}
-		Point3f backLowerRight = points.iterator().next();
-		for (Point3f point : points) {
-			if (point.x >= backLowerRight.x && point.y <= backLowerRight.y && point.z <= backLowerRight.z) {
-				backLowerRight = point;
-			}
-		}
-
-		Point3f backUpperLeft = points.iterator().next();
-		for (Point3f point : points) {
-			if (point.x <= backUpperLeft.x && point.y >= backUpperLeft.y && point.z <= backUpperLeft.z) {
-				backUpperLeft = point;
-			}
-		}
-
-		Point3f backUpperRight = points.iterator().next();
-		for (Point3f point : points) {
-			if (point.x >= backUpperRight.x && point.y >= backUpperRight.y && point.z <= backUpperRight.z) {
-				backUpperRight = point;
-			}
-		}
-
-		// front face
-		boxInLines.setCoordinate(0, frontLowerLeft);
-		boxInLines.setCoordinate(1, frontUpperLeft);
-		boxInLines.setCoordinate(2, frontUpperLeft);
-		boxInLines.setCoordinate(3, frontUpperRight);
-		boxInLines.setCoordinate(4, frontUpperRight);
-		boxInLines.setCoordinate(5, frontLowerRight);
-		boxInLines.setCoordinate(6, frontLowerRight);
-		boxInLines.setCoordinate(7, frontLowerLeft);
-
-		// back face
-		boxInLines.setCoordinate(8, backLowerLeft);
-		boxInLines.setCoordinate(9, backUpperLeft);
-		boxInLines.setCoordinate(10, backUpperLeft);
-		boxInLines.setCoordinate(11, backUpperRight);
-		boxInLines.setCoordinate(12, backUpperRight);
-		boxInLines.setCoordinate(13, backLowerRight);
-		boxInLines.setCoordinate(14, backLowerRight);
-		boxInLines.setCoordinate(15, backLowerLeft);
-
-		// sides
-		boxInLines.setCoordinate(16, backLowerLeft);
-		boxInLines.setCoordinate(17, frontLowerLeft);
-		boxInLines.setCoordinate(18, backUpperLeft);
-		boxInLines.setCoordinate(19, frontUpperLeft);
-
-		boxInLines.setCoordinate(20, backLowerRight);
-		boxInLines.setCoordinate(21, frontLowerRight);
-		boxInLines.setCoordinate(22, backUpperRight);
-		boxInLines.setCoordinate(23, frontUpperRight);
-
-		Shape3D s = new Shape3D(boxInLines, app);
-		return s;
-	}
-
-	private void buildRelationShipMark(TransformGroup containerTG) {
-		Box surroundingBox = new Box(width / 2, height, depth / 2, null);
-
-		relationMarkNode = new Switch(Switch.CHILD_MASK);
-		relationMarkNode.setCapability(Switch.ALLOW_SWITCH_WRITE);
-
-		Appearance app = new Appearance();
-		ColoringAttributes color = new ColoringAttributes(manager.getRelationMarkColor(), ColoringAttributes.SHADE_FLAT);
-		app.setColoringAttributes(color);
-
-		TransformGroup tgRelationMarkTop = new TransformGroup();
-		Geometry geometryTop = surroundingBox.getShape(Box.TOP).getGeometry();
-		Shape3D relationMarkTop = new Shape3D(geometryTop, app);
-		tgRelationMarkTop.addChild(relationMarkTop);
-
-		Transform3D transformationTop = new Transform3D();
-		tgRelationMarkTop.getTransform(transformationTop);
-		transformationTop.setTranslation(new Vector3f(0.0f, -(2 * height + ViewConstants.RELATION_MARK_PADDING), 0.0f));
-		tgRelationMarkTop.setTransform(transformationTop);
-
-		TransformGroup tgRelationMarkBottom = new TransformGroup();
-		Geometry geometryBottom = surroundingBox.getShape(Box.BOTTOM).getGeometry();
-		Shape3D relationMarkBottom = new Shape3D(geometryBottom, app);
-		tgRelationMarkBottom.addChild(relationMarkBottom);
-
-		Transform3D transformationBottom = new Transform3D();
-		tgRelationMarkBottom.getTransform(transformationBottom);
-		transformationBottom.setTranslation(new Vector3f(0.0f, -ViewConstants.RELATION_MARK_PADDING, 0.0f));
-		tgRelationMarkBottom.setTransform(transformationBottom);
-
-		TransformGroup mark = new TransformGroup();
-
-		mark.addChild(tgRelationMarkBottom);
-		mark.addChild(tgRelationMarkTop);
-
-		relationMarkNode.addChild(mark);
-
-		containerTG.addChild(relationMarkNode);
-
-	}
-
-	private void addPointsFromShape(Shape3D shape, List<Point3f> points) {
 	
-		TriangleStripArray geometry = (TriangleStripArray) shape.getGeometry();
-		int vertexCount = geometry.getVertexCount();
-		for (int i = 0; i < vertexCount; i++) {
-			Point3f point = new Point3f();
-			geometry.getCoordinate(i, point);
-			if (!points.contains(point)) {
-				points.add(point);
-			}
-		}
-	}
 
 	/**
 	 * Adds a new container if it is not present before
@@ -547,16 +385,6 @@ public class Container implements Serializable {
 		changeSwitchNodeState(highlighRootNode, false);
 	}
 
-	public void activateRelationShipMark() {
-		validateForVisualState();
-		changeSwitchNodeState(relationMarkNode, true);
-	}
-
-	public void deactivateRelationShipMark() {
-		validateForVisualState();
-		changeSwitchNodeState(relationMarkNode, false);
-	}
-
 	private void changeSwitchNodeState(Switch node, boolean newState) {
 		BitSet bitSet = new BitSet(node.numChildren());
 		for (int i = 0; i < bitSet.size(); i++) {
@@ -610,22 +438,33 @@ public class Container implements Serializable {
 		return containerBG;
 	}
 
+	public TransformGroup getTransformGroup() {
+		return (TransformGroup) getContainerBG().getChild(0);
+	}
+
 	public List<BaseMetricCalculator> getMetrics() {
 		return Collections.unmodifiableList(metrics);
 	}
 
 	public float getWidth() {
 		if (width == -1) {
-			throw new IllegalStateException("Area not calculated");
+			throw new IllegalStateException("Width has not been calculated");
 		}
 		return width;
 	}
 
 	public float getDepth() {
 		if (depth == -1) {
-			throw new IllegalStateException("Area not calculated");
+			throw new IllegalStateException("Depth has not been calculated");
 		}
 		return depth;
+	}
+
+	public float getHeight() {
+		if (height == -1) {
+			throw new IllegalStateException("Height has not been calculated");
+		}
+		return height;
 	}
 
 	public BiMap<BaseMetricCalculator, VisualProperty> getPropertiesMap() {

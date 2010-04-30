@@ -24,13 +24,15 @@ import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.layout.*;
 import org.eclipse.swt.widgets.*;
 
-import seeit3d.colorscale.ColorScaleFactory;
+import seeit3d.colorscale.ColorScaleRegistry;
 import seeit3d.colorscale.IColorScale;
 import seeit3d.manager.IMappingView;
 import seeit3d.manager.SeeIT3DManager;
 import seeit3d.metrics.BaseMetricCalculator;
 import seeit3d.model.representation.Container;
 import seeit3d.model.representation.VisualProperty;
+import seeit3d.relationships.RelationShipVisualGenerator;
+import seeit3d.relationships.RelationShipsRegistry;
 import seeit3d.utils.DragAndDropHelper;
 import seeit3d.view.dnd.DropMetricOnMetricContainerListener;
 import seeit3d.view.dnd.DropMetricOnVisualPropertyListener;
@@ -77,6 +79,7 @@ public class MappingViewComposite extends Composite implements IMappingView {
 		removeAlreadyMappedMetrics(metricsInformation, currentMapping);
 		updateCurrentMappingAndVisualProperties(containers, currentMapping);
 		updateColorScales();
+		updateRelationshipsGenerator();
 		updateMetricsFromContainers(containers, metricsInformation, currentMapping.size());
 
 		rootComposite.pack(true);
@@ -108,7 +111,6 @@ public class MappingViewComposite extends Composite implements IMappingView {
 		SelectionComponentListener selectionComponentListener = new SelectionComponentListener();
 		Group componentSelectionGroup = new Group(rootComposite, SWT.SHADOW_OUT);
 		GridData componetLayoutData = new GridData(GridData.CENTER);
-		componetLayoutData.verticalSpan = 2;
 		componetLayoutData.widthHint = 150;
 		componentSelectionGroup.setLayoutData(componetLayoutData);
 		componentSelectionGroup.setText("Component Level");
@@ -145,7 +147,7 @@ public class MappingViewComposite extends Composite implements IMappingView {
 
 	private void updateMetricsFromContainers(List<Container> currentContainers, List<BaseMetricCalculator> metricsInformation, int possibleMetricsToRecieve) {
 
-		GridData metricsLayoutData = new GridData(GridData.FILL_HORIZONTAL);
+		GridData metricsLayoutData = new GridData(GridData.FILL_BOTH);
 		metricsLayoutData.horizontalSpan = VisualProperty.values().length;
 		metricsLayoutData.heightHint = 40;
 		Group metricsGroup = new Group(rootComposite, SWT.SHADOW_OUT | SWT.CENTER);
@@ -215,7 +217,7 @@ public class MappingViewComposite extends Composite implements IMappingView {
 	}
 
 	private void updateColorScales() {
-		List<IColorScale> colorScales = ColorScaleFactory.createAllColorScales();
+		Iterator<IColorScale> allColorScales = ColorScaleRegistry.getInstance().allColorScales();
 
 		Group colorScalesGroup = new Group(rootComposite, SWT.SHADOW_OUT);
 		GridData colorScalesLayoutData = new GridData(GridData.FILL_BOTH);
@@ -230,7 +232,8 @@ public class MappingViewComposite extends Composite implements IMappingView {
 
 		IColorScale currentColorScale = SeeIT3DManager.getInstance().getColorScale();
 		int index = 0;
-		for (IColorScale colorScale : colorScales) {
+		while (allColorScales.hasNext()) {
+			IColorScale colorScale = allColorScales.next();
 			combo.add(colorScale.getName());
 			if (currentColorScale.getName().equals(colorScale.getName())) {
 				combo.select(index);
@@ -248,10 +251,42 @@ public class MappingViewComposite extends Composite implements IMappingView {
 		feedbackLayoutData.heightHint = 20;
 		colorScaleFeedback.setLayoutData(feedbackLayoutData);
 
-		combo.addSelectionListener(new ColorScaleSelectionListener(colorScales));
+		combo.addSelectionListener(new ColorScaleSelectionListener());
 
 		ColorScaleDrawer drawer = new ColorScaleDrawer(currentColorScale);
 		colorScaleFeedback.addPaintListener(drawer);
+
+	}
+
+	private void updateRelationshipsGenerator() {
+		Iterator<RelationShipVisualGenerator> allRelationshipsGenerator = RelationShipsRegistry.getInstance().allRelationshipsGenerator();
+
+		Group relationshipsGroup = new Group(rootComposite, SWT.SHADOW_OUT);
+		GridData relationshipsLayoutData = new GridData(GridData.FILL_BOTH);
+		relationshipsGroup.setLayoutData(relationshipsLayoutData);
+		relationshipsGroup.setLayout(new GridLayout(1, true));
+		relationshipsGroup.setText("Relationship visual type");
+
+		Combo combo = new Combo(relationshipsGroup, SWT.READ_ONLY);
+
+		RelationShipVisualGenerator selectedGenerator = SeeIT3DManager.getInstance().getRelationShipVisualGenerator();
+		int index = 0;
+		while (allRelationshipsGenerator.hasNext()) {
+			RelationShipVisualGenerator generator = allRelationshipsGenerator.next();
+			combo.add(generator.getName());
+			if (generator.getName().equals(selectedGenerator.getName())) {
+				combo.select(index);
+			}
+			index++;
+		}
+
+		combo.addSelectionListener(new RelationshipSelectionListener());
+
+		Button checkAddToView = new Button(relationshipsGroup, SWT.CHECK);
+		checkAddToView.setText("Add related \ncontainers to view");
+		checkAddToView.setSelection(SeeIT3DManager.getInstance().getRelatedContainersToView());
+
+		checkAddToView.addSelectionListener(new AddRelatedToViewListener());
 
 	}
 

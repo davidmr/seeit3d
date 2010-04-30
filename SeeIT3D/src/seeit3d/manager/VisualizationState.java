@@ -88,6 +88,10 @@ public class VisualizationState {
 		}
 	}
 
+	protected void addContainerToViewWithoutValidation(Container container) {
+		containersInView.add(container);
+	}
+
 	public void clearContainers() {
 		containersInView.clear();
 		viewNeedUpdate();

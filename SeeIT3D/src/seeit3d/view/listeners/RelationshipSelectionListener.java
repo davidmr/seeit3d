@@ -22,21 +22,21 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.widgets.Combo;
 
-import seeit3d.colorscale.ColorScaleRegistry;
-import seeit3d.colorscale.IColorScale;
 import seeit3d.manager.SeeIT3DManager;
+import seeit3d.relationships.RelationShipVisualGenerator;
+import seeit3d.relationships.RelationShipsRegistry;
 
 /**
- * This class listen for changes in color scale selection from mapping view
+ * Listener for relationships generator selection in the mapping view
  * 
  * @author David Montaño
  * 
  */
-public class ColorScaleSelectionListener implements SelectionListener {
+public class RelationshipSelectionListener implements SelectionListener {
 
 	private final SeeIT3DManager manager;
 
-	public ColorScaleSelectionListener() {
+	public RelationshipSelectionListener() {
 		manager = SeeIT3DManager.getInstance();
 	}
 
@@ -48,18 +48,18 @@ public class ColorScaleSelectionListener implements SelectionListener {
 	@Override
 	public void widgetSelected(SelectionEvent event) {
 		Combo combo = (Combo) event.widget;
-		String colorScaleName = combo.getItem(combo.getSelectionIndex());
+		String relationshipGeneratorName = combo.getItem(combo.getSelectionIndex());
 
-		Iterator<IColorScale> allColorScales = ColorScaleRegistry.getInstance().allColorScales();
-
-		while (allColorScales.hasNext()) {
-			IColorScale colorScale = allColorScales.next();
-			if (colorScaleName.equals(colorScale.getName())) {
-				manager.setColorScale(colorScale);
+		Iterator<RelationShipVisualGenerator> allRelationshipsGenerator = RelationShipsRegistry.getInstance().allRelationshipsGenerator();
+		while (allRelationshipsGenerator.hasNext()) {
+			RelationShipVisualGenerator generator = allRelationshipsGenerator.next();
+			if (generator.getName().equals(relationshipGeneratorName)) {
+				manager.setRelationShipVisualGenerator(generator);
 				manager.refreshVisualization();
 				break;
 			}
 		}
+
 	}
 
 }

@@ -83,7 +83,7 @@ public class SeeIT3DView extends ViewPart {
 
 		MappingViewComposite mappingComposite = new MappingViewComposite(parent);
 		GridData mappingCompositeData = new GridData(GridData.FILL_HORIZONTAL);
-		mappingCompositeData.heightHint = 165;
+		mappingCompositeData.heightHint = 180;
 		mappingComposite.setLayoutData(mappingCompositeData);
 
 		manager.registerMappingView(mappingComposite);

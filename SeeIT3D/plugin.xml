@@ -86,12 +86,6 @@
       </command>
       <command
             categoryId="seeit3d.commands"
-            defaultHandler="seeit3d.commands.ShowRelatedContainersCommand"
-            id="seeit3d.showRelatedContainers"
-            name="Show Related Containers">
-      </command>
-      <command
-            categoryId="seeit3d.commands"
             defaultHandler="seeit3d.commands.ChangeContainerSelectionIncrease"
             id="seeit3d.changeContainerSelectionIncrease"
             name="Change Container Selection Increase">
@@ -226,14 +220,6 @@
          </command>
       </menuContribution>
       <menuContribution
-            locationURI="toolbar:seeit3d.seeit3dview">
-         <command
-               commandId="seeit3d.showRelatedContainers"
-               label="Show Related Containers"
-               style="push">
-         </command>
-      </menuContribution>
-      <menuContribution
             locationURI="popup:org.eclipse.search.ui.views.SearchView">
          <command
                commandId="seeit3d.visualizeInSeeit3d"
@@ -357,12 +343,6 @@
             contextId="seeit3d.seeit3dviewContext"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
             sequence="Ctrl+Alt+S">
-      </key>
-      <key
-            commandId="seeit3d.showRelatedContainers"
-            contextId="seeit3d.seeit3dviewContext"
-            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
-            sequence="Ctrl+Alt+R">
       </key>
       <key
             commandId="seeit3d.changeContainerSelectionIncrease"

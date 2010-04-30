@@ -20,8 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.media.j3d.*;
-import javax.vecmath.Point3d;
-import javax.vecmath.Vector3f;
+import javax.vecmath.*;
 
 import org.eclipse.jdt.core.IMethod;
 import org.eclipse.jdt.core.JavaModelException;
@@ -31,6 +30,7 @@ import seeit3d.model.ContainerRepresentedObject;
 import seeit3d.model.java.LineOfCode;
 import seeit3d.model.representation.Container;
 
+import com.sun.j3d.utils.geometry.Box;
 import com.sun.j3d.utils.geometry.Sphere;
 
 /**
@@ -147,6 +147,125 @@ public class Utils {
 
 		List<BaseMetricCalculator> metrics = new ArrayList<BaseMetricCalculator>();
 		return new Container(representation, metrics);
+	}
+
+	public static Shape3D buildShapeFromBox(Box box, Color3f colorBox) {
+
+		List<Point3f> points = new ArrayList<Point3f>();
+
+		Appearance app = new Appearance();
+		app.setColoringAttributes(new ColoringAttributes(colorBox, ColoringAttributes.SHADE_FLAT));
+		app.setLineAttributes(new LineAttributes(1.2f, LineAttributes.PATTERN_SOLID, false));
+
+		addPointsFromShape(box.getShape(Box.BACK), points);
+		addPointsFromShape(box.getShape(Box.BOTTOM), points);
+		addPointsFromShape(box.getShape(Box.FRONT), points);
+		addPointsFromShape(box.getShape(Box.LEFT), points);
+		addPointsFromShape(box.getShape(Box.RIGHT), points);
+		addPointsFromShape(box.getShape(Box.TOP), points);
+
+		LineArray boxInLines = new LineArray(24, LineArray.COORDINATES);
+
+		Point3f frontLowerLeft = points.iterator().next();
+		for (Point3f point : points) {
+			if (point.x <= frontLowerLeft.x && point.y <= frontLowerLeft.y && point.z >= frontLowerLeft.z) {
+				frontLowerLeft = point;
+			}
+		}
+		Point3f frontLowerRight = points.iterator().next();
+		for (Point3f point : points) {
+			if (point.x >= frontLowerRight.x && point.y <= frontLowerRight.y && point.z >= frontLowerRight.z) {
+				frontLowerRight = point;
+			}
+		}
+
+		Point3f frontUpperLeft = points.iterator().next();
+		for (Point3f point : points) {
+			if (point.x <= frontUpperLeft.x && point.y >= frontUpperLeft.y && point.z >= frontUpperLeft.z) {
+				frontUpperLeft = point;
+			}
+		}
+
+		Point3f frontUpperRight = points.iterator().next();
+		for (Point3f point : points) {
+			if (point.x >= frontUpperRight.x && point.y >= frontUpperRight.y && point.z >= frontUpperRight.z) {
+				frontUpperRight = point;
+			}
+		}
+
+		Point3f backLowerLeft = points.iterator().next();
+		for (Point3f point : points) {
+			if (point.x <= backLowerLeft.x && point.y <= backLowerLeft.y && point.z <= backLowerLeft.z) {
+				backLowerLeft = point;
+			}
+		}
+		Point3f backLowerRight = points.iterator().next();
+		for (Point3f point : points) {
+			if (point.x >= backLowerRight.x && point.y <= backLowerRight.y && point.z <= backLowerRight.z) {
+				backLowerRight = point;
+			}
+		}
+
+		Point3f backUpperLeft = points.iterator().next();
+		for (Point3f point : points) {
+			if (point.x <= backUpperLeft.x && point.y >= backUpperLeft.y && point.z <= backUpperLeft.z) {
+				backUpperLeft = point;
+			}
+		}
+
+		Point3f backUpperRight = points.iterator().next();
+		for (Point3f point : points) {
+			if (point.x >= backUpperRight.x && point.y >= backUpperRight.y && point.z <= backUpperRight.z) {
+				backUpperRight = point;
+			}
+		}
+
+		// front face
+		boxInLines.setCoordinate(0, frontLowerLeft);
+		boxInLines.setCoordinate(1, frontUpperLeft);
+		boxInLines.setCoordinate(2, frontUpperLeft);
+		boxInLines.setCoordinate(3, frontUpperRight);
+		boxInLines.setCoordinate(4, frontUpperRight);
+		boxInLines.setCoordinate(5, frontLowerRight);
+		boxInLines.setCoordinate(6, frontLowerRight);
+		boxInLines.setCoordinate(7, frontLowerLeft);
+
+		// back face
+		boxInLines.setCoordinate(8, backLowerLeft);
+		boxInLines.setCoordinate(9, backUpperLeft);
+		boxInLines.setCoordinate(10, backUpperLeft);
+		boxInLines.setCoordinate(11, backUpperRight);
+		boxInLines.setCoordinate(12, backUpperRight);
+		boxInLines.setCoordinate(13, backLowerRight);
+		boxInLines.setCoordinate(14, backLowerRight);
+		boxInLines.setCoordinate(15, backLowerLeft);
+
+		// sides
+		boxInLines.setCoordinate(16, backLowerLeft);
+		boxInLines.setCoordinate(17, frontLowerLeft);
+		boxInLines.setCoordinate(18, backUpperLeft);
+		boxInLines.setCoordinate(19, frontUpperLeft);
+
+		boxInLines.setCoordinate(20, backLowerRight);
+		boxInLines.setCoordinate(21, frontLowerRight);
+		boxInLines.setCoordinate(22, backUpperRight);
+		boxInLines.setCoordinate(23, frontUpperRight);
+
+		Shape3D s = new Shape3D(boxInLines, app);
+		return s;
+	}
+
+	public static void addPointsFromShape(Shape3D shape, List<Point3f> points) {
+
+		TriangleStripArray geometry = (TriangleStripArray) shape.getGeometry();
+		int vertexCount = geometry.getVertexCount();
+		for (int i = 0; i < vertexCount; i++) {
+			Point3f point = new Point3f();
+			geometry.getCoordinate(i, point);
+			if (!points.contains(point)) {
+				points.add(point);
+			}
+		}
 	}
 
 }

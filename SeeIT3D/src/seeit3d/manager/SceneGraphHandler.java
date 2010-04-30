@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2010  David Montaño
+ * Copyright (C) 2010  David Montaï¿½o
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -39,7 +39,7 @@ import com.sun.j3d.utils.universe.ViewingPlatform;
 /**
  * Class that handles all the interactions with the scene graph in Java 3D. All the changes in general structure of the scene graph should be handle by this class.
  * 
- * @author David Montaño
+ * @author David Montaï¿½o
  * 
  */
 public class SceneGraphHandler implements IPreferencesListener {
@@ -103,6 +103,7 @@ public class SceneGraphHandler implements IPreferencesListener {
 		canvas.getView().setBackClipPolicy(View.VIRTUAL_EYE);
 		canvas.getView().setFrontClipDistance(0.1f);
 		canvas.getView().setBackClipDistance(100.0f);
+		canvas.getView().setTransparencySortingPolicy(View.TRANSPARENCY_SORT_GEOMETRY);
 
 		buildAllVisualization();
 

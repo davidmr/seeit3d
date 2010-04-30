@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2010  David Montaño
+ * Copyright (C) 2010  David Montaï¿½o
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,7 +36,7 @@ import com.sun.j3d.utils.geometry.Box;
 /**
  * Defines a polycylinder that represents a mapped object
  * 
- * @author David Montaño
+ * @author David Montaï¿½o
  * 
  */
 public class PolyCylinder implements Serializable {
@@ -149,7 +149,7 @@ public class PolyCylinder implements Serializable {
 		boxColor.setCapability(Material.ALLOW_COMPONENT_WRITE);
 		app.setMaterial(boxColor);
 
-		transparency = new TransparencyAttributes(TransparencyAttributes.SCREEN_DOOR, 0.0f);
+		transparency = new TransparencyAttributes(TransparencyAttributes.NICEST, 0.0f);
 		transparency.setCapability(TransparencyAttributes.ALLOW_VALUE_WRITE);
 		transparency.setCapability(TransparencyAttributes.ALLOW_VALUE_READ);
 		app.setTransparencyAttributes(transparency);

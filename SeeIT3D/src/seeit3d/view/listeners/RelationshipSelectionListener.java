@@ -16,8 +16,6 @@
  */
 package seeit3d.view.listeners;
 
-import java.util.Iterator;
-
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.widgets.Combo;
@@ -50,9 +48,8 @@ public class RelationshipSelectionListener implements SelectionListener {
 		Combo combo = (Combo) event.widget;
 		String relationshipGeneratorName = combo.getItem(combo.getSelectionIndex());
 
-		Iterator<RelationShipVisualGenerator> allRelationshipsGenerator = RelationShipsRegistry.getInstance().allRelationshipsGenerator();
-		while (allRelationshipsGenerator.hasNext()) {
-			RelationShipVisualGenerator generator = allRelationshipsGenerator.next();
+		Iterable<RelationShipVisualGenerator> allRelationshipsGenerator = RelationShipsRegistry.getInstance().allRelationshipsGenerator();
+		for (RelationShipVisualGenerator generator : allRelationshipsGenerator) {
 			if (generator.getName().equals(relationshipGeneratorName)) {
 				manager.setRelationShipVisualGenerator(generator);
 				manager.refreshVisualization();

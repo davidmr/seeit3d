@@ -23,6 +23,7 @@ import java.awt.event.MouseEvent;
 import javax.media.j3d.Transform3D;
 import javax.vecmath.*;
 
+import com.sun.j3d.utils.behaviors.mouse.MouseBehaviorCallback;
 import com.sun.j3d.utils.universe.ViewingPlatform;
 
 /**
@@ -42,6 +43,11 @@ public class MouseRotate3D extends MouseOperationBehavior {
 	@Override
 	public int getMouseButtonToWakeUp() {
 		return MouseEvent.BUTTON1;
+	}
+
+	@Override
+	protected int operationToNotifyType() {
+		return MouseBehaviorCallback.ROTATE;
 	}
 
 	@Override

@@ -130,7 +130,7 @@ public class Container implements Serializable {
 		if (parent == null) {
 			return this;
 		} else {
-			Vector3f position = extractPosition();
+			Vector3f position = getPosition();
 			parent.setPosition(position);
 			return parent;
 		}
@@ -186,7 +186,7 @@ public class Container implements Serializable {
 			containerBG.detach();
 		}
 
-		Vector3f oldPosition = extractPosition();
+		Vector3f oldPosition = getPosition();
 
 		containerBG = new BranchGroup();
 		containerBG.setCapability(BranchGroup.ALLOW_DETACH);
@@ -276,7 +276,7 @@ public class Container implements Serializable {
 		depth = -1;
 	}
 
-	private Vector3f extractPosition() {
+	public Vector3f getPosition() {
 		if (containerBG == null) {
 			return new Vector3f();
 		} else {

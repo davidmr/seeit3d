@@ -218,7 +218,7 @@ public class MappingViewComposite extends Composite implements IMappingView {
 	}
 
 	private void updateColorScales() {
-		Iterator<IColorScale> allColorScales = ColorScaleRegistry.getInstance().allColorScales();
+		Iterable<IColorScale> allColorScales = ColorScaleRegistry.getInstance().allColorScales();
 
 		Group colorScalesGroup = new Group(rootComposite, SWT.SHADOW_OUT);
 		GridData colorScalesLayoutData = new GridData(GridData.FILL_VERTICAL);
@@ -233,8 +233,7 @@ public class MappingViewComposite extends Composite implements IMappingView {
 
 		IColorScale currentColorScale = SeeIT3DManager.getInstance().getColorScale();
 		int index = 0;
-		while (allColorScales.hasNext()) {
-			IColorScale colorScale = allColorScales.next();
+		for (IColorScale colorScale : allColorScales) {
 			combo.add(colorScale.getName());
 			if (currentColorScale.getName().equals(colorScale.getName())) {
 				combo.select(index);
@@ -262,7 +261,7 @@ public class MappingViewComposite extends Composite implements IMappingView {
 	}
 
 	private void updateRelationshipsGenerator() {
-		Iterator<RelationShipVisualGenerator> allRelationshipsGenerator = RelationShipsRegistry.getInstance().allRelationshipsGenerator();
+		Iterable<RelationShipVisualGenerator> allRelationshipsGenerator = RelationShipsRegistry.getInstance().allRelationshipsGenerator();
 
 		Group relationshipsGroup = new Group(rootComposite, SWT.SHADOW_OUT);
 		GridData relationshipsLayoutData = new GridData(GridData.FILL_BOTH);
@@ -274,8 +273,7 @@ public class MappingViewComposite extends Composite implements IMappingView {
 
 		RelationShipVisualGenerator selectedGenerator = SeeIT3DManager.getInstance().getRelationShipVisualGenerator();
 		int index = 0;
-		while (allRelationshipsGenerator.hasNext()) {
-			RelationShipVisualGenerator generator = allRelationshipsGenerator.next();
+		for (RelationShipVisualGenerator generator : allRelationshipsGenerator) {
 			combo.add(generator.getName());
 			if (generator.getName().equals(selectedGenerator.getName())) {
 				combo.select(index);

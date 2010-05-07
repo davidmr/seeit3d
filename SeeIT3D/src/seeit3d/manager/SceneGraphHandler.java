@@ -16,6 +16,7 @@
  */
 package seeit3d.manager;
 
+import java.awt.GraphicsConfiguration;
 import java.util.*;
 
 import javax.media.j3d.*;
@@ -32,6 +33,7 @@ import seeit3d.utils.ViewConstants;
 import seeit3d.view.SeeIT3DCanvas;
 
 import com.sun.j3d.utils.behaviors.vp.OrbitBehavior;
+import com.sun.j3d.utils.pickfast.behaviors.PickingCallback;
 import com.sun.j3d.utils.picking.behaviors.PickMouseBehavior;
 import com.sun.j3d.utils.universe.SimpleUniverse;
 import com.sun.j3d.utils.universe.ViewingPlatform;
@@ -62,12 +64,19 @@ public class SceneGraphHandler implements IPreferencesListener {
 
 	private boolean addRelatedToView;
 
+	private PickTranslate3DBehavior translation;
+
+	private PickMouseBehavior selectionBehavior;
+
+	private PickRotate3DBehavior rotate;
+
+	private Background back;
+
+	private boolean initialized = false;
+
 	public SceneGraphHandler(SeeIT3DManager manager) {
 		this.manager = manager;
-	}
-
-	public void addChildToGroup(BranchGroup branchGroup) {
-		containersGroup.addChild(branchGroup);
+		this.backgroundColor = new Color3f(1.0f, 1.0f, 1.0f);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -82,68 +91,104 @@ public class SceneGraphHandler implements IPreferencesListener {
 		}
 	}
 
-	public synchronized void enableOrbiting() {
+	public void enableOrbiting() {
 		changeOrbitState(true);
 	}
 
-	public synchronized void disableOrbiting() {
+	public void disableOrbiting() {
 		changeOrbitState(false);
 	}
 
-	private synchronized void changeOrbitState(boolean enabled) {
+	public void removeFromSceneGraph(Container container) {
+		BranchGroup containerBG = container.getContainerBG();
+		containerBG.detach();
+		containersGroup.removeChild(containerBG);
+	}
+
+	public void setupTranslationCallback(PickingCallback callback) {
+		if (translation != null) {
+			translation.setupCallback(callback);
+		}
+	}
+
+	public SeeIT3DCanvas getCanvas() {
+		checkIfInitialize();
+		return canvas;
+	}
+
+	public void rebuildSceneGraph() {
+		checkIfInitialize();
+		if (containersGroup != null) {
+			containersGroup.detach();
+			rootObj.removeChild(containersGroup);
+			buildGraph();
+		}
+	}
+
+	private void changeOrbitState(boolean enabled) {
 		if (orbit != null) {
 			orbit.setRotateEnable(enabled);
 			orbit.setTranslateEnable(enabled);
 		}
 	}
 
-	public synchronized void initializeVisualization(SeeIT3DCanvas canvasToSet) {
-		canvas = canvasToSet;
-		universe = new SimpleUniverse(canvas);
-
-		// canvas.getView().setFrontClipPolicy(View.VIRTUAL_EYE);
-		// canvas.getView().setBackClipPolicy(View.VIRTUAL_EYE);
-		canvas.getView().setFrontClipDistance(0.1f);
-		canvas.getView().setBackClipDistance(100.0f);
-		canvas.getView().setTransparencySortingPolicy(View.TRANSPARENCY_SORT_GEOMETRY);
-
-		buildAllVisualization();
-
+	private void checkIfInitialize() {
+		if (!initialized) {
+			buildAllVisualization();
+		}
 	}
 
-	public synchronized void buildAllVisualization() {
-		if (rootObj != null) {
-			universe.getLocale().removeBranchGraph(rootObj);
+	private void updateBackgroundColor() {
+		// TODO fix background update
+		// if (back != null) {
+		// rootObj.removeChild(back);
+		// }
+		// back = new Background(backgroundColor);
+		// back.setApplicationBounds(bounds);
+		// rootObj.addChild(back);
+	}
+
+	private void buildAllVisualization() {
+
+		if (initialized) {
+			throw new SeeIT3DException("The visualization has already been initialized");
 		}
 
-		rootObj = new BranchGroup();
-		rootObj.setCapability(BranchGroup.ALLOW_DETACH);
-		rootObj.setCapability(BranchGroup.ALLOW_CHILDREN_WRITE);
-		rootObj.setCapability(BranchGroup.ALLOW_CHILDREN_EXTEND);
-
-		buildWorld(canvas);
+		buildUniverseCanvasAndRootObj();
+		buildEnvironment();
+		addBehaviors();
 		buildGraph();
-		setViewersPosition(20);
+
 		Utils.buildAxis(rootObj);
 
 		rootObj.compile();
 		universe.addBranchGraph(rootObj);
+
+		initialized = true;
 	}
 
-	public synchronized void removeFromSceneGraph(Container container) {
-		BranchGroup containerBG = container.getContainerBG();
-		containerBG.detach();
-		containersGroup.removeChild(containerBG);
+	private void buildUniverseCanvasAndRootObj() {
+
+		GraphicsConfiguration configuration = SimpleUniverse.getPreferredConfiguration();
+
+		canvas = new SeeIT3DCanvas(configuration);
+
+		universe = new SimpleUniverse(canvas);
+
+		canvas.getView().setFrontClipDistance(3f);
+		canvas.getView().setBackClipDistance(1000.0f);
+		canvas.getView().setTransparencySortingPolicy(View.TRANSPARENCY_SORT_GEOMETRY);
+
+		rootObj = new BranchGroup();
+		rootObj.setCapability(BranchGroup.ALLOW_CHILDREN_WRITE);
+		rootObj.setCapability(BranchGroup.ALLOW_CHILDREN_EXTEND);
 	}
 
-	private synchronized void buildWorld(Canvas3D canvas) {
-
-		ViewingPlatform viewingPlatform = universe.getViewingPlatform();
+	private void buildEnvironment() {
 
 		bounds = new BoundingSphere(new Point3d(0.0, 0.0, 0.0), 2000.0f);
 		rootObj.setBounds(bounds);
 
-		/************* LIGHT ****************/
 		AmbientLight ambientLightNode = new AmbientLight(ViewConstants.BLACK);
 		ambientLightNode.setInfluencingBounds(bounds);
 		rootObj.addChild(ambientLightNode);
@@ -168,32 +213,36 @@ public class SceneGraphHandler implements IPreferencesListener {
 		dLight4.setInfluencingBounds(bounds);
 		rootObj.addChild(dLight4);
 
-		/************* BACKGROUND ****************/
-		Background back = new Background(backgroundColor);
+		back = new Background(backgroundColor);
 		back.setApplicationBounds(bounds);
 		rootObj.addChild(back);
+		// updateBackgroundColor();
 
-		/******* BEHAVIORS ********/
+	}
 
-		PickRotate3DBehavior rotate = new PickRotate3DBehavior(canvas, rootObj, bounds, viewingPlatform);
+	private void addBehaviors() {
+
+		ViewingPlatform viewingPlatform = universe.getViewingPlatform();
+
+		rotate = new PickRotate3DBehavior(canvas, rootObj, bounds, viewingPlatform);
 		rotate.setTolerance(ViewConstants.PICKING_TOLERANCE);
 		rootObj.addChild(rotate);
 
-		PickMouseBehavior selectionBehavior = new MouseClickedBehavior(canvas, rootObj, bounds);
+		selectionBehavior = new MouseClickedBehavior(canvas, rootObj, bounds);
 		selectionBehavior.setTolerance(ViewConstants.PICKING_TOLERANCE);
 		rootObj.addChild(selectionBehavior);
 
-		PickTranslate3DBehavior translation = new PickTranslate3DBehavior(canvas, rootObj, bounds, viewingPlatform);
+		translation = new PickTranslate3DBehavior(canvas, rootObj, bounds, viewingPlatform);
 		translation.setTolerance(ViewConstants.PICKING_TOLERANCE);
 		rootObj.addChild(translation);
 
 		orbit = new OrbitBehavior(canvas, OrbitBehavior.REVERSE_ROTATE | OrbitBehavior.REVERSE_TRANSLATE | OrbitBehavior.STOP_ZOOM);
+		orbit.setMinRadius(20);
 		orbit.setSchedulingBounds(bounds);
 		viewingPlatform.setViewPlatformBehavior(orbit);
-
 	}
 
-	private synchronized void buildGraph() throws SeeIT3DException {
+	private void buildGraph() throws SeeIT3DException {
 
 		containersGroup = new BranchGroup();
 		containersGroup.setCapability(BranchGroup.ALLOW_DETACH);
@@ -234,18 +283,6 @@ public class SceneGraphHandler implements IPreferencesListener {
 
 	}
 
-	public synchronized void rebuildSceneGraph() {
-		if (containersGroup != null) {
-			containersGroup.detach();
-			rootObj.removeChild(containersGroup);
-			buildGraph();
-		}
-	}
-
-	public TransformGroup getViewPlatformTransform() {
-		return universe.getViewingPlatform().getViewPlatformTransform();
-	}
-
 	public void setViewersPosition(float max) {
 		float xMax = Math.max(max, 5);
 		ViewingPlatform vp = universe.getViewingPlatform();
@@ -265,13 +302,13 @@ public class SceneGraphHandler implements IPreferencesListener {
 		return addRelatedToView;
 	}
 
-
 	/**
 	 * Listen for preferences
 	 */
 	@Override
 	public void backgroundColorChanged(Color3f newBackgroundColor) {
 		this.backgroundColor = newBackgroundColor;
+		updateBackgroundColor();
 	}
 
 	@Override
@@ -301,6 +338,5 @@ public class SceneGraphHandler implements IPreferencesListener {
 	@Override
 	public void transparencyStepChanged(float transparencyStepChanged) {
 	}
-
 
 }

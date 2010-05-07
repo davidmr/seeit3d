@@ -22,6 +22,7 @@ import javax.media.j3d.Transform3D;
 import javax.vecmath.Matrix3d;
 import javax.vecmath.Matrix4d;
 
+import com.sun.j3d.utils.behaviors.mouse.MouseBehaviorCallback;
 import com.sun.j3d.utils.universe.ViewingPlatform;
 
 /**
@@ -41,6 +42,11 @@ public class MouseTranslate3D extends MouseOperationBehavior {
 	@Override
 	public int getMouseButtonToWakeUp() {
 		return MouseEvent.BUTTON3;
+	}
+
+	@Override
+	protected int operationToNotifyType() {
+		return MouseBehaviorCallback.TRANSLATE;
 	}
 
 	@Override

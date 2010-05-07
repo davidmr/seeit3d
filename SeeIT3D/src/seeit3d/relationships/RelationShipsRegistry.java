@@ -18,11 +18,9 @@ package seeit3d.relationships;
 
 import static com.google.common.collect.Lists.*;
 
-import java.util.Iterator;
 import java.util.List;
 
-import seeit3d.relationships.imp.CommonBaseGenerator;
-import seeit3d.relationships.imp.NoRelationships;
+import seeit3d.relationships.imp.*;
 
 /**
  * General registry of all relationships visualization generators
@@ -41,12 +39,12 @@ public class RelationShipsRegistry {
 	private final List<RelationShipVisualGenerator> relationshipsGenerators;
 
 	private RelationShipsRegistry() {
-		relationshipsGenerators = newArrayList(new NoRelationships(), new CommonBaseGenerator());
+		relationshipsGenerators = newArrayList(new NoRelationships(), new CommonBaseGenerator(), new LineBaseGenerator());
 
 	}
 
-	public Iterator<RelationShipVisualGenerator> allRelationshipsGenerator() {
-		return relationshipsGenerators.iterator();
+	public Iterable<RelationShipVisualGenerator> allRelationshipsGenerator() {
+		return relationshipsGenerators;
 	}
 
 }

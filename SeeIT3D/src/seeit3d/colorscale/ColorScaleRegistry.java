@@ -18,7 +18,6 @@ package seeit3d.colorscale;
 
 import static com.google.common.collect.Lists.*;
 
-import java.util.Iterator;
 import java.util.List;
 
 import seeit3d.colorscale.imp.*;
@@ -55,8 +54,8 @@ public class ColorScaleRegistry {
 		colorScales.add(colorScale);
 	}
 
-	public Iterator<IColorScale> allColorScales() {
-		return colorScales.iterator();
+	public Iterable<IColorScale> allColorScales() {
+		return colorScales;
 	}
 
 	public IColorScale findByName(String colorScaleName) {

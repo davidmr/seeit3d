@@ -16,7 +16,8 @@
  */
 package seeit3d.preferences;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.eclipse.jface.preference.*;
 import org.eclipse.ui.IWorkbench;
@@ -53,12 +54,11 @@ public class SeeIT3DPreferencesPage extends FieldEditorPreferencePage implements
 		addField(new ColorFieldEditor(Preferences.RELATION_COLOR, "Relation Mark Color", getFieldEditorParent()));
 		addField(new IntegerFieldEditor(Preferences.SCALE_STEP, "Scale Step (%)", getFieldEditorParent(), 2));
 		addField(new IntegerFieldEditor(Preferences.TRANSPARENCY_STEP, "Transparency Step (%)", getFieldEditorParent(), 2));
-		Iterator<IColorScale> allColorScales = ColorScaleRegistry.getInstance().allColorScales();
+		Iterable<IColorScale> allColorScales = ColorScaleRegistry.getInstance().allColorScales();
 
 		List<String> colorScaleNames = new ArrayList<String>();
 
-		while (allColorScales.hasNext()) {
-			IColorScale colorScale = allColorScales.next();
+		for (IColorScale colorScale : allColorScales) {
 			colorScaleNames.add(colorScale.getName());
 		}
 

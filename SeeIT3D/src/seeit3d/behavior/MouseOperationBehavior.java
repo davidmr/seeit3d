@@ -24,6 +24,7 @@ import javax.media.j3d.*;
 import javax.vecmath.Matrix3d;
 
 import com.sun.j3d.utils.behaviors.mouse.MouseBehavior;
+import com.sun.j3d.utils.behaviors.mouse.MouseBehaviorCallback;
 import com.sun.j3d.utils.universe.ViewingPlatform;
 
 /**
@@ -41,6 +42,8 @@ public abstract class MouseOperationBehavior extends MouseBehavior {
 
 	private int pressedButton = MouseEvent.NOBUTTON;
 
+	private MouseBehaviorCallback callback;
+
 	public MouseOperationBehavior(int format, ViewingPlatform viewingPlatform) {
 		super(format);
 		this.viewingPlatform = viewingPlatform;
@@ -48,6 +51,8 @@ public abstract class MouseOperationBehavior extends MouseBehavior {
 	}
 
 	public abstract int getMouseButtonToWakeUp();
+
+	protected abstract int operationToNotifyType();
 
 	@SuppressWarnings("unchecked")
 	@Override
@@ -90,12 +95,21 @@ public abstract class MouseOperationBehavior extends MouseBehavior {
 				Transform3D transform = new Transform3D();
 				transformGroup.getTransform(transform);
 
-				Transform3D newTranform = buildTransformation(transform, dx, dy);
+				Transform3D newTransform = buildTransformation(transform, dx, dy);
 
-				transformGroup.setTransform(newTranform);
+				transformGroup.setTransform(newTransform);
+
+				notifyCallback(newTransform);
 			}
 			x_last = x;
 			y_last = y;
+		}
+	}
+
+	private void notifyCallback(Transform3D transform) {
+		if (callback != null) {
+			int type = operationToNotifyType();
+			callback.transformChanged(type, transform);
 		}
 	}
 
@@ -120,6 +134,10 @@ public abstract class MouseOperationBehavior extends MouseBehavior {
 
 	private boolean isButtonPressedCorrectly(MouseEvent evt) {
 		return evt.getID() == MouseEvent.MOUSE_DRAGGED && buttonPress && pressedButton == mouseButtonToWakeUp;
+	}
+
+	public void setupCallback(MouseBehaviorCallback callback) {
+		this.callback = callback;
 	}
 
 }

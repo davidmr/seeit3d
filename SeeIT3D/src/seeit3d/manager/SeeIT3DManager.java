@@ -46,6 +46,8 @@ import seeit3d.utils.ViewConstants;
 import seeit3d.view.SeeIT3DCanvas;
 import seeit3d.view.listeners.LabelInformation;
 
+import com.sun.j3d.utils.pickfast.behaviors.PickingCallback;
+
 /**
  * Class that handles the interactions between the different parts of SeeIT3D. It tracks the general state of the visualization system.
  * 
@@ -94,15 +96,26 @@ public class SeeIT3DManager implements IPreferencesListener {
 	private float transparencyStep;
 
 	public SeeIT3DManager() {
-		sceneGraphHandler = new SceneGraphHandler(this);
 		state = new VisualizationState(this);
+		sceneGraphHandler = new SceneGraphHandler(this);
 		colorScale = new ColdToHotColorScale();
 		relationShipVisualGenerator = new NoRelationships();
 	}
 
 	/**************************************/
+	/********* OPERATIONS TO SCENE GRAPH ***/
+	public synchronized void setupTranslationCallback(PickingCallback callback) {
+		sceneGraphHandler.setupTranslationCallback(callback);
+	}
+
+	public synchronized SeeIT3DCanvas getMainCanvas() {
+		return sceneGraphHandler.getCanvas();
+	}
+
+
+	/**************************************/
 	/******* OPERATIONS ON VIEW PROPERTIES **/
-	public synchronized void registerMappingView(IMappingView newMappingView) {
+	public synchronized void setupMappingView(IMappingView newMappingView) {
 		mappingView = newMappingView;
 	}
 
@@ -205,7 +218,7 @@ public class SeeIT3DManager implements IPreferencesListener {
 				boolean selectionPolyCylinderChanged = state.addPolyCylinderToSelection(polycylinder, togglePolycylinderSelection);
 				selectionNeedsRefresh |= selectionPolyCylinderChanged;
 				if (isSynchronzationWithPackageExplorerSet) {
-					activateNewSelection();
+					activateSelection();
 				}
 			} else {
 				state.clearSelectionOnPolycylinders();
@@ -294,20 +307,17 @@ public class SeeIT3DManager implements IPreferencesListener {
 		}
 	}
 
-	public synchronized void initializeVisualization(SeeIT3DCanvas canvas) {
-		sceneGraphHandler.initializeVisualization(canvas);
-	}
-
 	public synchronized void resetVisualization() {
 		state.reset();
-		sceneGraphHandler.buildAllVisualization();
+		sceneGraphHandler.rebuildSceneGraph();
+		doContainerLayout();
 	}
 
 	public synchronized void cleanVisualization() {
 		state.clearContainers();
 	}
 
-	private synchronized void activateNewSelection() {
+	private synchronized void activateSelection() {
 		Display.getDefault().asyncExec(new Runnable() {
 			@Override
 			public void run() {
@@ -350,66 +360,6 @@ public class SeeIT3DManager implements IPreferencesListener {
 			container.updateVisualRepresentation();
 			refreshVisualization();
 		}
-	}
-
-	/************************/
-	/**** STATE UPDATES ***/
-
-	public synchronized void toggleSynchronizationInPackageVsView() {
-		isSynchronzationWithPackageExplorerSet = !isSynchronzationWithPackageExplorerSet;
-		if (isSynchronzationWithPackageExplorerSet) {
-			activateNewSelection();
-		}
-	}
-
-	public synchronized void changeCurrentSortingPolyCylindersProperty(VisualProperty visualProperty) {
-		state.setSortingProperty(visualProperty);
-	}
-
-	public synchronized void refreshVisualization() {
-		refreshSelection();
-		sceneGraphHandler.rebuildSceneGraph();
-		doContainerLayout();
-		updateMappingView();
-	}
-
-	private synchronized void refreshSelection() {
-
-		for (Container container : state.selectedContainers()) {
-			container.setSelected(true);
-		}
-
-		validatePolycylindersSelection();
-
-		PolyCylinder lastSelectedPoly = null;
-		Iterator<PolyCylinder> iteratorOnPolycylinders = state.iteratorOnSelectedPolycylinders();
-		while (iteratorOnPolycylinders.hasNext()) {
-			PolyCylinder poly = iteratorOnPolycylinders.next();
-			poly.setSelected(true);
-			lastSelectedPoly = poly;
-		}
-
-		updateCurrentSelectionValues(lastSelectedPoly);
-	}
-
-	private synchronized void validatePolycylindersSelection() {
-		Iterator<PolyCylinder> iteratorOnPolycylinders = state.iteratorOnSelectedPolycylinders();
-		while (iteratorOnPolycylinders.hasNext()) {
-			PolyCylinder poly = iteratorOnPolycylinders.next();
-			if (!isPolyCylinderInSelection(poly)) {
-				poly.setSelected(false);
-				iteratorOnPolycylinders.remove();
-			}
-		}
-	}
-
-	private boolean isPolyCylinderInSelection(PolyCylinder poly) {
-		for (Container container : state.selectedContainers()) {
-			if (container.hasPolycylinder(poly)) {
-				return true;
-			}
-		}
-		return false;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -463,6 +413,67 @@ public class SeeIT3DManager implements IPreferencesListener {
 		});
 	}
 
+	/************************/
+	/**** STATE UPDATES ***/
+
+	public synchronized void toggleSynchronizationInPackageVsView() {
+		isSynchronzationWithPackageExplorerSet = !isSynchronzationWithPackageExplorerSet;
+		if (isSynchronzationWithPackageExplorerSet) {
+			activateSelection();
+		}
+	}
+
+	public synchronized void changeCurrentSortingPolyCylindersProperty(VisualProperty visualProperty) {
+		state.setSortingProperty(visualProperty);
+	}
+
+	public synchronized void refreshVisualization() {
+		refreshSelection();
+		sceneGraphHandler.rebuildSceneGraph();
+		doContainerLayout();
+		updateMappingView();
+	}
+
+	private synchronized void refreshSelection() {
+
+		for (Container container : state.selectedContainers()) {
+			container.setSelected(true);
+		}
+
+		validatePolycylindersSelection();
+
+		PolyCylinder lastSelectedPoly = null;
+		Iterator<PolyCylinder> iteratorOnPolycylinders = state.iteratorOnSelectedPolycylinders();
+		while (iteratorOnPolycylinders.hasNext()) {
+			PolyCylinder poly = iteratorOnPolycylinders.next();
+			poly.setSelected(true);
+			lastSelectedPoly = poly;
+		}
+
+		updateCurrentSelectionValues(lastSelectedPoly);
+	}
+
+	private synchronized void validatePolycylindersSelection() {
+		Iterator<PolyCylinder> iteratorOnPolycylinders = state.iteratorOnSelectedPolycylinders();
+		while (iteratorOnPolycylinders.hasNext()) {
+			PolyCylinder poly = iteratorOnPolycylinders.next();
+			if (!isPolyCylinderInSelection(poly)) {
+				poly.setSelected(false);
+				iteratorOnPolycylinders.remove();
+			}
+		}
+	}
+
+	private boolean isPolyCylinderInSelection(PolyCylinder poly) {
+		for (Container container : state.selectedContainers()) {
+			if (container.hasPolycylinder(poly)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+
 	protected synchronized void addContainerToViewWithoutValidation(Container container) {
 		state.addContainerToViewWithoutValidation(container);
 	}
@@ -478,6 +489,7 @@ public class SeeIT3DManager implements IPreferencesListener {
 		}
 		return Collections.unmodifiableList(selectedContainers);
 	}
+
 
 	public synchronized VisualProperty getCurrentSortingProperty() {
 		return state.getSortingProperty();

@@ -16,8 +16,6 @@
  */
 package seeit3d.view.listeners;
 
-import java.util.Iterator;
-
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.widgets.Combo;
@@ -50,10 +48,9 @@ public class ColorScaleSelectionListener implements SelectionListener {
 		Combo combo = (Combo) event.widget;
 		String colorScaleName = combo.getItem(combo.getSelectionIndex());
 
-		Iterator<IColorScale> allColorScales = ColorScaleRegistry.getInstance().allColorScales();
+		Iterable<IColorScale> allColorScales = ColorScaleRegistry.getInstance().allColorScales();
 
-		while (allColorScales.hasNext()) {
-			IColorScale colorScale = allColorScales.next();
+		for (IColorScale colorScale : allColorScales) {
 			if (colorScaleName.equals(colorScale.getName())) {
 				manager.setColorScale(colorScale);
 				manager.refreshVisualization();

@@ -17,7 +17,6 @@
 package seeit3d.view;
 
 import java.awt.Frame;
-import java.awt.GraphicsConfiguration;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.awt.SWT_AWT;
@@ -32,8 +31,6 @@ import org.eclipse.ui.part.ViewPart;
 import seeit3d.manager.SeeIT3DManager;
 import seeit3d.view.listeners.LabelInformation;
 
-import com.sun.j3d.utils.universe.SimpleUniverse;
-
 /**
  * This class creates and initializes the seeit3d view
  * 
@@ -47,12 +44,9 @@ public class SeeIT3DView extends ViewPart {
 
 	private final SeeIT3DManager manager;
 
-	private SeeIT3DCanvas canvas;
-
 	public SeeIT3DView() {
 		manager = SeeIT3DManager.getInstance();
 	}
-
 
 	@Override
 	public void createPartControl(Composite parent) {
@@ -77,17 +71,14 @@ public class SeeIT3DView extends ViewPart {
 		visualizationComposite.setLayoutData(data);
 
 		Frame glFrame = SWT_AWT.new_Frame(visualizationComposite);
-		GraphicsConfiguration conf = SimpleUniverse.getPreferredConfiguration();
-		canvas = new SeeIT3DCanvas(conf);
-		glFrame.add(canvas);
+		glFrame.add(manager.getMainCanvas());
 
 		MappingViewComposite mappingComposite = new MappingViewComposite(parent);
 		GridData mappingCompositeData = new GridData(GridData.FILL_HORIZONTAL);
 		mappingCompositeData.heightHint = 180;
 		mappingComposite.setLayoutData(mappingCompositeData);
 
-		manager.registerMappingView(mappingComposite);
-		manager.initializeVisualization(canvas);
+		manager.setupMappingView(mappingComposite);
 
 	}
 

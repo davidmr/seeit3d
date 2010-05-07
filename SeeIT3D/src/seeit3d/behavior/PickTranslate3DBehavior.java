@@ -16,11 +16,16 @@
  */
 package seeit3d.behavior;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.media.j3d.*;
 
 import com.sun.j3d.utils.behaviors.mouse.MouseBehavior;
+import com.sun.j3d.utils.behaviors.mouse.MouseBehaviorCallback;
 import com.sun.j3d.utils.pickfast.PickTool;
 import com.sun.j3d.utils.pickfast.behaviors.PickMouseBehavior;
+import com.sun.j3d.utils.pickfast.behaviors.PickingCallback;
 import com.sun.j3d.utils.universe.ViewingPlatform;
 
 /**
@@ -29,9 +34,13 @@ import com.sun.j3d.utils.universe.ViewingPlatform;
  * @author David Montaño
  * 
  */
-public class PickTranslate3DBehavior extends PickMouseBehavior {
+public class PickTranslate3DBehavior extends PickMouseBehavior implements MouseBehaviorCallback {
 
 	private final MouseTranslate3D translate;
+
+	private final List<PickingCallback> callbacks;
+
+	private TransformGroup currentTG;
 
 	public PickTranslate3DBehavior(Canvas3D canvas, BranchGroup root, Bounds bounds, ViewingPlatform viewingPlatform) {
 		super(canvas, root, bounds);
@@ -40,6 +49,8 @@ public class PickTranslate3DBehavior extends PickMouseBehavior {
 		currGrp.addChild(translate);
 		translate.setSchedulingBounds(bounds);
 		this.setSchedulingBounds(bounds);
+		translate.setupCallback(this);
+		callbacks = new ArrayList<PickingCallback>();
 	}
 
 	@Override
@@ -50,11 +61,24 @@ public class PickTranslate3DBehavior extends PickMouseBehavior {
 		PickInfo pickInfo = pickCanvas.pickClosest();
 
 		if (pickInfo != null) {
-			TransformGroup tg = (TransformGroup) pickCanvas.getNode(pickInfo, PickTool.TYPE_TRANSFORM_GROUP);
-			if ((tg != null) && (tg.getCapability(TransformGroup.ALLOW_TRANSFORM_READ)) && (tg.getCapability(TransformGroup.ALLOW_TRANSFORM_WRITE))) {
-				translate.setTransformGroup(tg);
+			currentTG = (TransformGroup) pickCanvas.getNode(pickInfo, PickTool.TYPE_TRANSFORM_GROUP);
+			if ((currentTG != null) && (currentTG.getCapability(TransformGroup.ALLOW_TRANSFORM_READ)) && (currentTG.getCapability(TransformGroup.ALLOW_TRANSFORM_WRITE))) {
+				translate.setTransformGroup(currentTG);
 				translate.wakeup();
 			}
+		}
+	}
+
+	public void setupCallback(PickingCallback callback) {
+		if (callback != null && !this.callbacks.contains(callback)) {
+			this.callbacks.add(callback);
+		}
+	}
+
+	@Override
+	public void transformChanged(int type, Transform3D transform) {
+		for (PickingCallback callback : this.callbacks) {
+			callback.transformChanged(PickingCallback.TRANSLATE, currentTG);
 		}
 	}
 

@@ -194,7 +194,6 @@ public class SceneGraphHandler implements IPreferencesListener {
 	}
 
 	private synchronized void buildGraph() throws SeeIT3DException {
-		Iterator<Container> iterator = manager.iteratorOnAllContainers();
 
 		containersGroup = new BranchGroup();
 		containersGroup.setCapability(BranchGroup.ALLOW_DETACH);
@@ -208,10 +207,8 @@ public class SceneGraphHandler implements IPreferencesListener {
 		containersTG.setCapability(BranchGroup.ALLOW_CHILDREN_EXTEND);
 		containersGroup.addChild(containersTG);
 
-		Container container = null;
 		List<Container> newContainersToAdd = new ArrayList<Container>();
-		while (iterator.hasNext()) {
-			container = iterator.next();
+		for (Container container : manager.containersInView()) {
 			container.updateVisualRepresentation();
 			BranchGroup bgContainer = container.getContainerBG();
 			RelationShipVisualGenerator generator = manager.getRelationShipVisualGenerator();

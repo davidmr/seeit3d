@@ -125,11 +125,11 @@ public class VisualizationState {
 	}
 
 	public boolean hasContainersInView() {
-		return iteratorOnAllContainers().hasNext();
+		return containersInView.iterator().hasNext();
 	}
 
 	public boolean hasContainersSelected() {
-		return iteratorOnSelectedContainers().hasNext();
+		return new ContainersSelectedIterator(containersInView).hasNext();
 	}
 
 	private void clearSelection() {
@@ -138,12 +138,26 @@ public class VisualizationState {
 		}
 	}
 
-	public Iterator<Container> iteratorOnSelectedContainers() {
-		return new ContainersSelectedIterator(containersInView);
+	public Iterable<Container> selectedContainers() {
+		return new Iterable<Container>() {
+			@Override
+			public Iterator<Container> iterator() {
+				return new ContainersSelectedIterator(containersInView);
+			}
+		};
 	}
 
-	public Iterator<Container> iteratorOnAllContainers() {
-		return containersInView.iterator();
+	public Iterable<Container> containersInView() {
+		return new Iterable<Container>() {
+			@Override
+			public Iterator<Container> iterator() {
+				return containersInView.iterator();
+			}
+		};
+	}
+
+	public Container firstContainer() {
+		return new ContainersSelectedIterator(containersInView).next();
 	}
 
 	public void deleteSelectedContainers() {
@@ -195,16 +209,13 @@ public class VisualizationState {
 	public void useNextLevelContainers() {
 		List<Container> newContainers = new ArrayList<Container>();
 		List<Container> oldContainers = new ArrayList<Container>();
-		Iterator<Container> containers = iteratorOnSelectedContainers();
-		while (containers.hasNext()) {
-			Container container = containers.next();
+		for (Container container : selectedContainers()) {
 			container.setSelected(false);
 			oldContainers.add(container);
 
 			Container nextLevelContainer = container.buildContainerForNextLevel();
 			nextLevelContainer.setSelected(true);
 			newContainers.add(nextLevelContainer);
-
 		}
 		try {
 			validateState(newContainers);
@@ -218,7 +229,7 @@ public class VisualizationState {
 
 	public void usePreviousLevelContainers() {
 		List<Container> newContainers = new ArrayList<Container>();
-		Iterator<Container> containers = iteratorOnSelectedContainers();
+		Iterator<Container> containers = new ContainersSelectedIterator(containersInView);
 		while (containers.hasNext()) {
 			Container container = containers.next();
 			Container previousLevelContainer = container.buildContainerForPreviousLevel();
@@ -282,9 +293,7 @@ public class VisualizationState {
 	/**** OTHER OPERATIONS ****/
 
 	public void reset() {
-		Iterator<Container> iterator = iteratorOnAllContainers();
-		while (iterator.hasNext()) {
-			Container container = iterator.next();
+		for (Container container : containersInView) {
 			container.clearTransparencies();
 		}
 		viewNeedUpdate();

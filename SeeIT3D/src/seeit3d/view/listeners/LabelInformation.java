@@ -16,7 +16,6 @@
  */
 package seeit3d.view.listeners;
 
-import java.util.Iterator;
 import java.util.Map;
 
 import org.eclipse.swt.widgets.Display;
@@ -40,21 +39,18 @@ public class LabelInformation implements SelectionInformationAware {
 	}
 
 	@Override
-	public void updateInformation(Iterator<Container> selectedContainers, Map<String, String> metricValues) {
+	public void updateInformation(Iterable<Container> selectedContainers, Map<String, String> metricValues) {
 		final StringBuilder formattedString = new StringBuilder();
-		if (!selectedContainers.hasNext()) {
+		if (!selectedContainers.iterator().hasNext()) {
 			formattedString.append("Select a Container to show information");
 		}else{
 			formattedString.append("Current selected container: ");
 		}
-		while (selectedContainers.hasNext()) {
-			Container container = selectedContainers.next();
+		for (Container container : selectedContainers) {
 			formattedString.append(container.getName());
-			if (selectedContainers.hasNext()) {
-				formattedString.append(",");
-			}
+			formattedString.append(",");
 		}
-		formattedString.append("\n");
+		formattedString.deleteCharAt(formattedString.length() - 2).append("\n");
 		if (metricValues.isEmpty()) {
 			formattedString.append("Select a Polycylinder to show information");
 		} else {

@@ -115,7 +115,7 @@ public class SeeIT3DManager implements IPreferencesListener {
 	}
 
 	public synchronized void doContainerLayout() {
-		Iterator<Container> iterator = manager.iteratorOnAllContainers();
+		
 
 		float currentXPosition = 0.0f;
 		float currentZPosition = 0.0f;
@@ -123,21 +123,23 @@ public class SeeIT3DManager implements IPreferencesListener {
 		float maxX = Float.MIN_VALUE;
 
 		int added = 0;
-		Container container = null;
-		while (iterator.hasNext()) {
-			container = iterator.next();
+		for (Container container : state.containersInView()) {
+			
+			System.out.println(container.getWidth());
+			Vector3f newPosition = new Vector3f(currentXPosition + container.getWidth(), 0.0f, 0.0f);
 			added++;
-			Vector3f newPosition = new Vector3f(currentXPosition + container.getWidth() / 2, 0.0f, currentZPosition + container.getDepth() / 2);
+
+			container.setPosition(newPosition);
 
 			if (added % containersPerRow == 0) {
-				currentZPosition += container.getDepth() + ViewConstants.CONTAINERS_SPACING;
+				// currentZPosition += container.getDepth() + ViewConstants.CONTAINERS_SPACING;
 				currentXPosition = 0.0f;
 			} else {
 				currentXPosition += container.getWidth() + ViewConstants.CONTAINERS_SPACING;
 			}
+
 			maxX = Math.max(maxX, currentXPosition + container.getWidth());
 
-			container.setPosition(newPosition);
 		}
 
 		sceneGraphHandler.setViewersPosition(maxX);
@@ -149,18 +151,14 @@ public class SeeIT3DManager implements IPreferencesListener {
 	}
 
 	public synchronized void updateSelectedContainersMapping(BaseMetricCalculator metric, VisualProperty visualProp) {
-		Iterator<Container> iterator = state.iteratorOnSelectedContainers();
-		while (iterator.hasNext()) {
-			Container container = iterator.next();
+		for (Container container : state.selectedContainers()) {
 			container.updateMapping(metric, visualProp);
 		}
 		refreshVisualization();
 	}
 
 	public void removeSelectContainersMapping(BaseMetricCalculator metric) {
-		Iterator<Container> iterator = state.iteratorOnSelectedContainers();
-		while (iterator.hasNext()) {
-			Container container = iterator.next();
+		for (Container container : state.selectedContainers()) {
 			container.removeFromMapping(metric);
 		}
 		refreshVisualization();
@@ -168,9 +166,7 @@ public class SeeIT3DManager implements IPreferencesListener {
 	}
 
 	public synchronized void updateCurrentSelectedContainer() {
-		Iterator<Container> iterator = state.iteratorOnSelectedContainers();
-		while (iterator.hasNext()) {
-			Container container = iterator.next();
+		for (Container container : state.selectedContainers()) {
 			sceneGraphHandler.removeFromSceneGraph(container);
 			container.updateVisualRepresentation();
 			container.setSelected(true);
@@ -180,14 +176,10 @@ public class SeeIT3DManager implements IPreferencesListener {
 	}
 
 	public synchronized void deleteSelectedContainers() {
-		Iterator<Container> iterator = state.iteratorOnSelectedContainers();
-		while (iterator.hasNext()) {
-			Container container = iterator.next();
+		for (Container container : state.selectedContainers()) {
 			sceneGraphHandler.removeFromSceneGraph(container);
 		}
-
 		state.deleteSelectedContainers();
-
 	}
 
 	public synchronized void deleteAllContainers() {
@@ -247,7 +239,7 @@ public class SeeIT3DManager implements IPreferencesListener {
 		} else {
 			if (poly != null) {
 				if (state.hasContainersSelected()) {
-					Container selectedContainer = state.iteratorOnSelectedContainers().next();
+					Container selectedContainer = state.firstContainer();
 					Map<BaseMetricCalculator, VisualProperty> propertiesMapAccordingToLevel = selectedContainer.getPropertiesMap();
 					for (Map.Entry<BaseMetricCalculator, VisualProperty> entry : propertiesMapAccordingToLevel.entrySet()) {
 						VisualProperty visualProperty = entry.getValue();
@@ -258,7 +250,7 @@ public class SeeIT3DManager implements IPreferencesListener {
 				}
 			}
 		}
-		selectionInformatioAware.updateInformation(state.iteratorOnSelectedContainers(), currentMetricsValuesFromSelection);
+		selectionInformatioAware.updateInformation(state.selectedContainers(), currentMetricsValuesFromSelection);
 	}
 
 	public synchronized void changeContainerSelection(boolean increase) {
@@ -275,9 +267,7 @@ public class SeeIT3DManager implements IPreferencesListener {
 	}
 
 	public synchronized void scaleCurrentContainer(boolean scaleUp) {
-		Iterator<Container> iterator = state.iteratorOnSelectedContainers();
-		while (iterator.hasNext()) {
-			Container container = iterator.next();
+		for (Container container : state.selectedContainers()) {
 			TransformGroup transformGroup = container.getTransformGroup();
 			Transform3D transform = new Transform3D();
 			transformGroup.getTransform(transform);
@@ -353,9 +343,7 @@ public class SeeIT3DManager implements IPreferencesListener {
 	}
 
 	public synchronized void sortPolyCylinders() {
-		Iterator<Container> iterator = state.iteratorOnSelectedContainers();
-		while (iterator.hasNext()) {
-			Container container = iterator.next();
+		for (Container container : state.selectedContainers()) {
 			sceneGraphHandler.removeFromSceneGraph(container);
 			container.setSortingProperty(state.getSortingProperty());
 			container.setSorted(true);
@@ -381,14 +369,13 @@ public class SeeIT3DManager implements IPreferencesListener {
 	public synchronized void refreshVisualization() {
 		refreshSelection();
 		sceneGraphHandler.rebuildSceneGraph();
+		doContainerLayout();
 		updateMappingView();
 	}
 
 	private synchronized void refreshSelection() {
 
-		Iterator<Container> iteratorOnSelected = state.iteratorOnSelectedContainers();
-		while (iteratorOnSelected.hasNext()) {
-			Container container = iteratorOnSelected.next();
+		for (Container container : state.selectedContainers()) {
 			container.setSelected(true);
 		}
 
@@ -417,9 +404,7 @@ public class SeeIT3DManager implements IPreferencesListener {
 	}
 
 	private boolean isPolyCylinderInSelection(PolyCylinder poly) {
-		Iterator<Container> iteratorOnSelected = state.iteratorOnSelectedContainers();
-		while (iteratorOnSelected.hasNext()) {
-			Container container = iteratorOnSelected.next();
+		for (Container container : state.selectedContainers()) {
 			if (container.hasPolycylinder(poly)) {
 				return true;
 			}
@@ -444,9 +429,7 @@ public class SeeIT3DManager implements IPreferencesListener {
 	public void saveVisualization(OutputStream output) throws IOException {
 		ObjectOutputStream out = new ObjectOutputStream(output);
 		List<Container> allContainers = new ArrayList<Container>();
-		Iterator<Container> iterator = iteratorOnAllContainers();
-		while (iterator.hasNext()) {
-			Container container = iterator.next();
+		for(Container container : state.containersInView()){
 			allContainers.add(container);
 		}
 		out.writeObject(allContainers);
@@ -484,15 +467,14 @@ public class SeeIT3DManager implements IPreferencesListener {
 		state.addContainerToViewWithoutValidation(container);
 	}
 
-	public Iterator<Container> iteratorOnAllContainers() {
-		return state.iteratorOnAllContainers();
+	public Iterable<Container> containersInView() {
+		return state.containersInView();
 	}
 
 	public synchronized List<Container> getCurrentSelectedContainers() {
-		Iterator<Container> iteratorOnSelectedContainers = state.iteratorOnSelectedContainers();
 		List<Container> selectedContainers = new ArrayList<Container>();
-		while (iteratorOnSelectedContainers.hasNext()) {
-			selectedContainers.add(iteratorOnSelectedContainers.next());
+		for (Container container : state.selectedContainers()) {
+			selectedContainers.add(container);
 		}
 		return Collections.unmodifiableList(selectedContainers);
 	}
@@ -505,9 +487,7 @@ public class SeeIT3DManager implements IPreferencesListener {
 
 		List<String> names = new ArrayList<String>();
 
-		Iterator<Container> iterator = state.iteratorOnSelectedContainers();
-		while (iterator.hasNext()) {
-			Container container = iterator.next();
+		for (Container container : state.selectedContainers()) {
 			names.add(container.getName());
 		}
 
@@ -517,7 +497,6 @@ public class SeeIT3DManager implements IPreferencesListener {
 
 		return names.toString();
 	}
-
 
 	public synchronized RelationShipVisualGenerator getRelationShipVisualGenerator() {
 		return relationShipVisualGenerator;
@@ -582,8 +561,7 @@ public class SeeIT3DManager implements IPreferencesListener {
 	}
 
 	@Override
-	public void backgroundColorChanged(Color3f newBackgroundColor) {
-	}
+	public void backgroundColorChanged(Color3f newBackgroundColor) {}
 
 	@Override
 	public synchronized void relationMarkColorChanged(Color3f newRelationMarkColor) {
@@ -604,6 +582,5 @@ public class SeeIT3DManager implements IPreferencesListener {
 	public synchronized void transparencyStepChanged(float transparencyStepChanged) {
 		transparencyStep = transparencyStepChanged;
 	}
-
 
 }

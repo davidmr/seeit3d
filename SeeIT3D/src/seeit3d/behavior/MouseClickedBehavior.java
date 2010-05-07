@@ -65,7 +65,9 @@ public class MouseClickedBehavior extends PickMouseBehavior {
 			selectedPolyCylinder = findPolyCylinderAssociated(pickResult);
 		}
 		if (doubleClick()) {
-			manager.openEditor(selectedPolyCylinder);
+			if (selectedPolyCylinder != null) {
+				manager.openEditor(selectedPolyCylinder);
+			}
 		} else {
 			boolean toggleContainerSelection = mevent.isControlDown();
 			boolean togglePolycylinderSelection = mevent.isShiftDown();

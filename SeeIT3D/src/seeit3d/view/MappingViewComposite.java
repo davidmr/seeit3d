@@ -187,7 +187,8 @@ public class MappingViewComposite extends Composite implements IMappingView {
 			Group visualPropGroup = new Group(rootComposite, SWT.SHADOW_OUT);
 			GridData visualGroupLayoutData = new GridData(GridData.FILL_HORIZONTAL);
 			visualGroupLayoutData.heightHint = 50;
-			visualGroupLayoutData.minimumWidth = 80;
+			visualGroupLayoutData.minimumWidth = 90;
+
 			visualPropGroup.setLayoutData(visualGroupLayoutData);
 			visualPropGroup.setText(visualProperty.toString());
 			visualPropGroup.setLayout(new GridLayout(1, true));
@@ -220,10 +221,11 @@ public class MappingViewComposite extends Composite implements IMappingView {
 		Iterator<IColorScale> allColorScales = ColorScaleRegistry.getInstance().allColorScales();
 
 		Group colorScalesGroup = new Group(rootComposite, SWT.SHADOW_OUT);
-		GridData colorScalesLayoutData = new GridData(GridData.FILL_BOTH);
+		GridData colorScalesLayoutData = new GridData(GridData.FILL_VERTICAL);
 		colorScalesLayoutData.verticalSpan = 2;
-		colorScalesLayoutData.minimumWidth = 100;
-		colorScalesLayoutData.grabExcessHorizontalSpace = true;
+		colorScalesLayoutData.minimumWidth = 50;
+		colorScalesLayoutData.widthHint = 150;
+		
 		colorScalesGroup.setLayoutData(colorScalesLayoutData);
 		colorScalesGroup.setLayout(new GridLayout(1, true));
 		colorScalesGroup.setText("Color Scale");
@@ -244,12 +246,14 @@ public class MappingViewComposite extends Composite implements IMappingView {
 		Label feedbackLabel = new Label(colorScalesGroup, SWT.CENTER);
 		GridData feedbackLabelData = new GridData(GridData.FILL_HORIZONTAL);
 		feedbackLabel.setLayoutData(feedbackLabelData);
-		feedbackLabel.setText("Min <---> Max");
+		feedbackLabel.setText("Min <-------> Max");
 
 		Canvas colorScaleFeedback = new Canvas(colorScalesGroup, SWT.DOUBLE_BUFFERED | SWT.BORDER);
+
 		GridData feedbackLayoutData = new GridData(GridData.FILL_HORIZONTAL);
 		feedbackLayoutData.heightHint = 20;
 		colorScaleFeedback.setLayoutData(feedbackLayoutData);
+
 
 		combo.addSelectionListener(new ColorScaleSelectionListener());
 
@@ -282,8 +286,9 @@ public class MappingViewComposite extends Composite implements IMappingView {
 
 		combo.addSelectionListener(new RelationshipSelectionListener());
 
-		Button checkAddToView = new Button(relationshipsGroup, SWT.CHECK);
-		checkAddToView.setText("Add related \ncontainers to view");
+		Button checkAddToView = new Button(relationshipsGroup, SWT.CHECK | SWT.DRAW_DELIMITER);
+		checkAddToView.setText("Auto-add");
+		checkAddToView.setToolTipText("When checked adds the related containers automatically to the visualization area");
 		checkAddToView.setSelection(SeeIT3DManager.getInstance().getRelatedContainersToView());
 
 		checkAddToView.addSelectionListener(new AddRelatedToViewListener());

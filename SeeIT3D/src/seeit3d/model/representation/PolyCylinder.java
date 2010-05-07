@@ -149,7 +149,7 @@ public class PolyCylinder implements Serializable {
 		boxColor.setCapability(Material.ALLOW_COMPONENT_WRITE);
 		app.setMaterial(boxColor);
 
-		transparency = new TransparencyAttributes(TransparencyAttributes.NICEST, 0.0f);
+		transparency = new TransparencyAttributes(TransparencyAttributes.SCREEN_DOOR, 0.0f);
 		transparency.setCapability(TransparencyAttributes.ALLOW_VALUE_WRITE);
 		transparency.setCapability(TransparencyAttributes.ALLOW_VALUE_READ);
 		app.setTransparencyAttributes(transparency);

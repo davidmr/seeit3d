@@ -484,10 +484,6 @@
             icon="icons/delete.gif">
       </image>
       <image
-            commandId="seeit3d.showRelatedContainers"
-            icon="icons/relations.gif">
-      </image>
-      <image
             commandId="seeit3d.scaleDownContainerInView"
             icon="icons/scaleDown.gif">
       </image>

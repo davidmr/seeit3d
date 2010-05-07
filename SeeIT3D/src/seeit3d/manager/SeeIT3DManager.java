@@ -115,7 +115,6 @@ public class SeeIT3DManager implements IPreferencesListener {
 	}
 
 	public synchronized void doContainerLayout() {
-		
 
 		float currentXPosition = 0.0f;
 		float currentZPosition = 0.0f;
@@ -124,21 +123,22 @@ public class SeeIT3DManager implements IPreferencesListener {
 
 		int added = 0;
 		for (Container container : state.containersInView()) {
-			
-			System.out.println(container.getWidth());
-			Vector3f newPosition = new Vector3f(currentXPosition + container.getWidth(), 0.0f, 0.0f);
+
+			currentXPosition += container.getWidth();
+
+			Vector3f newPosition = new Vector3f(currentXPosition, 0.0f, currentZPosition);
 			added++;
 
 			container.setPosition(newPosition);
 
 			if (added % containersPerRow == 0) {
-				// currentZPosition += container.getDepth() + ViewConstants.CONTAINERS_SPACING;
 				currentXPosition = 0.0f;
+				currentZPosition += container.getDepth() * 2 + ViewConstants.CONTAINERS_SPACING;
 			} else {
 				currentXPosition += container.getWidth() + ViewConstants.CONTAINERS_SPACING;
 			}
 
-			maxX = Math.max(maxX, currentXPosition + container.getWidth());
+			maxX = Math.max(maxX, currentXPosition);
 
 		}
 
@@ -429,7 +429,7 @@ public class SeeIT3DManager implements IPreferencesListener {
 	public void saveVisualization(OutputStream output) throws IOException {
 		ObjectOutputStream out = new ObjectOutputStream(output);
 		List<Container> allContainers = new ArrayList<Container>();
-		for(Container container : state.containersInView()){
+		for (Container container : state.containersInView()) {
 			allContainers.add(container);
 		}
 		out.writeObject(allContainers);
@@ -561,7 +561,8 @@ public class SeeIT3DManager implements IPreferencesListener {
 	}
 
 	@Override
-	public void backgroundColorChanged(Color3f newBackgroundColor) {}
+	public void backgroundColorChanged(Color3f newBackgroundColor) {
+	}
 
 	@Override
 	public synchronized void relationMarkColorChanged(Color3f newRelationMarkColor) {

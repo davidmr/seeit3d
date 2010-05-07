@@ -101,8 +101,8 @@ public class SceneGraphHandler implements IPreferencesListener {
 		canvas = canvasToSet;
 		universe = new SimpleUniverse(canvas);
 
-		canvas.getView().setFrontClipPolicy(View.VIRTUAL_EYE);
-		canvas.getView().setBackClipPolicy(View.VIRTUAL_EYE);
+		// canvas.getView().setFrontClipPolicy(View.VIRTUAL_EYE);
+		// canvas.getView().setBackClipPolicy(View.VIRTUAL_EYE);
 		canvas.getView().setFrontClipDistance(0.1f);
 		canvas.getView().setBackClipDistance(100.0f);
 		canvas.getView().setTransparencySortingPolicy(View.TRANSPARENCY_SORT_GEOMETRY);

@@ -42,7 +42,7 @@ public class ViewConstants {
 
 	public static final float POLYCYLINDER_SPACING = 0.15f;
 
-	public static final float CONTAINERS_SPACING = 0.5f;
+	public static final float CONTAINERS_SPACING = 2.0f;
 
 	public static final float HIGHLIGHT_PADDING = 0.1f;
 

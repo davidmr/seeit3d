@@ -47,8 +47,10 @@ public class SeeIT3DSchema {
 			schema = factory.newSchema(source);
 		} catch (SAXException e) {
 			ErrorHandler.error("Error while reading XML schema validation.\n Validation is disabled.");
+			e.printStackTrace();
 		} catch (IOException e) {
 			ErrorHandler.error("Error while reading XML schema validation.\n Validation is disabled.");
+			e.printStackTrace();
 		}
 	}
 

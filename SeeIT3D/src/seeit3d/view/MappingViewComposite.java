@@ -223,8 +223,7 @@ public class MappingViewComposite extends Composite implements IMappingView {
 		Group colorScalesGroup = new Group(rootComposite, SWT.SHADOW_OUT);
 		GridData colorScalesLayoutData = new GridData(GridData.FILL_VERTICAL);
 		colorScalesLayoutData.verticalSpan = 2;
-		colorScalesLayoutData.minimumWidth = 50;
-		colorScalesLayoutData.widthHint = 150;
+		colorScalesLayoutData.widthHint = 160;
 		
 		colorScalesGroup.setLayoutData(colorScalesLayoutData);
 		colorScalesGroup.setLayout(new GridLayout(1, true));

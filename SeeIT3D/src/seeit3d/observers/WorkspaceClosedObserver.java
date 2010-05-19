@@ -38,7 +38,7 @@ public class WorkspaceClosedObserver implements IResourceChangeListener {
 	public void resourceChanged(IResourceChangeEvent event) {
 		IResource resource = event.getResource();
 		if (event.getType() == IResourceChangeEvent.PRE_CLOSE && resource != null && resource.getType() == IResource.PROJECT) {
-			manager.cleanVisualization();
+			manager.deleteAllContainers();
 		}
 
 	}

@@ -78,4 +78,7 @@ public class CommonBaseGenerator implements RelationShipVisualGenerator {
 		return NAME;
 	}
 
+	@Override
+	public void transformChanged(int type, TransformGroup tg) {}
+
 }

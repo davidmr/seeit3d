@@ -20,13 +20,15 @@ import java.util.List;
 
 import seeit3d.model.representation.Container;
 
+import com.sun.j3d.utils.pickfast.behaviors.PickingCallback;
+
 /**
  * Interface representing a visualization generator for relationships
  * 
  * @author David Montaño
  * 
  */
-public interface RelationShipVisualGenerator {
+public interface RelationShipVisualGenerator extends PickingCallback {
 
 	public List<Container> generateVisualRelationShips(Container baseContainer);
 

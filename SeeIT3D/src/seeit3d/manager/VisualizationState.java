@@ -20,6 +20,7 @@ import java.util.*;
 
 import seeit3d.error.exception.IllegalVisualizationStateException;
 import seeit3d.model.representation.*;
+import seeit3d.relationships.RelationShipVisualGenerator;
 
 /**
  * This class keeps track of the visualization state, like the selected containers in the view, checks of visualization state and sorting property
@@ -244,6 +245,12 @@ public class VisualizationState {
 		viewNeedUpdate();
 	}
 
+	public void useRelationShipVisualGeneratorOnSelectedContainers(RelationShipVisualGenerator relationShipVisualGenerator) {
+		for (Container container : selectedContainers()) {
+			container.setRelationShipVisualGenerator(relationShipVisualGenerator);
+		}
+	}
+
 	/***********************************/
 	/*********** POLYCYLINDERS **********/
 
@@ -308,5 +315,6 @@ public class VisualizationState {
 	public VisualProperty getSortingProperty() {
 		return sortingProperty;
 	}
+
 
 }

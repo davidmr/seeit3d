@@ -40,7 +40,6 @@ import seeit3d.model.EclipseResourceRepresentation;
 import seeit3d.model.representation.*;
 import seeit3d.preferences.IPreferencesListener;
 import seeit3d.relationships.RelationShipVisualGenerator;
-import seeit3d.relationships.imp.NoRelationships;
 import seeit3d.utils.Utils;
 import seeit3d.utils.ViewConstants;
 import seeit3d.view.SeeIT3DCanvas;
@@ -75,8 +74,6 @@ public class SeeIT3DManager implements IPreferencesListener {
 
 	private IColorScale colorScale;
 
-	private RelationShipVisualGenerator relationShipVisualGenerator;
-
 	private IMappingView mappingView = null;
 
 	private boolean isSynchronzationWithPackageExplorerSet = false;
@@ -99,7 +96,6 @@ public class SeeIT3DManager implements IPreferencesListener {
 		state = new VisualizationState(this);
 		sceneGraphHandler = new SceneGraphHandler(this);
 		colorScale = new ColdToHotColorScale();
-		relationShipVisualGenerator = new NoRelationships();
 	}
 
 	/**************************************/
@@ -180,7 +176,7 @@ public class SeeIT3DManager implements IPreferencesListener {
 
 	public synchronized void updateCurrentSelectedContainer() {
 		for (Container container : state.selectedContainers()) {
-			sceneGraphHandler.removeFromSceneGraph(container);
+			sceneGraphHandler.removeScene(container);
 			container.updateVisualRepresentation();
 			container.setSelected(true);
 			refreshVisualization();
@@ -190,7 +186,7 @@ public class SeeIT3DManager implements IPreferencesListener {
 
 	public synchronized void deleteSelectedContainers() {
 		for (Container container : state.selectedContainers()) {
-			sceneGraphHandler.removeFromSceneGraph(container);
+			sceneGraphHandler.removeScene(container);
 		}
 		state.deleteSelectedContainers();
 	}
@@ -313,10 +309,6 @@ public class SeeIT3DManager implements IPreferencesListener {
 		doContainerLayout();
 	}
 
-	public synchronized void cleanVisualization() {
-		state.clearContainers();
-	}
-
 	private synchronized void activateSelection() {
 		Display.getDefault().asyncExec(new Runnable() {
 			@Override
@@ -354,7 +346,7 @@ public class SeeIT3DManager implements IPreferencesListener {
 
 	public synchronized void sortPolyCylinders() {
 		for (Container container : state.selectedContainers()) {
-			sceneGraphHandler.removeFromSceneGraph(container);
+			sceneGraphHandler.removeScene(container);
 			container.setSortingProperty(state.getSortingProperty());
 			container.setSorted(true);
 			container.updateVisualRepresentation();
@@ -510,10 +502,6 @@ public class SeeIT3DManager implements IPreferencesListener {
 		return names.toString();
 	}
 
-	public synchronized RelationShipVisualGenerator getRelationShipVisualGenerator() {
-		return relationShipVisualGenerator;
-	}
-
 	public synchronized IColorScale getColorScale() {
 		return colorScale;
 	}
@@ -539,7 +527,7 @@ public class SeeIT3DManager implements IPreferencesListener {
 	}
 
 	public synchronized void setRelationShipVisualGenerator(RelationShipVisualGenerator relationShipVisualGenerator) {
-		this.relationShipVisualGenerator = relationShipVisualGenerator;
+		state.useRelationShipVisualGeneratorOnSelectedContainers(relationShipVisualGenerator);
 	}
 
 	public synchronized SceneGraphHandler getSceneGraphHandler() {

@@ -17,7 +17,8 @@
 package seeit3d.manager;
 
 import java.awt.GraphicsConfiguration;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.media.j3d.*;
 import javax.vecmath.*;
@@ -27,7 +28,6 @@ import seeit3d.colorscale.IColorScale;
 import seeit3d.error.exception.SeeIT3DException;
 import seeit3d.model.representation.Container;
 import seeit3d.preferences.IPreferencesListener;
-import seeit3d.relationships.RelationShipVisualGenerator;
 import seeit3d.utils.Utils;
 import seeit3d.utils.ViewConstants;
 import seeit3d.view.SeeIT3DCanvas;
@@ -79,15 +79,9 @@ public class SceneGraphHandler implements IPreferencesListener {
 		this.backgroundColor = new Color3f(1.0f, 1.0f, 1.0f);
 	}
 
-	@SuppressWarnings("unchecked")
 	public void clearScene() {
-		Enumeration<Node> children = containersGroup.getAllChildren();
-		while (children.hasMoreElements()) {
-			Node node = children.nextElement();
-			if (node instanceof BranchGroup) {
-				((BranchGroup) node).detach();
-				containersGroup.removeChild(node);
-			}
+		for (Container container : manager.containersInView()) {
+			removeScene(container);
 		}
 	}
 
@@ -99,7 +93,8 @@ public class SceneGraphHandler implements IPreferencesListener {
 		changeOrbitState(false);
 	}
 
-	public void removeFromSceneGraph(Container container) {
+	public void removeScene(Container container) {
+		translation.unregisterCallback(container.getRelationShipVisualGenerator());
 		BranchGroup containerBG = container.getContainerBG();
 		containerBG.detach();
 		containersGroup.removeChild(containerBG);
@@ -164,6 +159,8 @@ public class SceneGraphHandler implements IPreferencesListener {
 		rootObj.compile();
 		universe.addBranchGraph(rootObj);
 
+		setViewersPosition(10);
+
 		initialized = true;
 	}
 
@@ -175,7 +172,7 @@ public class SceneGraphHandler implements IPreferencesListener {
 
 		universe = new SimpleUniverse(canvas);
 
-		canvas.getView().setFrontClipDistance(3f);
+		canvas.getView().setFrontClipDistance(1f);
 		canvas.getView().setBackClipDistance(1000.0f);
 		canvas.getView().setTransparencySortingPolicy(View.TRANSPARENCY_SORT_GEOMETRY);
 
@@ -216,7 +213,7 @@ public class SceneGraphHandler implements IPreferencesListener {
 		back = new Background(backgroundColor);
 		back.setApplicationBounds(bounds);
 		rootObj.addChild(back);
-		// updateBackgroundColor();
+		updateBackgroundColor();
 
 	}
 
@@ -237,7 +234,7 @@ public class SceneGraphHandler implements IPreferencesListener {
 		rootObj.addChild(translation);
 
 		orbit = new OrbitBehavior(canvas, OrbitBehavior.REVERSE_ROTATE | OrbitBehavior.REVERSE_TRANSLATE | OrbitBehavior.STOP_ZOOM);
-		orbit.setMinRadius(20);
+		orbit.setMinRadius(10);
 		orbit.setSchedulingBounds(bounds);
 		viewingPlatform.setViewPlatformBehavior(orbit);
 	}
@@ -260,9 +257,8 @@ public class SceneGraphHandler implements IPreferencesListener {
 		for (Container container : manager.containersInView()) {
 			container.updateVisualRepresentation();
 			BranchGroup bgContainer = container.getContainerBG();
-			RelationShipVisualGenerator generator = manager.getRelationShipVisualGenerator();
-			List<Container> relatedContainers = generator.generateVisualRelationShips(container);
 			if (addRelatedToView) {
+				List<Container> relatedContainers = container.generateRelations();
 				for (Container related : relatedContainers) {
 					newContainersToAdd.add(related);
 					related.updateVisualRepresentation();

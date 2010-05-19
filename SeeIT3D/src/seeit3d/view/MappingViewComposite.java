@@ -79,7 +79,7 @@ public class MappingViewComposite extends Composite implements IMappingView {
 		removeAlreadyMappedMetrics(metricsInformation, currentMapping);
 		updateCurrentMappingAndVisualProperties(containers, currentMapping);
 		updateColorScales();
-		updateRelationshipsGenerator();
+		updateRelationshipsGenerator(containers);
 		updateMetricsFromContainers(containers, metricsInformation, currentMapping.size());
 
 		rootComposite.pack(true);
@@ -224,7 +224,7 @@ public class MappingViewComposite extends Composite implements IMappingView {
 		GridData colorScalesLayoutData = new GridData(GridData.FILL_VERTICAL);
 		colorScalesLayoutData.verticalSpan = 2;
 		colorScalesLayoutData.widthHint = 160;
-		
+
 		colorScalesGroup.setLayoutData(colorScalesLayoutData);
 		colorScalesGroup.setLayout(new GridLayout(1, true));
 		colorScalesGroup.setText("Color Scale");
@@ -252,7 +252,6 @@ public class MappingViewComposite extends Composite implements IMappingView {
 		feedbackLayoutData.heightHint = 20;
 		colorScaleFeedback.setLayoutData(feedbackLayoutData);
 
-
 		combo.addSelectionListener(new ColorScaleSelectionListener());
 
 		ColorScaleDrawer drawer = new ColorScaleDrawer(currentColorScale);
@@ -260,8 +259,9 @@ public class MappingViewComposite extends Composite implements IMappingView {
 
 	}
 
-	private void updateRelationshipsGenerator() {
-		Iterable<RelationShipVisualGenerator> allRelationshipsGenerator = RelationShipsRegistry.getInstance().allRelationshipsGenerator();
+	private void updateRelationshipsGenerator(List<Container> containers) {
+		RelationShipsRegistry relationRegistry = RelationShipsRegistry.getInstance();
+		Iterable<Class<? extends RelationShipVisualGenerator>> allRelationshipsGenerator = relationRegistry.allRelationshipsGenerator();
 
 		Group relationshipsGroup = new Group(rootComposite, SWT.SHADOW_OUT);
 		GridData relationshipsLayoutData = new GridData(GridData.FILL_BOTH);
@@ -271,17 +271,23 @@ public class MappingViewComposite extends Composite implements IMappingView {
 
 		Combo combo = new Combo(relationshipsGroup, SWT.READ_ONLY);
 
-		RelationShipVisualGenerator selectedGenerator = SeeIT3DManager.getInstance().getRelationShipVisualGenerator();
-		int index = 0;
-		for (RelationShipVisualGenerator generator : allRelationshipsGenerator) {
-			combo.add(generator.getName());
-			if (generator.getName().equals(selectedGenerator.getName())) {
-				combo.select(index);
-			}
-			index++;
-		}
+		Class<? extends RelationShipVisualGenerator> selectedGenerator = buildCurrentRelationShipGenerator(containers);
+		if (selectedGenerator == null) {
+			combo.setEnabled(false);
+		} else {
+			int index = 0;
 
-		combo.addSelectionListener(new RelationshipSelectionListener());
+			String selectedRelation = relationRegistry.getRelationName(selectedGenerator);
+			for (Class<? extends RelationShipVisualGenerator> generatorClass : allRelationshipsGenerator) {
+				String relationToAdd = relationRegistry.getRelationName(generatorClass);
+				combo.add(relationToAdd);
+				if (relationToAdd.equals(selectedRelation)) {
+					combo.select(index);
+				}
+				index++;
+			}
+			combo.addSelectionListener(new RelationshipSelectionListener());
+		}
 
 		Button checkAddToView = new Button(relationshipsGroup, SWT.CHECK | SWT.DRAW_DELIMITER);
 		checkAddToView.setText("Auto-add");
@@ -290,6 +296,20 @@ public class MappingViewComposite extends Composite implements IMappingView {
 
 		checkAddToView.addSelectionListener(new AddRelatedToViewListener());
 
+	}
+
+	private Class<? extends RelationShipVisualGenerator> buildCurrentRelationShipGenerator(List<Container> currentContainers) {
+		if (!currentContainers.isEmpty()) {
+			Class<? extends RelationShipVisualGenerator> relationClazz = currentContainers.get(0).getRelationShipVisualGenerator().getClass();
+			for (int i = 1; i < currentContainers.size(); i++) {
+				Container container = currentContainers.get(i);
+				if (!relationClazz.equals(container.getRelationShipVisualGenerator().getClass())) {
+					return null;
+				}
+			}
+			return relationClazz;
+		}
+		return null;
 	}
 
 	@Override

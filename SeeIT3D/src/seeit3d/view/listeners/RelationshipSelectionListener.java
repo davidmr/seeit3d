@@ -45,13 +45,19 @@ public class RelationshipSelectionListener implements SelectionListener {
 
 	@Override
 	public void widgetSelected(SelectionEvent event) {
-		Combo combo = (Combo) event.widget;
-		String relationshipGeneratorName = combo.getItem(combo.getSelectionIndex());
 
-		Iterable<RelationShipVisualGenerator> allRelationshipsGenerator = RelationShipsRegistry.getInstance().allRelationshipsGenerator();
-		for (RelationShipVisualGenerator generator : allRelationshipsGenerator) {
-			if (generator.getName().equals(relationshipGeneratorName)) {
-				manager.setRelationShipVisualGenerator(generator);
+		RelationShipsRegistry registry = RelationShipsRegistry.getInstance();
+
+		Combo combo = (Combo) event.widget;
+
+		String selectedGeneratorName = combo.getItem(combo.getSelectionIndex());
+
+		Iterable<Class<? extends RelationShipVisualGenerator>> allRelationshipsGenerator = registry.allRelationshipsGenerator();
+		for (Class<? extends RelationShipVisualGenerator> generator : allRelationshipsGenerator) {
+			String relationName = registry.getRelationName(generator);
+			if (relationName.equals(selectedGeneratorName)) {
+				RelationShipVisualGenerator instancedGenerator = registry.createNewInstance(generator);
+				manager.setRelationShipVisualGenerator(instancedGenerator);
 				manager.refreshVisualization();
 				break;
 			}

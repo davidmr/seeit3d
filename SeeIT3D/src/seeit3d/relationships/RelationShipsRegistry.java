@@ -16,10 +16,10 @@
  */
 package seeit3d.relationships;
 
-import static com.google.common.collect.Lists.*;
-
+import java.util.ArrayList;
 import java.util.List;
 
+import seeit3d.error.ErrorHandler;
 import seeit3d.relationships.imp.*;
 
 /**
@@ -36,15 +36,44 @@ public class RelationShipsRegistry {
 		return instance;
 	}
 
-	private final List<RelationShipVisualGenerator> relationshipsGenerators;
+	private final List<Class<? extends RelationShipVisualGenerator>> relationshipsGenerators;
 
 	private RelationShipsRegistry() {
-		relationshipsGenerators = newArrayList(new NoRelationships(), new CommonBaseGenerator(), new LineBaseGenerator());
+		relationshipsGenerators = new ArrayList<Class<? extends RelationShipVisualGenerator>>();
+		relationshipsGenerators.add(NoRelationships.class);
+		relationshipsGenerators.add(CommonBaseGenerator.class);
+		relationshipsGenerators.add(LineBaseGenerator.class);
 
 	}
 
-	public Iterable<RelationShipVisualGenerator> allRelationshipsGenerator() {
+	public Iterable<Class<? extends RelationShipVisualGenerator>> allRelationshipsGenerator() {
 		return relationshipsGenerators;
+	}
+
+	public String getRelationName(Class<? extends RelationShipVisualGenerator> selectedGenerator) {
+		try {
+			return selectedGenerator.newInstance().getName();
+		} catch (InstantiationException e) {
+			ErrorHandler.error("Error while getting relationships name");
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			ErrorHandler.error("Error while getting relationships name");
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	public RelationShipVisualGenerator createNewInstance(Class<? extends RelationShipVisualGenerator> generator) {
+		try {
+			return generator.newInstance();
+		} catch (InstantiationException e) {
+			ErrorHandler.error("Error while creating new instance of generator");
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			ErrorHandler.error("Error while creating new instance of generator");
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 }

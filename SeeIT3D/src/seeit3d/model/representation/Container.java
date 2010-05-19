@@ -27,6 +27,8 @@ import seeit3d.manager.SeeIT3DManager;
 import seeit3d.metrics.BaseMetricCalculator;
 import seeit3d.metrics.MetricsRegistry;
 import seeit3d.model.ContainerRepresentedObject;
+import seeit3d.relationships.RelationShipVisualGenerator;
+import seeit3d.relationships.imp.NoRelationships;
 import seeit3d.utils.Utils;
 import seeit3d.utils.ViewConstants;
 
@@ -49,6 +51,8 @@ public class Container implements Serializable {
 	private transient BranchGroup containerBG;
 
 	private transient Switch highlighRootNode;
+
+	private transient RelationShipVisualGenerator relationShipVisualGenerator;
 
 	private final long identifier;
 
@@ -82,11 +86,11 @@ public class Container implements Serializable {
 
 	private Container(ContainerRepresentedObject representedObject, List<BaseMetricCalculator> metrics, int currentLevel) {
 		checkMetricsValidity(metrics);
-		identifier = Utils.generateContainerIdentifier();
-		manager = SeeIT3DManager.getInstance();
-		polycylinders = new ArrayList<PolyCylinder>();
-		relatedContainers = new ArrayList<Container>();
-		children = new ArrayList<Container>();
+		this.identifier = Utils.generateContainerIdentifier();
+		this.manager = SeeIT3DManager.getInstance();
+		this.polycylinders = new ArrayList<PolyCylinder>();
+		this.relatedContainers = new ArrayList<Container>();
+		this.children = new ArrayList<Container>();
 		this.representedObject = representedObject;
 		this.metrics = metrics;
 		this.propertiesMap = HashBiMap.create();
@@ -95,8 +99,9 @@ public class Container implements Serializable {
 			BaseMetricCalculator metric = metrics.get(i);
 			this.propertiesMap.put(metric, prop);
 		}
-		sorted = false;
+		this.sorted = false;
 		this.currentLevel = currentLevel;
+		this.relationShipVisualGenerator = new NoRelationships();
 	}
 
 	public Container(ContainerRepresentedObject representedObject, List<BaseMetricCalculator> metrics) {
@@ -276,19 +281,6 @@ public class Container implements Serializable {
 		depth = -1;
 	}
 
-	public Vector3f getPosition() {
-		if (containerBG == null) {
-			return new Vector3f();
-		} else {
-			TransformGroup transform = (TransformGroup) containerBG.getChild(0);
-			Transform3D transformation = new Transform3D();
-			transform.getTransform(transformation);
-			Vector3f position = new Vector3f();
-			transformation.get(position);
-			return position;
-		}
-	}
-
 	private void buildHighlight(TransformGroup containerTG) {
 		float boxWidth = width + ViewConstants.HIGHLIGHT_PADDING;
 		float boxHeight = height + ViewConstants.HIGHLIGHT_PADDING;
@@ -405,6 +397,10 @@ public class Container implements Serializable {
 		}
 	}
 
+	public List<Container> generateRelations() {
+		return relationShipVisualGenerator.generateVisualRelationShips(this);
+	}
+
 	public void setPosition(Vector3f position) {
 		if (containerBG != null) {
 			TransformGroup child = (TransformGroup) containerBG.getChild(0);
@@ -467,6 +463,19 @@ public class Container implements Serializable {
 		return height;
 	}
 
+	public Vector3f getPosition() {
+		if (containerBG == null) {
+			return new Vector3f();
+		} else {
+			TransformGroup transform = (TransformGroup) containerBG.getChild(0);
+			Transform3D transformation = new Transform3D();
+			transform.getTransform(transformation);
+			Vector3f position = new Vector3f();
+			transformation.get(position);
+			return position;
+		}
+	}
+
 	public BiMap<BaseMetricCalculator, VisualProperty> getPropertiesMap() {
 		return propertiesMap;
 	}
@@ -489,6 +498,14 @@ public class Container implements Serializable {
 
 	public void setSorted(boolean sorted) {
 		this.sorted = sorted;
+	}
+
+	public void setRelationShipVisualGenerator(RelationShipVisualGenerator relationShipVisualGenerator) {
+		this.relationShipVisualGenerator = relationShipVisualGenerator;
+	}
+
+	public RelationShipVisualGenerator getRelationShipVisualGenerator() {
+		return relationShipVisualGenerator;
 	}
 
 	public void addPolyCylinder(PolyCylinder polyCylinder) {

@@ -75,11 +75,18 @@ public class PickTranslate3DBehavior extends PickMouseBehavior implements MouseB
 		}
 	}
 
+	public void unregisterCallback(PickingCallback callback) {
+		if (callback != null) {
+			this.callbacks.remove(callback);
+		}
+	}
+
 	@Override
 	public void transformChanged(int type, Transform3D transform) {
 		for (PickingCallback callback : this.callbacks) {
 			callback.transformChanged(PickingCallback.TRANSLATE, currentTG);
 		}
 	}
+
 
 }

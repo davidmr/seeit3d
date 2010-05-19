@@ -25,6 +25,7 @@ public class LineBaseGenerator implements RelationShipVisualGenerator, PickingCa
 	@Override
 	public void transformChanged(int type, TransformGroup tg) {
 		// TODO find out how to know which node has to be moved
+		System.out.println("update");
 	}
 
 	@Override

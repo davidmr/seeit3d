@@ -20,7 +20,7 @@ import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IMethod;
 
 import seeit3d.core.model.generator.IModelGenerator;
-import seeit3d.modelers.java.generator.MethodModelCreator;
+import seeit3d.modelers.java.generator.MethodModelGenerator;
 
 /**
  * Concrete implementation of <code>AbstracVisualizaJavaElement</code> to show methods in the visualization area
@@ -32,7 +32,7 @@ public class VisualizeMethodInView3dCommand extends AbstractVisualizeJavaElement
 
 	@Override
 	protected IModelGenerator createModel(IJavaElement javaElement) {
-		return new MethodModelCreator((IMethod) javaElement);
+		return new MethodModelGenerator((IMethod) javaElement);
 	}
 
 }

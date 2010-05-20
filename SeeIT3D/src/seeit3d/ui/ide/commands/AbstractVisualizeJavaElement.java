@@ -39,16 +39,16 @@ public abstract class AbstractVisualizeJavaElement extends AbstractHandler {
 	@SuppressWarnings("unchecked")
 	@Override
 	public Object execute(final ExecutionEvent event) throws ExecutionException {
-		List<IModelGenerator> modelCreators = new ArrayList<IModelGenerator>();
+		List<IModelGenerator> modelGenerators = new ArrayList<IModelGenerator>();
 		ITreeSelection currentSelection = (ITreeSelection) HandlerUtil.getCurrentSelection(event);
 		for (Iterator<Object> iterator = currentSelection.iterator(); iterator.hasNext();) {
 			IJavaElement javaElement = (IJavaElement) iterator.next();
-			IModelGenerator modelCreator = createModel(javaElement);
-			modelCreators.add(modelCreator);
+			IModelGenerator modelGenerator = createModel(javaElement);
+			modelGenerators.add(modelGenerator);
 
 		}
 		Shell shell = HandlerUtil.getActiveShell(event);
-		Job visualizeJob = new VisualizeJob(shell, modelCreators);
+		Job visualizeJob = new VisualizeJob(shell, modelGenerators);
 		visualizeJob.schedule();
 		return null;
 	}

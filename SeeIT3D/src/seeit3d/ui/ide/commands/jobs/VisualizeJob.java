@@ -30,20 +30,20 @@ import seeit3d.core.model.generator.IModelGenerator;
 import seeit3d.ui.ide.utils.OpenSeeIT3DView;
 
 /**
- * Generic visualization job to show information in the visualization area. Takes <code>IModelCreator</code> to analyze and register containers in the view.
+ * Generic visualization job to show information in the visualization area. Takes <code>IModelGenerator</code> to analyze and register containers in the view.
  * 
  * @author David Montaño
  * 
  */
 public class VisualizeJob extends Job {
 
-	private final List<IModelGenerator> modelCreators;
+	private final List<IModelGenerator> modelGenerators;
 
 	private final SeeIT3DManager manager;
 
-	public VisualizeJob(Shell shell, List<IModelGenerator> modelCreators) {
+	public VisualizeJob(Shell shell, List<IModelGenerator> modelGenerators) {
 		super("Visualize in SeeIT 3D");
-		this.modelCreators = modelCreators;
+		this.modelGenerators = modelGenerators;
 		manager = SeeIT3DManager.getInstance();
 	}
 
@@ -51,7 +51,7 @@ public class VisualizeJob extends Job {
 	protected IStatus run(IProgressMonitor monitor) {
 		monitor.beginTask("Analizing", IProgressMonitor.UNKNOWN);
 		try {
-			for (IModelGenerator model : modelCreators) {
+			for (IModelGenerator model : modelGenerators) {
 				model.analizeAndRegisterInView(true);
 			}
 		} catch (SeeIT3DException e) {

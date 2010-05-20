@@ -20,7 +20,7 @@ import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IJavaProject;
 
 import seeit3d.core.model.generator.IModelGenerator;
-import seeit3d.modelers.java.generator.ProjectModelCreator;
+import seeit3d.modelers.java.generator.ProjectModelGenerator;
 
 /**
  * Concrete implementation of <code>AbstracVisualizaJavaElement</code> to show projects in the visualization area
@@ -32,7 +32,7 @@ public class VisualizeProjectInView3dCommand extends AbstractVisualizeJavaElemen
 
 	@Override
 	protected IModelGenerator createModel(IJavaElement javaElement) {
-		return new ProjectModelCreator((IJavaProject) javaElement);
+		return new ProjectModelGenerator((IJavaProject) javaElement);
 	}
 
 }

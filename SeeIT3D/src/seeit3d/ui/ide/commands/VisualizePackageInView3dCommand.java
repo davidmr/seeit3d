@@ -21,7 +21,7 @@ import org.eclipse.jdt.core.IPackageFragment;
 
 import seeit3d.core.model.generator.IModelGenerator;
 import seeit3d.core.model.utils.NoOpModelGenerator;
-import seeit3d.modelers.java.generator.PackageModelCreator;
+import seeit3d.modelers.java.generator.PackageModelGenerator;
 
 /**
  * Concrete implementation of <code>AbstracVisualizaJavaElement</code> to show packages in the visualization area
@@ -35,7 +35,7 @@ public class VisualizePackageInView3dCommand extends AbstractVisualizeJavaElemen
 	protected IModelGenerator createModel(IJavaElement javaElement) {
 		IJavaElement packageToAnalyze = (IPackageFragment) javaElement;
 		if (!packageToAnalyze.isReadOnly()) {
-			return new PackageModelCreator((IPackageFragment) packageToAnalyze);
+			return new PackageModelGenerator((IPackageFragment) packageToAnalyze);
 		} else {
 			return new NoOpModelGenerator();
 		}

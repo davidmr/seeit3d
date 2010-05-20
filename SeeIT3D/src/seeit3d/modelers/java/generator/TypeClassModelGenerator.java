@@ -27,14 +27,14 @@ import seeit3d.modelers.java.generator.metrics.LOCCalculator;
 import com.google.common.collect.Lists;
 
 /**
- * Class/Type analyzer @see AbstracModelCreator
+ * Class/Type analyzer @see AbstracModelGenerator
  * 
  * @author David Montaño
  * 
  */
-public class TypeClassModelCreator extends AbstracModelCreator<IType, IMethod> {
+public class TypeClassModelGenerator extends AbstracModelGenerator<IType, IMethod> {
 
-	public TypeClassModelCreator(IType elementToAnalize) {
+	public TypeClassModelGenerator(IType elementToAnalize) {
 		super(elementToAnalize);
 	}
 
@@ -49,8 +49,8 @@ public class TypeClassModelCreator extends AbstracModelCreator<IType, IMethod> {
 	}
 
 	@Override
-	protected IModelGenerator lowerLevelModelCreator(IMethod childrenElement) {
-		return new MethodModelCreator(childrenElement);
+	protected IModelGenerator lowerLevelModelGenerator(IMethod childrenElement) {
+		return new MethodModelGenerator(childrenElement);
 	}
 
 }

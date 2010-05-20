@@ -32,7 +32,7 @@ import seeit3d.core.handler.error.ErrorHandler;
 import seeit3d.core.handler.error.exception.SeeIT3DXMLParsingException;
 import seeit3d.core.model.generator.IModelGenerator;
 import seeit3d.modelers.xml.SeeIT3DSchema;
-import seeit3d.modelers.xml.XMLBasedModelCreator;
+import seeit3d.modelers.xml.XMLBasedModelGenerator;
 import seeit3d.modelers.xml.internal.Container;
 import seeit3d.modelers.xml.internal.Containers;
 import seeit3d.ui.ide.commands.jobs.VisualizeJob;
@@ -58,12 +58,12 @@ public class VisualizeFromXMLFile extends AbstractHandler {
 			Unmarshaller unmarshaller = context.createUnmarshaller();
 			unmarshaller.setSchema(SeeIT3DSchema.getSchema());
 			Containers containers = (Containers) unmarshaller.unmarshal(contents);
-			List<IModelGenerator> modelCreators = new ArrayList<IModelGenerator>();
+			List<IModelGenerator> modelGenerators = new ArrayList<IModelGenerator>();
 			for (Container containerXML : containers.getContainer()) {
-				modelCreators.add(new XMLBasedModelCreator(containerXML));
+				modelGenerators.add(new XMLBasedModelGenerator(containerXML));
 			}
 			Shell shell = HandlerUtil.getActiveShell(event);
-			VisualizeJob job = new VisualizeJob(shell, modelCreators);
+			VisualizeJob job = new VisualizeJob(shell, modelGenerators);
 			job.schedule();
 		} catch (CoreException e) {
 			ErrorHandler.error(e);

@@ -22,11 +22,11 @@ package seeit3d.core.handler.error.exception;
  * @author David Montaño
  * 
  */
-public class SeeIT3DModelCreatorException extends SeeIT3DException {
+public class SeeIT3DModelGeneratorException extends SeeIT3DException {
 
 	private static final long serialVersionUID = 1L;
 
-	public SeeIT3DModelCreatorException(String message) {
+	public SeeIT3DModelGeneratorException(String message) {
 		super(message);
 	}
 }

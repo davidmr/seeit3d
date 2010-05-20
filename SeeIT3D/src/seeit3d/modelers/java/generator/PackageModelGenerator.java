@@ -28,14 +28,14 @@ import seeit3d.modelers.java.generator.metrics.LOCCalculator;
 import com.google.common.collect.Lists;
 
 /**
- * Package analyzer @see AbstracModelCreator
+ * Package analyzer @see AbstracModelGenerator
  * 
  * @author David Montaño
  * 
  */
-public class PackageModelCreator extends AbstracModelCreator<IPackageFragment, ICompilationUnit> {
+public class PackageModelGenerator extends AbstracModelGenerator<IPackageFragment, ICompilationUnit> {
 
-	public PackageModelCreator(IPackageFragment pack) {
+	public PackageModelGenerator(IPackageFragment pack) {
 		super(pack);
 	}
 
@@ -50,8 +50,12 @@ public class PackageModelCreator extends AbstracModelCreator<IPackageFragment, I
 	}
 
 	@Override
-	protected IModelGenerator lowerLevelModelCreator(ICompilationUnit childrenElement) {
-		return new TypeClassModelCreator(childrenElement.findPrimaryType());
+	protected IModelGenerator lowerLevelModelGenerator(ICompilationUnit childrenElement) {
+		if (childrenElement.findPrimaryType() != null) {
+			return new TypeClassModelGenerator(childrenElement.findPrimaryType());
+		} else {
+			return null;
+		}
 	}
 
 	@Override
@@ -80,8 +84,8 @@ public class PackageModelCreator extends AbstracModelCreator<IPackageFragment, I
 				if (!iPackageFragmentRoot.isArchive()) {
 					IPackageFragment packageFragment = iPackageFragmentRoot.getPackageFragment(packageName);
 					if (packageFragment != null && packageFragment.exists() && !evaluatedPackages.contains(packageFragment)) {
-						PackageModelCreator modelCreator = new PackageModelCreator(packageFragment);
-						Container relatedContainer = modelCreator.analize(false);
+						PackageModelGenerator modelGenerator = new PackageModelGenerator(packageFragment);
+						Container relatedContainer = modelGenerator.analize(false);
 						if (relatedContainer != null) {
 							container.addRelatedContainer(relatedContainer);
 						}

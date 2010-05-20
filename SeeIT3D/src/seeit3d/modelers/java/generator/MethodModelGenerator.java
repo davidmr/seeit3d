@@ -30,14 +30,14 @@ import seeit3d.utils.Utils;
 import com.google.common.collect.Lists;
 
 /**
- * Method analyzer @see AbstracModelCreator
+ * Method analyzer @see AbstracModelGenerator
  * 
  * @author David Montaño
  * 
  */
-public class MethodModelCreator extends AbstracModelCreator<IMethod, LineOfCode> {
+public class MethodModelGenerator extends AbstracModelGenerator<IMethod, LineOfCode> {
 
-	public MethodModelCreator(IMethod method) {
+	public MethodModelGenerator(IMethod method) {
 		super(method);
 	}
 
@@ -52,7 +52,7 @@ public class MethodModelCreator extends AbstracModelCreator<IMethod, LineOfCode>
 	}
 
 	@Override
-	protected IModelGenerator lowerLevelModelCreator(LineOfCode childrenElement) {
+	protected IModelGenerator lowerLevelModelGenerator(LineOfCode childrenElement) {
 		return null;
 	}
 

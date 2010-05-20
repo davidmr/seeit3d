@@ -47,23 +47,27 @@ public class VisualizeJavaElementFromEditor extends AbstractHandler {
 		IEditorPart activeEditor = HandlerUtil.getActiveEditor(event);
 		final ICompilationUnit javaElement = (ICompilationUnit) JavaUI.getEditorInputJavaElement(activeEditor.getEditorInput());
 		final Shell shell = HandlerUtil.getActiveShell(event);
-		IModelGenerator modelCreator = createModel(parameter, javaElement);
-		VisualizeJob visualizeJob = new VisualizeJob(shell, Lists.newArrayList(modelCreator));
+		IModelGenerator modelGenerator = createModel(parameter, javaElement);
+		VisualizeJob visualizeJob = new VisualizeJob(shell, Lists.newArrayList(modelGenerator));
 		visualizeJob.schedule();
 		return null;
 	}
 
 	private IModelGenerator createModel(String parameter, ICompilationUnit element) {
+		IModelGenerator generator = new NoOpModelGenerator();
 		if (parameter.equals("JAVA_FILE")) {
-			return new TypeClassModelCreator(element.findPrimaryType());
+			if (element.findPrimaryType() != null) {
+				return new TypeClassModelGenerator(element.findPrimaryType());
+			}
 		} else if (parameter.equals("PACKAGE")) {
-			IPackageFragment packageFragment = element.findPrimaryType().getPackageFragment();
-			return new PackageModelCreator(packageFragment);
+			if (element.findPrimaryType() != null) {
+				IPackageFragment packageFragment = element.findPrimaryType().getPackageFragment();
+				return new PackageModelGenerator(packageFragment);
+			}
 		} else if (parameter.equals("PROJECT")) {
-			return new ProjectModelCreator(element.getJavaProject());
-		} else {
-			return new NoOpModelGenerator();
+			return new ProjectModelGenerator(element.getJavaProject());
 		}
+		return generator;
 	}
 
 }

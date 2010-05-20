@@ -40,7 +40,7 @@ import seeit3d.modelers.java.JavaRepresentation;
  * @param <Children>
  *            Indicates the type of children the class is going to handle. For example a package have class as children of it.
  */
-public abstract class AbstracModelCreator<ElementToAnalize extends IJavaElement, Children extends IJavaElement> implements IModelGenerator {
+public abstract class AbstracModelGenerator<ElementToAnalize extends IJavaElement, Children extends IJavaElement> implements IModelGenerator {
 
 	private final SeeIT3DManager manager;
 
@@ -48,7 +48,7 @@ public abstract class AbstracModelCreator<ElementToAnalize extends IJavaElement,
 
 	protected boolean analizeDependecies = false;
 
-	public AbstracModelCreator(ElementToAnalize elementToAnalize) {
+	public AbstracModelGenerator(ElementToAnalize elementToAnalize) {
 		this.elementToAnalize = elementToAnalize;
 		manager = SeeIT3DManager.getInstance();
 	}
@@ -63,7 +63,7 @@ public abstract class AbstracModelCreator<ElementToAnalize extends IJavaElement,
 
 	protected abstract List<String> getMetricNames();
 
-	protected abstract IModelGenerator lowerLevelModelCreator(Children childrenElement);
+	protected abstract IModelGenerator lowerLevelModelGenerator(Children childrenElement);
 
 	protected void extraOperationsOnContainer(Container createdContainer, ElementToAnalize element) throws JavaModelException {
 	};
@@ -82,7 +82,7 @@ public abstract class AbstracModelCreator<ElementToAnalize extends IJavaElement,
 			Container container = new Container(representedObject, metrics);
 			for (Children child : children) {
 
-				IModelGenerator lowerLevelModelCreator = lowerLevelModelCreator(child);
+				IModelGenerator lowerLevelModelGenerator = lowerLevelModelGenerator(child);
 
 				Map<MetricCalculator, String> metricsValues = new HashMap<MetricCalculator, String>();
 				for (MetricCalculator metric : metrics) {
@@ -92,8 +92,8 @@ public abstract class AbstracModelCreator<ElementToAnalize extends IJavaElement,
 				PolyCylinder poly = new PolyCylinder(metricsValues, new EclipseJavaResource(child));
 				container.addPolyCylinder(poly);
 
-				if (lowerLevelModelCreator != null) {
-					Container lowerLevelContainer = lowerLevelModelCreator.analize(false);
+				if (lowerLevelModelGenerator != null) {
+					Container lowerLevelContainer = lowerLevelModelGenerator.analize(false);
 					container.addChildrenContainer(lowerLevelContainer);
 				}
 			}

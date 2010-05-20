@@ -28,14 +28,14 @@ import seeit3d.modelers.java.generator.metrics.LOCCalculator;
 import com.google.common.collect.Lists;
 
 /**
- * Project analyzer @see AbstracModelCreator
+ * Project analyzer @see AbstracModelGenerator
  * 
  * @author David Montaño
  * 
  */
-public class ProjectModelCreator extends AbstracModelCreator<IJavaProject, IPackageFragment> {
+public class ProjectModelGenerator extends AbstracModelGenerator<IJavaProject, IPackageFragment> {
 
-	public ProjectModelCreator(IJavaProject elementToAnalize) {
+	public ProjectModelGenerator(IJavaProject elementToAnalize) {
 		super(elementToAnalize);
 	}
 
@@ -58,8 +58,8 @@ public class ProjectModelCreator extends AbstracModelCreator<IJavaProject, IPack
 	}
 
 	@Override
-	protected IModelGenerator lowerLevelModelCreator(IPackageFragment childrenElement) {
-		return new PackageModelCreator(childrenElement);
+	protected IModelGenerator lowerLevelModelGenerator(IPackageFragment childrenElement) {
+		return new PackageModelGenerator(childrenElement);
 	}
 
 }

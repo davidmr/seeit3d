@@ -20,7 +20,8 @@ import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IJavaElement;
 
 import seeit3d.core.model.generator.IModelGenerator;
-import seeit3d.modelers.java.generator.TypeClassModelCreator;
+import seeit3d.core.model.utils.NoOpModelGenerator;
+import seeit3d.modelers.java.generator.TypeClassModelGenerator;
 
 /**
  * Concrete implementation of <code>AbstracVisualizaJavaElement</code> to show Java files in the visualization area
@@ -32,8 +33,11 @@ public class VisualizeJavaFileInView3dCommand extends AbstractVisualizeJavaEleme
 	@Override
 	protected IModelGenerator createModel(IJavaElement javaElement) {
 		ICompilationUnit unit = (ICompilationUnit) javaElement;
-		IModelGenerator creator = new TypeClassModelCreator(unit.findPrimaryType());
-		return creator;
+		IModelGenerator generator = new NoOpModelGenerator();
+		if (unit.findPrimaryType() != null) {
+			generator = new TypeClassModelGenerator(unit.findPrimaryType());
+		}
+		return generator;
 	}
 
 }

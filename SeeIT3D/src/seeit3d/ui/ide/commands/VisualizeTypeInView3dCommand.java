@@ -20,7 +20,7 @@ import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IType;
 
 import seeit3d.core.model.generator.IModelGenerator;
-import seeit3d.modelers.java.generator.TypeClassModelCreator;
+import seeit3d.modelers.java.generator.TypeClassModelGenerator;
 
 /**
  * Concrete implementation of <code>AbstracVisualizaJavaElement</code> to show Types (Classes) in the visualization area
@@ -33,7 +33,7 @@ public class VisualizeTypeInView3dCommand extends AbstractVisualizeJavaElement {
 	@Override
 	protected IModelGenerator createModel(IJavaElement javaElement) {
 		IType type = (IType) javaElement;
-		return new TypeClassModelCreator(type);
+		return new TypeClassModelGenerator(type);
 	}
 
 }

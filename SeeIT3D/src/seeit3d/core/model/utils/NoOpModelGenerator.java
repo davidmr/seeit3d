@@ -21,7 +21,7 @@ import seeit3d.core.model.generator.IModelGenerator;
 import seeit3d.utils.Utils;
 
 /**
- * Implementation of <code>IModelCreator</code> which avoids null handling when no creator is needed.
+ * Implementation of <code>IModelGenerator</code> which avoids null handling when no generator is needed.
  * 
  * @author David Montaño
  * 

@@ -29,18 +29,18 @@ import seeit3d.modelers.xml.generator.metrics.XMLContinuousMetricCalculator;
 import seeit3d.modelers.xml.internal.*;
 
 /**
- * Model creator for XML based visualization. It takes the model that was read by JAXB and translate it into the model of SeeIT3D
+ * Model generator for XML based visualization. It takes the model that was read by JAXB and translate it into the model of SeeIT3D
  * 
  * @author David Montaño
  * 
  */
-public class XMLBasedModelCreator implements IModelGenerator {
+public class XMLBasedModelGenerator implements IModelGenerator {
 
 	private final SeeIT3DManager manager;
 
 	private final seeit3d.modelers.xml.internal.Container containerXML;
 
-	public XMLBasedModelCreator(seeit3d.modelers.xml.internal.Container container) {
+	public XMLBasedModelGenerator(seeit3d.modelers.xml.internal.Container container) {
 		this.containerXML = container;
 		manager = SeeIT3DManager.getInstance();
 	}

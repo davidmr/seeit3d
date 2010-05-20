@@ -21,7 +21,7 @@ import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.widgets.Combo;
 
 import seeit3d.core.handler.SeeIT3DManager;
-import seeit3d.visual.relationships.IRelationShipVisualGenerator;
+import seeit3d.visual.relationships.ISceneGraphRelationshipGenerator;
 import seeit3d.visual.relationships.RelationShipsRegistry;
 
 /**
@@ -52,11 +52,11 @@ public class RelationshipSelectionListener implements SelectionListener {
 
 		String selectedGeneratorName = combo.getItem(combo.getSelectionIndex());
 
-		Iterable<Class<? extends IRelationShipVisualGenerator>> allRelationshipsGenerator = registry.allRelationshipsGenerator();
-		for (Class<? extends IRelationShipVisualGenerator> generator : allRelationshipsGenerator) {
+		Iterable<Class<? extends ISceneGraphRelationshipGenerator>> allRelationshipsGenerator = registry.allRelationshipsGenerator();
+		for (Class<? extends ISceneGraphRelationshipGenerator> generator : allRelationshipsGenerator) {
 			String relationName = registry.getRelationName(generator);
 			if (relationName.equals(selectedGeneratorName)) {
-				manager.useRelationShipVisualGenerator(generator);
+				manager.useSceneGraphRelationshipGenerator(generator);
 				manager.refreshVisualization();
 				break;
 			}

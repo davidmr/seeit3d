@@ -36,21 +36,21 @@ public class RelationShipsRegistry {
 		return instance;
 	}
 
-	private final List<Class<? extends IRelationShipVisualGenerator>> relationshipsGenerators;
+	private final List<Class<? extends ISceneGraphRelationshipGenerator>> relationshipsGenerators;
 
 	private RelationShipsRegistry() {
-		relationshipsGenerators = new ArrayList<Class<? extends IRelationShipVisualGenerator>>();
+		relationshipsGenerators = new ArrayList<Class<? extends ISceneGraphRelationshipGenerator>>();
 		relationshipsGenerators.add(NoRelationships.class);
 		relationshipsGenerators.add(CommonBaseGenerator.class);
 		relationshipsGenerators.add(LineBaseGenerator.class);
 
 	}
 
-	public Iterable<Class<? extends IRelationShipVisualGenerator>> allRelationshipsGenerator() {
+	public Iterable<Class<? extends ISceneGraphRelationshipGenerator>> allRelationshipsGenerator() {
 		return relationshipsGenerators;
 	}
 
-	public String getRelationName(Class<? extends IRelationShipVisualGenerator> selectedGenerator) {
+	public String getRelationName(Class<? extends ISceneGraphRelationshipGenerator> selectedGenerator) {
 		try {
 			return selectedGenerator.newInstance().getName();
 		} catch (InstantiationException e) {
@@ -63,7 +63,7 @@ public class RelationShipsRegistry {
 		return null;
 	}
 
-	public IRelationShipVisualGenerator createNewInstance(Class<? extends IRelationShipVisualGenerator> generator) {
+	public ISceneGraphRelationshipGenerator createNewInstance(Class<? extends ISceneGraphRelationshipGenerator> generator) {
 		try {
 			return generator.newInstance();
 		} catch (InstantiationException e) {

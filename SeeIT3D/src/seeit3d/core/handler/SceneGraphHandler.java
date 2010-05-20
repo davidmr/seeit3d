@@ -30,6 +30,7 @@ import seeit3d.ui.behavior.*;
 import seeit3d.utils.Utils;
 import seeit3d.utils.ViewConstants;
 import seeit3d.visual.colorscale.IColorScale;
+import seeit3d.visual.relationships.ISceneGraphRelationshipGenerator;
 
 import com.sun.j3d.utils.behaviors.vp.OrbitBehavior;
 import com.sun.j3d.utils.pickfast.behaviors.PickingCallback;
@@ -61,7 +62,7 @@ public class SceneGraphHandler implements IPreferencesListener {
 
 	private Color3f backgroundColor;
 
-	private boolean addRelatedToView;
+	private boolean showRelatedContainers;
 
 	private PickTranslate3DBehavior translation;
 
@@ -93,7 +94,10 @@ public class SceneGraphHandler implements IPreferencesListener {
 	}
 
 	public void removeScene(Container container) {
-		translation.unregisterCallback(container.getRelationShipVisualGenerator());
+		ISceneGraphRelationshipGenerator generator = container.getSceneGraphRelationshipGenerator();
+		if (generator instanceof PickingCallback) {
+			translation.unregisterCallback((PickingCallback) generator);
+		}
 		BranchGroup containerBG = container.getContainerBG();
 		containerBG.detach();
 		containersGroup.removeChild(containerBG);
@@ -254,25 +258,23 @@ public class SceneGraphHandler implements IPreferencesListener {
 
 		List<Container> newContainersToAdd = new ArrayList<Container>();
 		for (Container container : manager.containersInView()) {
-			container.updateVisualRepresentation();
-			BranchGroup bgContainer = container.getContainerBG();
-			if (addRelatedToView) {
-				List<Container> relatedContainers = container.generateRelations();
-				for (Container related : relatedContainers) {
-					newContainersToAdd.add(related);
-					related.updateVisualRepresentation();
-					related.setSelected(false);
-					BranchGroup relatedBG = related.getContainerBG();
-					containersTG.addChild(relatedBG);
+			if (!newContainersToAdd.contains(container)) {
+				container.updateVisualRepresentation();
+				BranchGroup bgContainer = container.getContainerBG();
+				containersTG.addChild(bgContainer);
+				if (showRelatedContainers) {
+					List<Container> processedContainers = container.generateSceneGraphRelations();
+					for (Container related : processedContainers) {
+						related.setSelected(false);
+						BranchGroup relatedBG = related.getContainerBG();
+						containersTG.addChild(relatedBG);
+					}
+					newContainersToAdd.addAll(processedContainers);
 				}
 			}
-
-			containersTG.addChild(bgContainer);
 		}
 
-		for (Container newContainer : newContainersToAdd) {
-			manager.addContainerToViewWithoutValidation(newContainer);
-		}
+		manager.addContainerToViewWithoutValidation(newContainersToAdd);
 
 		rootObj.addChild(containersGroup);
 
@@ -289,12 +291,12 @@ public class SceneGraphHandler implements IPreferencesListener {
 		tg.setTransform(t3d);
 	}
 
-	public void setRelatedContainersToView(boolean addRelatedToView) {
-		this.addRelatedToView = addRelatedToView;
+	public void setShowRelatedContainers(boolean showRelatedContainers) {
+		this.showRelatedContainers = showRelatedContainers;
 	}
 
-	public boolean getRelatedContainersToView() {
-		return addRelatedToView;
+	public boolean isShowRelatedContainers() {
+		return showRelatedContainers;
 	}
 
 	/**

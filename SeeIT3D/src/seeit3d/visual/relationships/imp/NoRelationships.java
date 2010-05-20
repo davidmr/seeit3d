@@ -3,12 +3,10 @@ package seeit3d.visual.relationships.imp;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.media.j3d.TransformGroup;
-
 import seeit3d.core.model.Container;
-import seeit3d.visual.relationships.IRelationShipVisualGenerator;
+import seeit3d.visual.relationships.ISceneGraphRelationshipGenerator;
 
-public class NoRelationships implements IRelationShipVisualGenerator {
+public class NoRelationships implements ISceneGraphRelationshipGenerator {
 
 	private static final String NAME = "No Relationships";
 
@@ -21,8 +19,5 @@ public class NoRelationships implements IRelationShipVisualGenerator {
 	public String getName() {
 		return NAME;
 	}
-
-	@Override
-	public void transformChanged(int type, TransformGroup tg) {}
 
 }

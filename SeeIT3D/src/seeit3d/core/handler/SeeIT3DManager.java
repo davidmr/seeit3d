@@ -33,16 +33,16 @@ import org.eclipse.ui.*;
 import org.eclipse.ui.part.FileEditorInput;
 
 import seeit3d.core.handler.error.ErrorHandler;
+import seeit3d.core.handler.utils.IContainersLayoutListener;
 import seeit3d.core.model.*;
 import seeit3d.core.model.generator.metrics.MetricCalculator;
 import seeit3d.feedback.IMappingView;
 import seeit3d.feedback.ISelectionInformationAware;
-import seeit3d.ui.ide.view.listeners.LabelInformation;
 import seeit3d.utils.Utils;
 import seeit3d.utils.ViewConstants;
 import seeit3d.visual.colorscale.IColorScale;
 import seeit3d.visual.colorscale.imp.ColdToHotColorScale;
-import seeit3d.visual.relationships.IRelationShipVisualGenerator;
+import seeit3d.visual.relationships.ISceneGraphRelationshipGenerator;
 
 import com.sun.j3d.utils.pickfast.behaviors.PickingCallback;
 
@@ -91,15 +91,18 @@ public class SeeIT3DManager implements IPreferencesListener {
 
 	private float transparencyStep;
 
+	private final List<IContainersLayoutListener> containerLayoutListener;
+
 	public SeeIT3DManager() {
 		state = new VisualizationState(this);
 		sceneGraphHandler = new SceneGraphHandler(this);
 		colorScale = new ColdToHotColorScale();
+		containerLayoutListener = new ArrayList<IContainersLayoutListener>();
 	}
 
 	/**************************************/
 	/********* OPERATIONS TO SCENE GRAPH ***/
-	public synchronized void setupTranslationCallback(PickingCallback callback) {
+	protected synchronized void setupTranslationCallback(PickingCallback callback) {
 		sceneGraphHandler.setupTranslationCallback(callback);
 	}
 
@@ -107,21 +110,9 @@ public class SeeIT3DManager implements IPreferencesListener {
 		return sceneGraphHandler.getCanvas();
 	}
 
-	/**************************************/
-	/******* OPERATIONS ON VIEW PROPERTIES **/
-	public synchronized void setupMappingView(IMappingView newMappingView) {
-		mappingView = newMappingView;
-	}
-
-	public void registerSelectionInformatioAware(LabelInformation selectionInformatioAware) {
-		this.selectionInformatioAware = selectionInformatioAware;
-	}
-
-	public synchronized void addContainerToView(Container container) {
-		state.addContainerToView(container);
-	}
-
-	public synchronized void doContainerLayout() {
+	/****************************************/
+	/********** LAYOUT PROPERTIES *************/
+	protected synchronized void doContainerLayout() {
 
 		float currentXPosition = 0.0f;
 		float currentZPosition = 0.0f;
@@ -150,7 +141,32 @@ public class SeeIT3DManager implements IPreferencesListener {
 		}
 
 		sceneGraphHandler.setViewersPosition(maxX);
+		notifyLayoutChanged();
 
+	}
+
+	private void notifyLayoutChanged() {
+		for (IContainersLayoutListener listener : containerLayoutListener) {
+			listener.containerLayoutChanged();
+		}
+	}
+
+	public synchronized void registerContainersLayoutListener(IContainersLayoutListener listener) {
+		this.containerLayoutListener.add(listener);
+	}
+
+	/**************************************/
+	/******* OPERATIONS ON VIEW PROPERTIES **/
+	public synchronized void setupMappingView(IMappingView newMappingView) {
+		mappingView = newMappingView;
+	}
+
+	public void registerSelectionInformatioAware(ISelectionInformationAware selectionInformatioAware) {
+		this.selectionInformatioAware = selectionInformatioAware;
+	}
+
+	public synchronized void addContainerToView(Container container) {
+		state.addContainerToView(container);
 	}
 
 	public synchronized void clearContainers() {
@@ -467,6 +483,12 @@ public class SeeIT3DManager implements IPreferencesListener {
 		state.addContainerToViewWithoutValidation(container);
 	}
 
+	protected void addContainerToViewWithoutValidation(List<Container> containers) {
+		for (Container container : containers) {
+			addContainerToViewWithoutValidation(container);
+		}
+	}
+
 	public Iterable<Container> containersInView() {
 		return state.containersInView();
 	}
@@ -522,20 +544,20 @@ public class SeeIT3DManager implements IPreferencesListener {
 		this.colorScale = colorScale;
 	}
 
-	public synchronized void useRelationShipVisualGenerator(Class<? extends IRelationShipVisualGenerator> relationShipVisualGenerator) {
-		state.useRelationShipVisualGeneratorOnSelectedContainers(relationShipVisualGenerator);
+	public synchronized void useSceneGraphRelationshipGenerator(Class<? extends ISceneGraphRelationshipGenerator> sceneGraphRelationshipGenerator) {
+		state.useScenGraphRelationshipGeneratorOnSelectedContainers(sceneGraphRelationshipGenerator);
 	}
 
 	public synchronized SceneGraphHandler getSceneGraphHandler() {
 		return sceneGraphHandler;
 	}
 
-	public synchronized void setRelatedContainersToView(boolean addRelatedToView) {
-		sceneGraphHandler.setRelatedContainersToView(addRelatedToView);
+	public synchronized void setShowRelatedContainers(boolean showRelated) {
+		sceneGraphHandler.setShowRelatedContainers(showRelated);
 	}
 
-	public synchronized boolean getRelatedContainersToView() {
-		return sceneGraphHandler.getRelatedContainersToView();
+	public synchronized boolean isShowRelatedContainers() {
+		return sceneGraphHandler.isShowRelatedContainers();
 	}
 
 	/**

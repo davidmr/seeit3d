@@ -28,7 +28,7 @@ import seeit3d.core.model.generator.metrics.MetricCalculator;
 import seeit3d.core.model.generator.metrics.MetricsRegistry;
 import seeit3d.utils.Utils;
 import seeit3d.utils.ViewConstants;
-import seeit3d.visual.relationships.IRelationShipVisualGenerator;
+import seeit3d.visual.relationships.ISceneGraphRelationshipGenerator;
 import seeit3d.visual.relationships.imp.NoRelationships;
 
 import com.google.common.collect.BiMap;
@@ -41,7 +41,7 @@ import com.sun.j3d.utils.geometry.Box;
  * @author David Montaño
  * 
  */
-public class Container implements Serializable {
+public class Container implements Serializable, Comparable<Container> {
 
 	private static final long serialVersionUID = 1L;
 
@@ -51,7 +51,7 @@ public class Container implements Serializable {
 
 	private transient Switch highlighRootNode;
 
-	private transient IRelationShipVisualGenerator relationShipVisualGenerator;
+	private transient ISceneGraphRelationshipGenerator sceneGraphRelationshipGenerator;
 
 	private final long identifier;
 
@@ -100,7 +100,7 @@ public class Container implements Serializable {
 		}
 		this.sorted = false;
 		this.currentLevel = currentLevel;
-		this.relationShipVisualGenerator = new NoRelationships();
+		this.sceneGraphRelationshipGenerator = new NoRelationships();
 	}
 
 	public Container(IContainerRepresentedObject representedObject, List<MetricCalculator> metrics) {
@@ -178,6 +178,9 @@ public class Container implements Serializable {
 
 	public void updateVisualRepresentation() {
 		buildBranchGroup();
+		for (Container related : relatedContainers) {
+			related.updateVisualRepresentation();
+		}
 	}
 
 	private void buildBranchGroup() {
@@ -298,8 +301,6 @@ public class Container implements Serializable {
 		containerTG.addChild(highlighRootNode);
 	}
 
-	
-
 	/**
 	 * Adds a new container if it is not present before
 	 * 
@@ -396,8 +397,8 @@ public class Container implements Serializable {
 		}
 	}
 
-	public List<Container> generateRelations() {
-		return relationShipVisualGenerator.generateVisualRelationShips(this);
+	public List<Container> generateSceneGraphRelations() {
+		return sceneGraphRelationshipGenerator.generateVisualRelationShips(this);
 	}
 
 	public void setPosition(Vector3f position) {
@@ -499,12 +500,12 @@ public class Container implements Serializable {
 		this.sorted = sorted;
 	}
 
-	public void setRelationShipVisualGenerator(IRelationShipVisualGenerator relationShipVisualGenerator) {
-		this.relationShipVisualGenerator = relationShipVisualGenerator;
+	public void setSceneGraphRelationshipGenerator(ISceneGraphRelationshipGenerator sceneGraphRelationshipGenerator) {
+		this.sceneGraphRelationshipGenerator = sceneGraphRelationshipGenerator;
 	}
 
-	public IRelationShipVisualGenerator getRelationShipVisualGenerator() {
-		return relationShipVisualGenerator;
+	public ISceneGraphRelationshipGenerator getSceneGraphRelationshipGenerator() {
+		return sceneGraphRelationshipGenerator;
 	}
 
 	public void addPolyCylinder(PolyCylinder polyCylinder) {
@@ -531,6 +532,11 @@ public class Container implements Serializable {
 
 		newContainer.containerBG = null;
 		return newContainer;
+	}
+
+	@Override
+	public int compareTo(Container o) {
+		return new Long(identifier).compareTo(new Long(o.identifier));
 	}
 
 	@Override
@@ -567,5 +573,6 @@ public class Container implements Serializable {
 	private void readObject(ObjectInputStream ois) throws IOException, ClassNotFoundException {
 		ois.defaultReadObject();
 		manager = SeeIT3DManager.getInstance();
+		sceneGraphRelationshipGenerator = new NoRelationships();
 	}
 }

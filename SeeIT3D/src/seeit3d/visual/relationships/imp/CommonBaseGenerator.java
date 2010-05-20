@@ -3,16 +3,19 @@ package seeit3d.visual.relationships.imp;
 import java.util.List;
 
 import javax.media.j3d.*;
+import javax.vecmath.Color3f;
 import javax.vecmath.Vector3f;
 
 import seeit3d.core.handler.SeeIT3DManager;
 import seeit3d.core.model.Container;
 import seeit3d.utils.Utils;
-import seeit3d.visual.relationships.IRelationShipVisualGenerator;
+import seeit3d.visual.relationships.ISceneGraphRelationshipGenerator;
 
 import com.sun.j3d.utils.geometry.Box;
 
-public class CommonBaseGenerator implements IRelationShipVisualGenerator {
+public class CommonBaseGenerator implements ISceneGraphRelationshipGenerator {
+
+	private static final float COLOR_OFFSET = 0.2f;
 
 	public static final float RELATION_MARK_PADDING = 0.1f;
 
@@ -29,16 +32,20 @@ public class CommonBaseGenerator implements IRelationShipVisualGenerator {
 	@Override
 	public List<Container> generateVisualRelationShips(Container baseContainer) {
 
-		addMarkToContainer(baseContainer);
+		Color3f baseColor = manager.getRelationMarkColor();
+		Color3f darkerColor = new Color3f(baseColor.x - COLOR_OFFSET, baseColor.y - COLOR_OFFSET, baseColor.z - COLOR_OFFSET);
+
+		addMarkToContainer(baseContainer, darkerColor);
+
 		for (Container related : baseContainer.getRelatedContainers()) {
-			addMarkToContainer(related);
+			addMarkToContainer(related, baseColor);
 		}
 
 		return baseContainer.getRelatedContainers();
 
 	}
 
-	private void addMarkToContainer(Container container) {
+	private void addMarkToContainer(Container container, Color3f color) {
 
 		TransformGroup transformGroup = container.getTransformGroup();
 		float width = container.getWidth();
@@ -48,8 +55,8 @@ public class CommonBaseGenerator implements IRelationShipVisualGenerator {
 		Box surroundingBox = new Box(width * RELATION_MARK_SCALING, height, depth * RELATION_MARK_SCALING, null);
 
 		Appearance app = new Appearance();
-		ColoringAttributes color = new ColoringAttributes(manager.getRelationMarkColor(), ColoringAttributes.SHADE_FLAT);
-		app.setColoringAttributes(color);
+		ColoringAttributes colorAttr = new ColoringAttributes(color, ColoringAttributes.SHADE_FLAT);
+		app.setColoringAttributes(colorAttr);
 
 		TransformGroup tgRelationMarkTop = new TransformGroup();
 		Geometry geometryTop = surroundingBox.getShape(Box.TOP).getGeometry();
@@ -77,8 +84,5 @@ public class CommonBaseGenerator implements IRelationShipVisualGenerator {
 	public String getName() {
 		return NAME;
 	}
-
-	@Override
-	public void transformChanged(int type, TransformGroup tg) {}
 
 }

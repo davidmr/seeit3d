@@ -33,7 +33,7 @@ import seeit3d.ui.ide.view.dnd.*;
 import seeit3d.ui.ide.view.listeners.*;
 import seeit3d.visual.colorscale.ColorScaleRegistry;
 import seeit3d.visual.colorscale.IColorScale;
-import seeit3d.visual.relationships.IRelationShipVisualGenerator;
+import seeit3d.visual.relationships.ISceneGraphRelationshipGenerator;
 import seeit3d.visual.relationships.RelationShipsRegistry;
 
 import com.google.common.collect.BiMap;
@@ -259,7 +259,7 @@ public class MappingViewComposite extends Composite implements IMappingView {
 
 	private void updateRelationshipsGenerator(List<Container> containers) {
 		RelationShipsRegistry relationRegistry = RelationShipsRegistry.getInstance();
-		Iterable<Class<? extends IRelationShipVisualGenerator>> allRelationshipsGenerator = relationRegistry.allRelationshipsGenerator();
+		Iterable<Class<? extends ISceneGraphRelationshipGenerator>> allRelationshipsGenerator = relationRegistry.allRelationshipsGenerator();
 
 		Group relationshipsGroup = new Group(rootComposite, SWT.SHADOW_OUT);
 		GridData relationshipsLayoutData = new GridData(GridData.FILL_BOTH);
@@ -267,16 +267,24 @@ public class MappingViewComposite extends Composite implements IMappingView {
 		relationshipsGroup.setLayout(new GridLayout(1, true));
 		relationshipsGroup.setText("Relationship visual type");
 
+		Button checkAddToView = new Button(relationshipsGroup, SWT.CHECK | SWT.DRAW_DELIMITER);
+		checkAddToView.setText("Show related");
+		checkAddToView.setToolTipText("When checked adds the related containers automatically to the visualization area");
+		boolean isShowRelatedContainers = SeeIT3DManager.getInstance().isShowRelatedContainers();
+		checkAddToView.setSelection(isShowRelatedContainers);
+
+		checkAddToView.addSelectionListener(new ShowRelatedListener());
+
 		Combo combo = new Combo(relationshipsGroup, SWT.READ_ONLY);
 
-		Class<? extends IRelationShipVisualGenerator> selectedGenerator = buildCurrentRelationShipGenerator(containers);
-		if (selectedGenerator == null) {
+		Class<? extends ISceneGraphRelationshipGenerator> selectedGenerator = buildCurrentRelationShipGenerator(containers);
+		if (selectedGenerator == null || !isShowRelatedContainers) {
 			combo.setEnabled(false);
 		} else {
 			int index = 0;
 
 			String selectedRelation = relationRegistry.getRelationName(selectedGenerator);
-			for (Class<? extends IRelationShipVisualGenerator> generatorClass : allRelationshipsGenerator) {
+			for (Class<? extends ISceneGraphRelationshipGenerator> generatorClass : allRelationshipsGenerator) {
 				String relationToAdd = relationRegistry.getRelationName(generatorClass);
 				combo.add(relationToAdd);
 				if (relationToAdd.equals(selectedRelation)) {
@@ -287,21 +295,16 @@ public class MappingViewComposite extends Composite implements IMappingView {
 			combo.addSelectionListener(new RelationshipSelectionListener());
 		}
 
-		Button checkAddToView = new Button(relationshipsGroup, SWT.CHECK | SWT.DRAW_DELIMITER);
-		checkAddToView.setText("Auto-add");
-		checkAddToView.setToolTipText("When checked adds the related containers automatically to the visualization area");
-		checkAddToView.setSelection(SeeIT3DManager.getInstance().getRelatedContainersToView());
 
-		checkAddToView.addSelectionListener(new AddRelatedToViewListener());
 
 	}
 
-	private Class<? extends IRelationShipVisualGenerator> buildCurrentRelationShipGenerator(List<Container> currentContainers) {
+	private Class<? extends ISceneGraphRelationshipGenerator> buildCurrentRelationShipGenerator(List<Container> currentContainers) {
 		if (!currentContainers.isEmpty()) {
-			Class<? extends IRelationShipVisualGenerator> relationClazz = currentContainers.get(0).getRelationShipVisualGenerator().getClass();
+			Class<? extends ISceneGraphRelationshipGenerator> relationClazz = currentContainers.get(0).getSceneGraphRelationshipGenerator().getClass();
 			for (int i = 1; i < currentContainers.size(); i++) {
 				Container container = currentContainers.get(i);
-				if (!relationClazz.equals(container.getRelationShipVisualGenerator().getClass())) {
+				if (!relationClazz.equals(container.getSceneGraphRelationshipGenerator().getClass())) {
 					return null;
 				}
 			}

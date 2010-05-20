@@ -28,11 +28,11 @@ import seeit3d.core.handler.SeeIT3DManager;
  * @author David Montaño
  * 
  */
-public class AddRelatedToViewListener implements SelectionListener {
+public class ShowRelatedListener implements SelectionListener {
 
 	private final SeeIT3DManager manager;
 
-	public AddRelatedToViewListener() {
+	public ShowRelatedListener() {
 		manager = SeeIT3DManager.getInstance();
 	}
 
@@ -45,7 +45,7 @@ public class AddRelatedToViewListener implements SelectionListener {
 	public void widgetSelected(SelectionEvent e) {
 		Button check = (Button) e.widget;
 		boolean checked = check.getSelection();
-		manager.setRelatedContainersToView(checked);
+		manager.setShowRelatedContainers(checked);
 		manager.refreshVisualization();
 	}
 

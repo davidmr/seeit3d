@@ -23,7 +23,9 @@ import seeit3d.core.handler.error.exception.IllegalVisualizationStateException;
 import seeit3d.core.handler.utils.ContainersSelectedIterator;
 import seeit3d.core.handler.utils.VisualizationStateChecker;
 import seeit3d.core.model.*;
-import seeit3d.visual.relationships.IRelationShipVisualGenerator;
+import seeit3d.visual.relationships.ISceneGraphRelationshipGenerator;
+
+import com.sun.j3d.utils.pickfast.behaviors.PickingCallback;
 
 /**
  * This class keeps track of the visualization state, like the selected containers in the view, checks of visualization state and sorting property
@@ -248,11 +250,12 @@ public class VisualizationState {
 		viewNeedUpdate();
 	}
 
-	public void useRelationShipVisualGeneratorOnSelectedContainers(Class<? extends IRelationShipVisualGenerator> relationShipVisualGenerator) {
+	public void useScenGraphRelationshipGeneratorOnSelectedContainers(Class<? extends ISceneGraphRelationshipGenerator> sceneGraphRelationshipGenerator) {
 		for (Container container : selectedContainers()) {
 			try {
-				IRelationShipVisualGenerator generator = relationShipVisualGenerator.newInstance();
-				container.setRelationShipVisualGenerator(generator);
+				ISceneGraphRelationshipGenerator generator = sceneGraphRelationshipGenerator.newInstance();
+				registerBehaviorCallback(generator);
+				container.setSceneGraphRelationshipGenerator(generator);
 			} catch (InstantiationException e) {
 				ErrorHandler.error(e);
 				e.printStackTrace();
@@ -260,6 +263,12 @@ public class VisualizationState {
 				ErrorHandler.error(e);
 				e.printStackTrace();
 			}
+		}
+	}
+
+	private void registerBehaviorCallback(ISceneGraphRelationshipGenerator generator) {
+		if (generator instanceof PickingCallback) {
+			manager.setupTranslationCallback((PickingCallback) generator);
 		}
 	}
 

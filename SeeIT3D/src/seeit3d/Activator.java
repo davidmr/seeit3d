@@ -29,14 +29,14 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.eclipse.ui.progress.UIJob;
 import org.osgi.framework.BundleContext;
 
-import seeit3d.commands.ChangeSortingPolyCylindersCriteriaCommand;
-import seeit3d.error.ErrorHandler;
-import seeit3d.manager.SeeIT3DManager;
-import seeit3d.metrics.MetricsRegistry;
-import seeit3d.metrics.NoOpMetricCalculator;
-import seeit3d.model.java.metrics.*;
-import seeit3d.observers.WorkspaceClosedObserver;
-import seeit3d.preferences.Preferences;
+import seeit3d.core.handler.SeeIT3DManager;
+import seeit3d.core.handler.error.ErrorHandler;
+import seeit3d.core.model.Preferences;
+import seeit3d.core.model.generator.metrics.MetricsRegistry;
+import seeit3d.core.model.utils.NoOpMetricCalculator;
+import seeit3d.modelers.java.generator.metrics.*;
+import seeit3d.ui.ide.commands.ChangeSortingPolyCylindersCriteriaCommand;
+import seeit3d.ui.ide.observers.WorkspaceClosedObserver;
 
 /**
  * The activator class controls the plug-in life cycle

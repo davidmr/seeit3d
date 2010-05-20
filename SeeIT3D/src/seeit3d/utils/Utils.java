@@ -25,10 +25,10 @@ import javax.vecmath.*;
 import org.eclipse.jdt.core.IMethod;
 import org.eclipse.jdt.core.JavaModelException;
 
-import seeit3d.metrics.BaseMetricCalculator;
-import seeit3d.model.ContainerRepresentedObject;
-import seeit3d.model.java.LineOfCode;
-import seeit3d.model.representation.Container;
+import seeit3d.core.model.Container;
+import seeit3d.core.model.IContainerRepresentedObject;
+import seeit3d.core.model.generator.metrics.MetricCalculator;
+import seeit3d.modelers.java.LineOfCode;
 
 import com.sun.j3d.utils.geometry.Box;
 import com.sun.j3d.utils.geometry.Sphere;
@@ -130,7 +130,7 @@ public class Utils {
 	}
 
 	public static Container emptyContainer() {
-		ContainerRepresentedObject representation = new ContainerRepresentedObject() {
+		IContainerRepresentedObject representation = new IContainerRepresentedObject() {
 
 			private static final long serialVersionUID = -4917184452995076729L;
 
@@ -145,7 +145,7 @@ public class Utils {
 			}
 		};
 
-		List<BaseMetricCalculator> metrics = new ArrayList<BaseMetricCalculator>();
+		List<MetricCalculator> metrics = new ArrayList<MetricCalculator>();
 		return new Container(representation, metrics);
 	}
 

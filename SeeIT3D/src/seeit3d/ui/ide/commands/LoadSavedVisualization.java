@@ -16,8 +16,6 @@
  */
 package seeit3d.ui.ide.commands;
 
-import java.io.*;
-
 import org.eclipse.core.commands.*;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -26,8 +24,7 @@ import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.handlers.HandlerUtil;
 
-import seeit3d.core.handler.SeeIT3DManager;
-import seeit3d.core.handler.error.ErrorHandler;
+import seeit3d.ui.ide.commands.jobs.LoadSavedVisualizationJob;
 
 /**
  * This command allow the user loading a saved visualization from the disk
@@ -36,12 +33,6 @@ import seeit3d.core.handler.error.ErrorHandler;
  * 
  */
 public class LoadSavedVisualization extends AbstractHandler {
-
-	private final SeeIT3DManager manager;
-
-	public LoadSavedVisualization() {
-		manager = SeeIT3DManager.getInstance();
-	}
 
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
@@ -55,16 +46,8 @@ public class LoadSavedVisualization extends AbstractHandler {
 		saveDialog.setFilterExtensions(new String[] { "*.s3d" });
 		String filename = saveDialog.open();
 		if (filename != null) {
-			try {
-				FileInputStream input = new FileInputStream(filename);
-				manager.loadVisualization(input);
-			} catch (FileNotFoundException e) {
-				ErrorHandler.error("Visualization file not found");
-				e.printStackTrace();
-			} catch (IOException e) {
-				ErrorHandler.error("Error while reading visualization file. Possibly wrong format or type");
-				e.printStackTrace();
-			}
+			LoadSavedVisualizationJob load = new LoadSavedVisualizationJob(filename);
+			load.schedule();
 		}
 
 		return null;

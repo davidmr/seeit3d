@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package seeit3d.core.handler.error.exception;
+package seeit3d.general.error.exception;
 
 /**
  * Exception to represent that the visualization has come to an illegal state

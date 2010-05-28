@@ -18,7 +18,8 @@ package seeit3d.ui.ide.commands;
 
 import org.eclipse.core.commands.*;
 
-import seeit3d.core.handler.SeeIT3DManager;
+import seeit3d.core.api.SeeIT3DCore;
+import seeit3d.general.SeeIT3DAPILocator;
 
 /**
  * Command to make the selected polycylinders less transparent
@@ -28,15 +29,15 @@ import seeit3d.core.handler.SeeIT3DManager;
  */
 public class MakeLessTransparentPolyCylindersSelectionCommand extends AbstractHandler {
 
-	private final SeeIT3DManager manager;
+	private final SeeIT3DCore core;
 
 	public MakeLessTransparentPolyCylindersSelectionCommand() {
-		manager = SeeIT3DManager.getInstance();
+		core = SeeIT3DAPILocator.findCore();
 	}
 
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
-		manager.changeTransparencyPolyCylindersSelection(false);
+		core.changeTransparencyPolyCylindersSelection(false);
 		return null;
 	}
 

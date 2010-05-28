@@ -22,10 +22,10 @@ import java.util.*;
 import javax.media.j3d.*;
 import javax.vecmath.Vector3f;
 
-import seeit3d.core.handler.SeeIT3DManager;
-import seeit3d.core.handler.error.exception.SeeIT3DException;
 import seeit3d.core.model.generator.metrics.MetricCalculator;
 import seeit3d.core.model.generator.metrics.MetricsRegistry;
+import seeit3d.general.SeeIT3DAPILocator;
+import seeit3d.general.error.exception.SeeIT3DException;
 import seeit3d.utils.Utils;
 import seeit3d.utils.ViewConstants;
 import seeit3d.visual.relationships.ISceneGraphRelationshipGenerator;
@@ -45,7 +45,7 @@ public class Container implements Serializable, Comparable<Container> {
 
 	private static final long serialVersionUID = 1L;
 
-	private transient SeeIT3DManager manager;
+	private transient Preferences preferences;
 
 	private transient BranchGroup containerBG;
 
@@ -86,7 +86,7 @@ public class Container implements Serializable, Comparable<Container> {
 	private Container(IContainerRepresentedObject representedObject, List<MetricCalculator> metrics, int currentLevel) {
 		checkMetricsValidity(metrics);
 		this.identifier = Utils.generateContainerIdentifier();
-		this.manager = SeeIT3DManager.getInstance();
+		this.preferences = SeeIT3DAPILocator.findPreferences();
 		this.polycylinders = new ArrayList<PolyCylinder>();
 		this.relatedContainers = new ArrayList<Container>();
 		this.children = new ArrayList<Container>();
@@ -227,7 +227,7 @@ public class Container implements Serializable, Comparable<Container> {
 			Vector3f newPosition = new Vector3f(currentXPosition, polyHeight - height, currentZPosition);
 			Utils.translateTranformGroup(polyTG, newPosition);
 
-			if (i % manager.getPolycylindersPerRow() == 0) {
+			if (i % preferences.getPolycylindersPerRow() == 0) {
 				currentZPosition += 2 * (widestPoly + ViewConstants.POLYCYLINDER_SPACING);
 				currentXPosition = -width + widestPoly;
 			} else {
@@ -262,7 +262,7 @@ public class Container implements Serializable, Comparable<Container> {
 	private void calculateDimensions() {
 		float widestPoly = findWidestPolycylinderValue();
 		int polySize = polycylinders.size();
-		int polyPerRow = manager.getPolycylindersPerRow();
+		int polyPerRow = preferences.getPolycylindersPerRow();
 		if (polySize > polyPerRow) {
 			width = widestPoly * polyPerRow + (ViewConstants.POLYCYLINDER_SPACING * (polyPerRow - 1));
 			int rows = (int) Math.ceil((float) polySize / (float) polyPerRow);
@@ -289,7 +289,7 @@ public class Container implements Serializable, Comparable<Container> {
 		float boxDepth = depth + ViewConstants.HIGHLIGHT_PADDING;
 		Box surroundingBox = new Box(boxWidth, boxHeight, boxDepth, null);
 
-		Shape3D highlightBox = Utils.buildShapeFromBox(surroundingBox, manager.getHighlightColor());
+		Shape3D highlightBox = Utils.buildShapeFromBox(surroundingBox, preferences.getHighlightColor());
 
 		TransformGroup highlightBoxTG = new TransformGroup();
 		highlightBoxTG.addChild(highlightBox);
@@ -572,7 +572,7 @@ public class Container implements Serializable, Comparable<Container> {
 
 	private void readObject(ObjectInputStream ois) throws IOException, ClassNotFoundException {
 		ois.defaultReadObject();
-		manager = SeeIT3DManager.getInstance();
+		preferences = SeeIT3DAPILocator.findPreferences();
 		sceneGraphRelationshipGenerator = new NoRelationships();
 	}
 }

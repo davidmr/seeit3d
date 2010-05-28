@@ -23,10 +23,11 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
-import seeit3d.core.handler.SeeIT3DManager;
-import seeit3d.core.handler.error.ErrorHandler;
-import seeit3d.core.handler.error.exception.SeeIT3DException;
+import seeit3d.core.api.SeeIT3DCore;
 import seeit3d.core.model.generator.IModelGenerator;
+import seeit3d.general.SeeIT3DAPILocator;
+import seeit3d.general.error.ErrorHandler;
+import seeit3d.general.error.exception.SeeIT3DException;
 import seeit3d.ui.ide.utils.OpenSeeIT3DView;
 
 /**
@@ -39,12 +40,12 @@ public class VisualizeJob extends Job {
 
 	private final List<IModelGenerator> modelGenerators;
 
-	private final SeeIT3DManager manager;
+	private final SeeIT3DCore core;
 
 	public VisualizeJob(Shell shell, List<IModelGenerator> modelGenerators) {
 		super("Visualize in SeeIT 3D");
 		this.modelGenerators = modelGenerators;
-		manager = SeeIT3DManager.getInstance();
+		core = SeeIT3DAPILocator.findCore();
 	}
 
 	@Override
@@ -57,7 +58,7 @@ public class VisualizeJob extends Job {
 		} catch (SeeIT3DException e) {
 			ErrorHandler.error(e);
 		}
-		manager.refreshVisualization();
+		core.refreshVisualization();
 		monitor.done();
 		Display.getDefault().syncExec(new OpenSeeIT3DView());
 		return Status.OK_STATUS;

@@ -6,9 +6,10 @@ import javax.media.j3d.*;
 import javax.vecmath.Point3f;
 import javax.vecmath.Vector3f;
 
-import seeit3d.core.handler.SeeIT3DManager;
+import seeit3d.core.api.SeeIT3DCore;
 import seeit3d.core.handler.utils.IContainersLayoutListener;
 import seeit3d.core.model.Container;
+import seeit3d.general.SeeIT3DAPILocator;
 import seeit3d.visual.relationships.ISceneGraphRelationshipGenerator;
 
 import com.sun.j3d.utils.pickfast.behaviors.PickingCallback;
@@ -17,15 +18,15 @@ public class LineBaseGenerator implements ISceneGraphRelationshipGenerator, Pick
 
 	private static final String NAME = "Lines";
 
-	private final SeeIT3DManager manager;
+	private final SeeIT3DCore core;
 
 	private final Map<Container, Shape3D> relatedShapes;
 
 	private Container baseContainer;
 
 	public LineBaseGenerator() {
-		this.manager = SeeIT3DManager.getInstance();
-		this.manager.registerContainersLayoutListener(this);
+		core = SeeIT3DAPILocator.findCore();
+		core.registerContainersLayoutListener(this);
 		relatedShapes = new TreeMap<Container, Shape3D>();
 	}
 
@@ -75,7 +76,7 @@ public class LineBaseGenerator implements ISceneGraphRelationshipGenerator, Pick
 		LineAttributes lineAttributes = new LineAttributes(2.0f, LineAttributes.PATTERN_SOLID, true);
 		appearance.setLineAttributes(lineAttributes);
 
-		ColoringAttributes coloringAttributes = new ColoringAttributes(manager.getRelationMarkColor(), ColoringAttributes.NICEST);
+		ColoringAttributes coloringAttributes = new ColoringAttributes(SeeIT3DAPILocator.findPreferences().getRelationMarkColor(), ColoringAttributes.NICEST);
 		appearance.setColoringAttributes(coloringAttributes);
 
 		Shape3D relationMark = new Shape3D(line, appearance);

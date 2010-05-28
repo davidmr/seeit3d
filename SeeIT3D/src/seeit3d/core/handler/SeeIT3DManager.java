@@ -24,15 +24,13 @@ import javax.media.j3d.TransformGroup;
 import javax.vecmath.Color3f;
 import javax.vecmath.Vector3f;
 
-import org.eclipse.core.resources.*;
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.ui.*;
-import org.eclipse.ui.part.FileEditorInput;
+import org.eclipse.ui.IViewPart;
+import org.eclipse.ui.PlatformUI;
 
-import seeit3d.core.handler.error.ErrorHandler;
+import seeit3d.core.api.SeeIT3DCore;
 import seeit3d.core.handler.utils.IContainersLayoutListener;
 import seeit3d.core.model.*;
 import seeit3d.core.model.generator.metrics.MetricCalculator;
@@ -52,20 +50,7 @@ import com.sun.j3d.utils.pickfast.behaviors.PickingCallback;
  * @author David Montaño
  * 
  */
-public class SeeIT3DManager implements IPreferencesListener {
-
-	/**
-	 * Singleton
-	 */
-	private static final SeeIT3DManager manager;
-
-	static {
-		manager = new SeeIT3DManager();
-	}
-
-	public static SeeIT3DManager getInstance() {
-		return manager;
-	}
+public class SeeIT3DManager implements SeeIT3DCore {
 
 	private final VisualizationState state;
 
@@ -102,17 +87,18 @@ public class SeeIT3DManager implements IPreferencesListener {
 
 	/**************************************/
 	/********* OPERATIONS TO SCENE GRAPH ***/
-	protected synchronized void setupTranslationCallback(PickingCallback callback) {
+	synchronized void setupTranslationCallback(PickingCallback callback) {
 		sceneGraphHandler.setupTranslationCallback(callback);
 	}
 
+	@Override
 	public synchronized SeeIT3DCanvas getMainCanvas() {
 		return sceneGraphHandler.getCanvas();
 	}
 
 	/****************************************/
 	/********** LAYOUT PROPERTIES *************/
-	protected synchronized void doContainerLayout() {
+	synchronized void doContainerLayout() {
 
 		float currentXPosition = 0.0f;
 		float currentZPosition = 0.0f;
@@ -151,28 +137,34 @@ public class SeeIT3DManager implements IPreferencesListener {
 		}
 	}
 
+	@Override
 	public synchronized void registerContainersLayoutListener(IContainersLayoutListener listener) {
 		this.containerLayoutListener.add(listener);
 	}
 
 	/**************************************/
 	/******* OPERATIONS ON VIEW PROPERTIES **/
+	@Override
 	public synchronized void setupMappingView(IMappingView newMappingView) {
 		mappingView = newMappingView;
 	}
 
+	@Override
 	public void registerSelectionInformatioAware(ISelectionInformationAware selectionInformatioAware) {
 		this.selectionInformatioAware = selectionInformatioAware;
 	}
 
+	@Override
 	public synchronized void addContainerToView(Container container) {
 		state.addContainerToView(container);
 	}
 
+	@Override
 	public synchronized void clearContainers() {
 		state.clearContainers();
 	}
 
+	@Override
 	public synchronized void updateSelectedContainersMapping(MetricCalculator metric, VisualProperty visualProp) {
 		for (Container container : state.selectedContainers()) {
 			container.updateMapping(metric, visualProp);
@@ -180,6 +172,7 @@ public class SeeIT3DManager implements IPreferencesListener {
 		refreshVisualization();
 	}
 
+	@Override
 	public void removeSelectContainersMapping(MetricCalculator metric) {
 		for (Container container : state.selectedContainers()) {
 			container.removeFromMapping(metric);
@@ -188,6 +181,7 @@ public class SeeIT3DManager implements IPreferencesListener {
 
 	}
 
+	@Override
 	public synchronized void updateCurrentSelectedContainer() {
 		for (Container container : state.selectedContainers()) {
 			sceneGraphHandler.removeScene(container);
@@ -198,6 +192,7 @@ public class SeeIT3DManager implements IPreferencesListener {
 		updateMappingView();
 	}
 
+	@Override
 	public synchronized void deleteSelectedContainers() {
 		for (Container container : state.selectedContainers()) {
 			sceneGraphHandler.removeScene(container);
@@ -205,12 +200,14 @@ public class SeeIT3DManager implements IPreferencesListener {
 		state.deleteSelectedContainers();
 	}
 
+	@Override
 	public synchronized void deleteAllContainers() {
 		state.clearContainers();
 		sceneGraphHandler.clearScene();
 		updateMappingView();
 	}
 
+	@Override
 	public synchronized void changeSelectionAndUpdateMappingView(Container newContainer, PolyCylinder polycylinder, boolean toggleContainerSelection, boolean togglePolycylinderSelection) {
 		boolean mappingNeedsRefresh = false;
 		synchronized (SeeIT3DManager.class) {
@@ -276,6 +273,7 @@ public class SeeIT3DManager implements IPreferencesListener {
 		selectionInformatioAware.updateInformation(state.selectedContainers(), currentMetricsValuesFromSelection);
 	}
 
+	@Override
 	public synchronized void changeContainerSelection(boolean increase) {
 		if (state.hasContainersInView()) {
 			Container container = null;
@@ -289,6 +287,7 @@ public class SeeIT3DManager implements IPreferencesListener {
 		}
 	}
 
+	@Override
 	public synchronized void scaleCurrentContainer(boolean scaleUp) {
 		for (Container container : state.selectedContainers()) {
 			TransformGroup transformGroup = container.getTransformGroup();
@@ -303,6 +302,7 @@ public class SeeIT3DManager implements IPreferencesListener {
 		}
 	}
 
+	@Override
 	public void updateViewUsingLevelOnSelectedContainer(boolean nextLevel) {
 		if (nextLevel) {
 			state.useNextLevelContainers();
@@ -311,12 +311,13 @@ public class SeeIT3DManager implements IPreferencesListener {
 		}
 	}
 
-	public synchronized void updateMappingView() {
+	private synchronized void updateMappingView() {
 		if (mappingView != null) {
 			mappingView.updateMappingView(this);
 		}
 	}
 
+	@Override
 	public synchronized void resetVisualization() {
 		state.reset();
 		sceneGraphHandler.rebuildSceneGraph();
@@ -350,6 +351,7 @@ public class SeeIT3DManager implements IPreferencesListener {
 		});
 	}
 
+	@Override
 	public synchronized void changeTransparencyPolyCylindersSelection(boolean moreTransparent) {
 		Iterator<PolyCylinder> iterator = state.iteratorOnSelectedPolycylinders();
 		while (iterator.hasNext()) {
@@ -358,6 +360,7 @@ public class SeeIT3DManager implements IPreferencesListener {
 		}
 	}
 
+	@Override
 	public synchronized void sortPolyCylinders() {
 		for (Container container : state.selectedContainers()) {
 			sceneGraphHandler.removeScene(container);
@@ -368,6 +371,7 @@ public class SeeIT3DManager implements IPreferencesListener {
 		}
 	}
 
+	@Override
 	@SuppressWarnings("unchecked")
 	public synchronized void loadVisualization(InputStream input) throws IOException {
 		ObjectInputStream in = new ObjectInputStream(input);
@@ -382,6 +386,7 @@ public class SeeIT3DManager implements IPreferencesListener {
 		}
 	}
 
+	@Override
 	public void saveVisualization(OutputStream output) throws IOException {
 		ObjectOutputStream out = new ObjectOutputStream(output);
 		List<Container> allContainers = new ArrayList<Container>();
@@ -392,36 +397,10 @@ public class SeeIT3DManager implements IPreferencesListener {
 		out.close();
 	}
 
-	public synchronized void openEditor(final PolyCylinder selectedPolyCylinder) {
-		Display.getDefault().asyncExec(new Runnable() {
-			@Override
-			public void run() {
-				IEclipseResourceRepresentation resource = selectedPolyCylinder.getRepresentation();
-				IResource associatedResource = resource.getAssociatedResource();
-				if (associatedResource != null) {
-					IPath path = associatedResource.getFullPath();
-					IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
-					final IFile file = root.getFile(path);
-					final IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
-					final IEditorDescriptor desc = PlatformUI.getWorkbench().getEditorRegistry().getDefaultEditor(file.getName());
-
-					try {
-						page.openEditor(new FileEditorInput(file), desc.getId());
-					} catch (Exception e) {
-						ErrorHandler.error("Error opening editor");
-						e.printStackTrace();
-					}
-
-				} else {
-					ErrorHandler.error("The selected polycylinder does not have an associated resource in the workspace");
-				}
-			}
-		});
-	}
 
 	/************************/
 	/**** STATE UPDATES ***/
-
+	@Override
 	public synchronized void toggleSynchronizationInPackageVsView() {
 		isSynchronzationWithPackageExplorerSet = !isSynchronzationWithPackageExplorerSet;
 		if (isSynchronzationWithPackageExplorerSet) {
@@ -429,10 +408,12 @@ public class SeeIT3DManager implements IPreferencesListener {
 		}
 	}
 
+	@Override
 	public synchronized void changeCurrentSortingPolyCylindersProperty(VisualProperty visualProperty) {
 		state.setSortingProperty(visualProperty);
 	}
 
+	@Override
 	public synchronized void refreshVisualization() {
 		refreshSelection();
 		sceneGraphHandler.rebuildSceneGraph();
@@ -479,20 +460,22 @@ public class SeeIT3DManager implements IPreferencesListener {
 		return false;
 	}
 
-	protected synchronized void addContainerToViewWithoutValidation(Container container) {
+	synchronized void addContainerToViewWithoutValidation(Container container) {
 		state.addContainerToViewWithoutValidation(container);
 	}
 
-	protected void addContainerToViewWithoutValidation(List<Container> containers) {
+	void addContainerToViewWithoutValidation(List<Container> containers) {
 		for (Container container : containers) {
 			addContainerToViewWithoutValidation(container);
 		}
 	}
 
+	@Override
 	public Iterable<Container> containersInView() {
 		return state.containersInView();
 	}
 
+	@Override
 	public synchronized List<Container> getCurrentSelectedContainers() {
 		List<Container> selectedContainers = new ArrayList<Container>();
 		for (Container container : state.selectedContainers()) {
@@ -501,10 +484,12 @@ public class SeeIT3DManager implements IPreferencesListener {
 		return Collections.unmodifiableList(selectedContainers);
 	}
 
+	@Override
 	public synchronized VisualProperty getCurrentSortingProperty() {
 		return state.getSortingProperty();
 	}
 
+	@Override
 	public synchronized String getCurrentSelectedContainersAsString() {
 
 		List<String> names = new ArrayList<String>();
@@ -520,86 +505,55 @@ public class SeeIT3DManager implements IPreferencesListener {
 		return names.toString();
 	}
 
+	@Override
 	public synchronized IColorScale getColorScale() {
 		return colorScale;
 	}
 
+	@Override
 	public synchronized int getPolycylindersPerRow() {
 		return polycylindersPerRow;
 	}
 
+	@Override
 	public synchronized Color3f getHighlightColor() {
 		return highlightColor;
 	}
 
+	@Override
 	public synchronized Color3f getRelationMarkColor() {
 		return relationMarkColor;
 	}
 
+	@Override
 	public synchronized float getTransparencyStep() {
 		return transparencyStep;
 	}
 
+	@Override
 	public synchronized void setColorScale(IColorScale colorScale) {
 		this.colorScale = colorScale;
 	}
 
+	@Override
 	public synchronized void useSceneGraphRelationshipGenerator(Class<? extends ISceneGraphRelationshipGenerator> sceneGraphRelationshipGenerator) {
 		state.useScenGraphRelationshipGeneratorOnSelectedContainers(sceneGraphRelationshipGenerator);
 	}
 
+	@Override
 	public synchronized SceneGraphHandler getSceneGraphHandler() {
 		return sceneGraphHandler;
 	}
 
+	@Override
 	public synchronized void setShowRelatedContainers(boolean showRelated) {
 		sceneGraphHandler.setShowRelatedContainers(showRelated);
 	}
 
+	@Override
 	public synchronized boolean isShowRelatedContainers() {
 		return sceneGraphHandler.isShowRelatedContainers();
 	}
 
-	/**
-	 * Listen preferences
-	 */
-	@Override
-	public void scaleStepChanged(double newScale) {
-		scaleStep = newScale;
-	}
-
-	@Override
-	public synchronized void colorScaleChanged(IColorScale newColorScale) {
-		this.colorScale = newColorScale;
-	}
-
-	@Override
-	public synchronized void containersPerRowChanged(int containersPerRow) {
-		this.containersPerRow = containersPerRow;
-	}
-
-	@Override
-	public void backgroundColorChanged(Color3f newBackgroundColor) {
-	}
-
-	@Override
-	public synchronized void relationMarkColorChanged(Color3f newRelationMarkColor) {
-		relationMarkColor = newRelationMarkColor;
-	}
-
-	@Override
-	public synchronized void highlightColorChanged(Color3f newHighlightColor) {
-		highlightColor = newHighlightColor;
-	}
-
-	@Override
-	public synchronized void polycylindersPerRowChanged(int newPolycylinderPerRow) {
-		polycylindersPerRow = newPolycylinderPerRow;
-	}
-
-	@Override
-	public synchronized void transparencyStepChanged(float transparencyStepChanged) {
-		transparencyStep = transparencyStepChanged;
-	}
 
 }

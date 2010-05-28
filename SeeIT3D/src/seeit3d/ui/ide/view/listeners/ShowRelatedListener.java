@@ -20,7 +20,8 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.widgets.Button;
 
-import seeit3d.core.handler.SeeIT3DManager;
+import seeit3d.core.api.SeeIT3DCore;
+import seeit3d.general.SeeIT3DAPILocator;
 
 /**
  * Listener for the checkbox in mapping view to update if the related containers are going to be added to the view
@@ -30,10 +31,10 @@ import seeit3d.core.handler.SeeIT3DManager;
  */
 public class ShowRelatedListener implements SelectionListener {
 
-	private final SeeIT3DManager manager;
+	private final SeeIT3DCore core;
 
 	public ShowRelatedListener() {
-		manager = SeeIT3DManager.getInstance();
+		core = SeeIT3DAPILocator.findCore();
 	}
 
 	@Override
@@ -45,8 +46,8 @@ public class ShowRelatedListener implements SelectionListener {
 	public void widgetSelected(SelectionEvent e) {
 		Button check = (Button) e.widget;
 		boolean checked = check.getSelection();
-		manager.setShowRelatedContainers(checked);
-		manager.refreshVisualization();
+		core.setShowRelatedContainers(checked);
+		core.refreshVisualization();
 	}
 
 }

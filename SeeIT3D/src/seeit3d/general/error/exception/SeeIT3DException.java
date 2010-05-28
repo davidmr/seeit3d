@@ -14,30 +14,27 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package seeit3d.core.handler.error.exception;
-
-import javax.xml.bind.JAXBException;
+package seeit3d.general.error.exception;
 
 /**
- * Exception to indicate that an error occurred while reading from a XML file due to the file is not correctly formed
+ * Exception wrapper, it contains a messages that will be displayed to user
  * 
  * @author David Montaño
  * 
  */
-public class SeeIT3DXMLParsingException extends SeeIT3DException {
+public class SeeIT3DException extends RuntimeException {
 
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = -4990866216441437343L;
 
-	private final JAXBException rootException;
+	private String showableMessage;
 
-	public SeeIT3DXMLParsingException(JAXBException exception) {
-		super("Error reading XML file. Please check that the sintax conforms to specification");
-		this.rootException = exception;
+	public SeeIT3DException(String message) {
+		showableMessage = message;
 	}
 
 	@Override
-	public void printStackTrace() {
-		rootException.printStackTrace();
+	public String getMessage() {
+		return showableMessage;
 	}
 
 }

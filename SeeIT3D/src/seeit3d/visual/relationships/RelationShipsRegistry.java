@@ -19,7 +19,7 @@ package seeit3d.visual.relationships;
 import java.util.ArrayList;
 import java.util.List;
 
-import seeit3d.core.handler.error.ErrorHandler;
+import seeit3d.general.error.ErrorHandler;
 import seeit3d.visual.relationships.imp.*;
 
 /**

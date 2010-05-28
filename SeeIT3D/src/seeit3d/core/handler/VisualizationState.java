@@ -18,11 +18,11 @@ package seeit3d.core.handler;
 
 import java.util.*;
 
-import seeit3d.core.handler.error.ErrorHandler;
-import seeit3d.core.handler.error.exception.IllegalVisualizationStateException;
 import seeit3d.core.handler.utils.ContainersSelectedIterator;
 import seeit3d.core.handler.utils.VisualizationStateChecker;
 import seeit3d.core.model.*;
+import seeit3d.general.error.ErrorHandler;
+import seeit3d.general.error.exception.IllegalVisualizationStateException;
 import seeit3d.visual.relationships.ISceneGraphRelationshipGenerator;
 
 import com.sun.j3d.utils.pickfast.behaviors.PickingCallback;
@@ -45,7 +45,7 @@ public class VisualizationState {
 
 	private final VisualizationStateChecker stateChecker;
 
-	public VisualizationState(SeeIT3DManager manager) {
+	VisualizationState(SeeIT3DManager manager) {
 		this.manager = manager;
 		containersInView = new ArrayList<Container>();
 		currentSelectionPolyCylinder = new ArrayList<PolyCylinder>();
@@ -70,7 +70,7 @@ public class VisualizationState {
 	/*************************/
 	/****** CONTAINERS *******/
 
-	public void addContainerToView(Container container) {
+	void addContainerToView(Container container) {
 		if (container == null) {
 			throw new NullPointerException("Container can not be null");
 		}
@@ -94,18 +94,18 @@ public class VisualizationState {
 		}
 	}
 
-	protected void addContainerToViewWithoutValidation(Container container) {
+	void addContainerToViewWithoutValidation(Container container) {
 		if (!containersInView.contains(container)) {
 			containersInView.add(container);
 		}
 	}
 
-	public void clearContainers() {
+	void clearContainers() {
 		containersInView.clear();
 		viewNeedUpdate();
 	}
 
-	public boolean addContainerToSelection(Container newContainer, boolean toggleInSelection) {
+	boolean addContainerToSelection(Container newContainer, boolean toggleInSelection) {
 		boolean succesful = false;
 		if (newContainer != null) {
 			if (newContainer.isSelected()) {
@@ -132,21 +132,21 @@ public class VisualizationState {
 		return succesful;
 	}
 
-	public boolean hasContainersInView() {
+	boolean hasContainersInView() {
 		return containersInView.iterator().hasNext();
 	}
 
-	public boolean hasContainersSelected() {
+	boolean hasContainersSelected() {
 		return new ContainersSelectedIterator(containersInView).hasNext();
 	}
 
-	private void clearSelection() {
+	void clearSelection() {
 		for (Container container : containersInView) {
 			container.setSelected(false);
 		}
 	}
 
-	public Iterable<Container> selectedContainers() {
+	Iterable<Container> selectedContainers() {
 		return new Iterable<Container>() {
 			@Override
 			public Iterator<Container> iterator() {
@@ -155,7 +155,7 @@ public class VisualizationState {
 		};
 	}
 
-	public Iterable<Container> containersInView() {
+	Iterable<Container> containersInView() {
 		return new Iterable<Container>() {
 			@Override
 			public Iterator<Container> iterator() {
@@ -164,11 +164,11 @@ public class VisualizationState {
 		};
 	}
 
-	public Container firstContainer() {
+	Container firstContainer() {
 		return new ContainersSelectedIterator(containersInView).next();
 	}
 
-	public void deleteSelectedContainers() {
+	void deleteSelectedContainers() {
 		ContainersSelectedIterator iterator = new ContainersSelectedIterator(containersInView);
 		while (iterator.hasNext()) {
 			iterator.next();
@@ -177,7 +177,7 @@ public class VisualizationState {
 		viewNeedUpdate();
 	}
 
-	public Container getNextSelectableContainer() {
+	Container getNextSelectableContainer() {
 		int nextIndex = -1;
 		for (int i = 0; i < containersInView.size(); i++) {
 			Container container = containersInView.get(i);
@@ -196,7 +196,7 @@ public class VisualizationState {
 
 	}
 
-	public Container getPreviousSelectableContainer() {
+	Container getPreviousSelectableContainer() {
 		int prevIndex = -1;
 		for (int i = 0; i < containersInView.size(); i++) {
 			Container container = containersInView.get(i);
@@ -214,7 +214,7 @@ public class VisualizationState {
 		return containersInView.get(prevIndex);
 	}
 
-	public void useNextLevelContainers() {
+	void useNextLevelContainers() {
 		List<Container> newContainers = new ArrayList<Container>();
 		List<Container> oldContainers = new ArrayList<Container>();
 		for (Container container : selectedContainers()) {
@@ -235,7 +235,7 @@ public class VisualizationState {
 		}
 	}
 
-	public void usePreviousLevelContainers() {
+	void usePreviousLevelContainers() {
 		List<Container> newContainers = new ArrayList<Container>();
 		Iterator<Container> containers = new ContainersSelectedIterator(containersInView);
 		while (containers.hasNext()) {
@@ -250,7 +250,7 @@ public class VisualizationState {
 		viewNeedUpdate();
 	}
 
-	public void useScenGraphRelationshipGeneratorOnSelectedContainers(Class<? extends ISceneGraphRelationshipGenerator> sceneGraphRelationshipGenerator) {
+	void useScenGraphRelationshipGeneratorOnSelectedContainers(Class<? extends ISceneGraphRelationshipGenerator> sceneGraphRelationshipGenerator) {
 		for (Container container : selectedContainers()) {
 			try {
 				ISceneGraphRelationshipGenerator generator = sceneGraphRelationshipGenerator.newInstance();
@@ -275,7 +275,7 @@ public class VisualizationState {
 	/***********************************/
 	/*********** POLYCYLINDERS **********/
 
-	public boolean addPolyCylinderToSelection(PolyCylinder polycylinder, boolean toggleInSelection) {
+	boolean addPolyCylinderToSelection(PolyCylinder polycylinder, boolean toggleInSelection) {
 		boolean success = false;
 		if (polycylinder != null) {
 			if (currentSelectionPolyCylinder.contains(polycylinder)) {
@@ -302,7 +302,7 @@ public class VisualizationState {
 		return success;
 	}
 
-	public void clearSelectionOnPolycylinders() {
+	void clearSelectionOnPolycylinders() {
 		Iterator<PolyCylinder> iterator = currentSelectionPolyCylinder.iterator();
 		while (iterator.hasNext()) {
 			PolyCylinder polyCylinder = iterator.next();
@@ -311,29 +311,29 @@ public class VisualizationState {
 		}
 	}
 
-	public Iterator<PolyCylinder> iteratorOnSelectedPolycylinders() {
+	Iterator<PolyCylinder> iteratorOnSelectedPolycylinders() {
 		return currentSelectionPolyCylinder.iterator();
 	}
 
-	public boolean hasMultiplePolyCylindersSelected() {
+	boolean hasMultiplePolyCylindersSelected() {
 		return currentSelectionPolyCylinder.size() > 1;
 	}
 
 	/*************************/
 	/**** OTHER OPERATIONS ****/
 
-	public void reset() {
+	void reset() {
 		for (Container container : containersInView) {
 			container.clearTransparencies();
 		}
 		viewNeedUpdate();
 	}
 
-	public void setSortingProperty(VisualProperty sortingProperty) {
+	void setSortingProperty(VisualProperty sortingProperty) {
 		this.sortingProperty = sortingProperty;
 	}
 
-	public VisualProperty getSortingProperty() {
+	VisualProperty getSortingProperty() {
 		return sortingProperty;
 	}
 

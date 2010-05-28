@@ -27,7 +27,7 @@ import javax.xml.validation.SchemaFactory;
 
 import org.xml.sax.SAXException;
 
-import seeit3d.core.handler.error.ErrorHandler;
+import seeit3d.general.error.ErrorHandler;
 
 /**
  * Represents the schema that describes the XML file. It is used to validate the structure of a read file

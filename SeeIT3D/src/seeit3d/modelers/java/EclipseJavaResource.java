@@ -20,8 +20,8 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.JavaModelException;
 
-import seeit3d.core.handler.error.ErrorHandler;
 import seeit3d.core.model.IEclipseResourceRepresentation;
+import seeit3d.general.error.ErrorHandler;
 
 
 /**

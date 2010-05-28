@@ -28,7 +28,8 @@ import org.eclipse.ui.contexts.IContextService;
 import org.eclipse.ui.internal.expressions.ActivePartExpression;
 import org.eclipse.ui.part.ViewPart;
 
-import seeit3d.core.handler.SeeIT3DManager;
+import seeit3d.core.api.SeeIT3DCore;
+import seeit3d.general.SeeIT3DAPILocator;
 import seeit3d.ui.ide.view.listeners.LabelInformation;
 
 /**
@@ -42,10 +43,10 @@ public class SeeIT3DView extends ViewPart {
 
 	public static final String ID = "seeit3d.seeit3dview";
 
-	private final SeeIT3DManager manager;
+	private final SeeIT3DCore core;
 
 	public SeeIT3DView() {
-		manager = SeeIT3DManager.getInstance();
+		core = SeeIT3DAPILocator.findCore();
 	}
 
 	@Override
@@ -63,7 +64,7 @@ public class SeeIT3DView extends ViewPart {
 		label.setLayoutData(labelData);
 
 		LabelInformation infoLabel = new LabelInformation(label);
-		manager.registerSelectionInformatioAware(infoLabel);
+		core.registerSelectionInformatioAware(infoLabel);
 
 		Composite visualizationComposite = new Composite(parent, SWT.EMBEDDED);
 
@@ -71,14 +72,14 @@ public class SeeIT3DView extends ViewPart {
 		visualizationComposite.setLayoutData(data);
 
 		Frame glFrame = SWT_AWT.new_Frame(visualizationComposite);
-		glFrame.add(manager.getMainCanvas());
+		glFrame.add(core.getMainCanvas());
 
 		MappingViewComposite mappingComposite = new MappingViewComposite(parent);
 		GridData mappingCompositeData = new GridData(GridData.FILL_HORIZONTAL);
 		mappingCompositeData.heightHint = 180;
 		mappingComposite.setLayoutData(mappingCompositeData);
 
-		manager.setupMappingView(mappingComposite);
+		core.setupMappingView(mappingComposite);
 
 	}
 

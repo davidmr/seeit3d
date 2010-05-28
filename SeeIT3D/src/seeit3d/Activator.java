@@ -29,11 +29,10 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.eclipse.ui.progress.UIJob;
 import org.osgi.framework.BundleContext;
 
-import seeit3d.core.handler.SeeIT3DManager;
-import seeit3d.core.handler.error.ErrorHandler;
 import seeit3d.core.model.Preferences;
 import seeit3d.core.model.generator.metrics.MetricsRegistry;
 import seeit3d.core.model.utils.NoOpMetricCalculator;
+import seeit3d.general.error.ErrorHandler;
 import seeit3d.modelers.java.generator.metrics.*;
 import seeit3d.ui.ide.commands.ChangeSortingPolyCylindersCriteriaCommand;
 import seeit3d.ui.ide.observers.WorkspaceClosedObserver;
@@ -65,8 +64,8 @@ public class Activator extends AbstractUIPlugin {
 		super.start(context);
 		plugin = this;
 		initializeSortRadio();
-		registerGlobalListener();
 		initializePreferences();
+		registerGlobalListener();
 		registerSingletonMetrics();
 		ErrorHandler.setShell(new Shell(Display.getDefault()));
 	}
@@ -74,8 +73,6 @@ public class Activator extends AbstractUIPlugin {
 	private void initializePreferences() {
 		IPreferenceStore preferenceStore = getPreferenceStore();
 		Preferences preferences = Preferences.getInstance();
-		preferences.registerListener(SeeIT3DManager.getInstance());
-		preferences.registerListener(SeeIT3DManager.getInstance().getSceneGraphHandler());
 		preferences.setPreferencesDefaults(preferenceStore);
 		preferences.loadStoredPreferences(preferenceStore);
 		preferenceStore.addPropertyChangeListener(preferences);

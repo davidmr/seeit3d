@@ -24,8 +24,9 @@ import org.eclipse.ui.commands.IElementUpdater;
 import org.eclipse.ui.handlers.HandlerUtil;
 import org.eclipse.ui.menus.UIElement;
 
-import seeit3d.core.handler.SeeIT3DManager;
+import seeit3d.core.api.SeeIT3DCore;
 import seeit3d.core.model.VisualProperty;
+import seeit3d.general.SeeIT3DAPILocator;
 
 /**
  * Command to change the criteria to sort polycylinders when the sorting is executed
@@ -39,13 +40,13 @@ public class ChangeSortingPolyCylindersCriteriaCommand extends AbstractHandler i
 
 	public static final String CHANGE_SORT_COMMAND_ID = "seeit3d.orderPolyCylindersByCriteria";
 
-	private final SeeIT3DManager manager;
+	private final SeeIT3DCore core;
 
 	private String currentCriteria;
 
 	public ChangeSortingPolyCylindersCriteriaCommand() {
-		manager = SeeIT3DManager.getInstance();
-		currentCriteria = manager.getCurrentSortingProperty().toString();
+		core = SeeIT3DAPILocator.findCore();
+		currentCriteria = core.getCurrentSortingProperty().toString();
 	}
 
 	@Override
@@ -59,7 +60,7 @@ public class ChangeSortingPolyCylindersCriteriaCommand extends AbstractHandler i
 		currentCriteria = param;
 
 		VisualProperty property = VisualProperty.valueOf(currentCriteria);
-		manager.changeCurrentSortingPolyCylindersProperty(property);
+		core.changeCurrentSortingPolyCylindersProperty(property);
 		ICommandService service = (ICommandService) HandlerUtil.getActiveWorkbenchWindowChecked(event).getService(ICommandService.class);
 		service.refreshElements(event.getCommand().getId(), null);
 

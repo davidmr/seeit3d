@@ -23,8 +23,8 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
-import seeit3d.core.handler.error.ErrorHandler;
 import seeit3d.core.model.Container;
+import seeit3d.general.error.ErrorHandler;
 
 /**
  * This class is responsible for validating if the visualization state is valid and can be processed

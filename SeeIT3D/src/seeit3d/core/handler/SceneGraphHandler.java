@@ -23,13 +23,11 @@ import java.util.List;
 import javax.media.j3d.*;
 import javax.vecmath.*;
 
-import seeit3d.core.handler.error.exception.SeeIT3DException;
 import seeit3d.core.model.Container;
-import seeit3d.core.model.IPreferencesListener;
+import seeit3d.general.error.exception.SeeIT3DException;
 import seeit3d.ui.behavior.*;
 import seeit3d.utils.Utils;
 import seeit3d.utils.ViewConstants;
-import seeit3d.visual.colorscale.IColorScale;
 import seeit3d.visual.relationships.ISceneGraphRelationshipGenerator;
 
 import com.sun.j3d.utils.behaviors.vp.OrbitBehavior;
@@ -44,7 +42,7 @@ import com.sun.j3d.utils.universe.ViewingPlatform;
  * @author David Montaño
  * 
  */
-public class SceneGraphHandler implements IPreferencesListener {
+public class SceneGraphHandler {
 
 	private final SeeIT3DManager manager;
 
@@ -60,7 +58,7 @@ public class SceneGraphHandler implements IPreferencesListener {
 
 	private OrbitBehavior orbit = null;
 
-	private Color3f backgroundColor;
+	private final Color3f backgroundColor;
 
 	private boolean showRelatedContainers;
 
@@ -74,26 +72,26 @@ public class SceneGraphHandler implements IPreferencesListener {
 
 	private boolean initialized = false;
 
-	public SceneGraphHandler(SeeIT3DManager manager) {
+	SceneGraphHandler(SeeIT3DManager manager) {
 		this.manager = manager;
 		this.backgroundColor = new Color3f(1.0f, 1.0f, 1.0f);
 	}
 
-	public void clearScene() {
+	void clearScene() {
 		for (Container container : manager.containersInView()) {
 			removeScene(container);
 		}
 	}
 
-	public void enableOrbiting() {
+	void enableOrbiting() {
 		changeOrbitState(true);
 	}
 
-	public void disableOrbiting() {
+	void disableOrbiting() {
 		changeOrbitState(false);
 	}
 
-	public void removeScene(Container container) {
+	void removeScene(Container container) {
 		ISceneGraphRelationshipGenerator generator = container.getSceneGraphRelationshipGenerator();
 		if (generator instanceof PickingCallback) {
 			translation.unregisterCallback((PickingCallback) generator);
@@ -103,18 +101,18 @@ public class SceneGraphHandler implements IPreferencesListener {
 		containersGroup.removeChild(containerBG);
 	}
 
-	public void setupTranslationCallback(PickingCallback callback) {
+	void setupTranslationCallback(PickingCallback callback) {
 		if (translation != null) {
 			translation.setupCallback(callback);
 		}
 	}
 
-	public SeeIT3DCanvas getCanvas() {
+	SeeIT3DCanvas getCanvas() {
 		checkIfInitialize();
 		return canvas;
 	}
 
-	public void rebuildSceneGraph() {
+	void rebuildSceneGraph() {
 		checkIfInitialize();
 		if (containersGroup != null) {
 			containersGroup.detach();
@@ -123,7 +121,7 @@ public class SceneGraphHandler implements IPreferencesListener {
 		}
 	}
 
-	private void changeOrbitState(boolean enabled) {
+	void changeOrbitState(boolean enabled) {
 		if (orbit != null) {
 			orbit.setRotateEnable(enabled);
 			orbit.setTranslateEnable(enabled);
@@ -280,7 +278,7 @@ public class SceneGraphHandler implements IPreferencesListener {
 
 	}
 
-	public void setViewersPosition(float max) {
+	void setViewersPosition(float max) {
 		float xMax = Math.max(max, 5);
 		ViewingPlatform vp = universe.getViewingPlatform();
 		TransformGroup tg = vp.getViewPlatformTransform();
@@ -291,49 +289,12 @@ public class SceneGraphHandler implements IPreferencesListener {
 		tg.setTransform(t3d);
 	}
 
-	public void setShowRelatedContainers(boolean showRelatedContainers) {
+	void setShowRelatedContainers(boolean showRelatedContainers) {
 		this.showRelatedContainers = showRelatedContainers;
 	}
 
-	public boolean isShowRelatedContainers() {
+	boolean isShowRelatedContainers() {
 		return showRelatedContainers;
-	}
-
-	/**
-	 * Listen for preferences
-	 */
-	@Override
-	public void backgroundColorChanged(Color3f newBackgroundColor) {
-		this.backgroundColor = newBackgroundColor;
-		updateBackgroundColor();
-	}
-
-	@Override
-	public void scaleStepChanged(double newScale) {
-	}
-
-	@Override
-	public void colorScaleChanged(IColorScale newColorScale) {
-	}
-
-	@Override
-	public void containersPerRowChanged(int containersPerRow) {
-	}
-
-	@Override
-	public void relationMarkColorChanged(Color3f newRelationMarkColor) {
-	}
-
-	@Override
-	public void highlightColorChanged(Color3f newHighlightColor) {
-	}
-
-	@Override
-	public void polycylindersPerRowChanged(int newPolycylinderPerRow) {
-	}
-
-	@Override
-	public void transparencyStepChanged(float transparencyStepChanged) {
 	}
 
 }

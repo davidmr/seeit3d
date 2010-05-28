@@ -23,10 +23,11 @@ import java.util.*;
 import javax.media.j3d.*;
 import javax.vecmath.Color3f;
 
-import seeit3d.core.handler.SeeIT3DManager;
-import seeit3d.core.model.generator.metrics.*;
+import seeit3d.core.model.generator.metrics.MetricCalculator;
+import seeit3d.core.model.generator.metrics.MetricsRegistry;
 import seeit3d.core.model.utils.NoEclipseRepresentation;
 import seeit3d.core.model.utils.NoOpMetricCalculator;
+import seeit3d.general.SeeIT3DAPILocator;
 import seeit3d.utils.Utils;
 import seeit3d.utils.ViewConstants;
 
@@ -50,7 +51,7 @@ public class PolyCylinder implements Serializable {
 
 	private transient TransformGroup polyCylinderTG;
 
-	private transient SeeIT3DManager manager;
+	private transient Preferences preferences;
 
 	private transient Material boxColor;
 
@@ -75,8 +76,8 @@ public class PolyCylinder implements Serializable {
 		this.representation = representation;
 		visualPropertyValues = new ArrayList<VisualPropertyValue>();
 		identifier = Utils.generatePolyCylinderIdentifier();
-		manager = SeeIT3DManager.getInstance();
 		propertiesMap = HashBiMap.create();
+		preferences = SeeIT3DAPILocator.findPreferences();
 	}
 
 	public PolyCylinder(Map<MetricCalculator, String> metricsValues) {
@@ -99,9 +100,9 @@ public class PolyCylinder implements Serializable {
 			float currentTransparency = transparency.getTransparency();
 			float newTransparency = 0.0f;
 			if (moreTransparent) {
-				newTransparency = currentTransparency + manager.getTransparencyStep();
+				newTransparency = currentTransparency + preferences.getTransparencyStep();
 			} else {
-				newTransparency = currentTransparency - manager.getTransparencyStep();
+				newTransparency = currentTransparency - preferences.getTransparencyStep();
 			}
 	
 			if (newTransparency >= 0.0f && newTransparency <= 1.0f) {
@@ -173,7 +174,7 @@ public class PolyCylinder implements Serializable {
 
 	private void activateHighlight() {
 		if (boxColor != null) {
-			boxColor.setDiffuseColor(manager.getHighlightColor());
+			boxColor.setDiffuseColor(preferences.getHighlightColor());
 		}
 	}
 
@@ -254,7 +255,7 @@ public class PolyCylinder implements Serializable {
 
 	private void readObject(ObjectInputStream ois) throws IOException, ClassNotFoundException {
 		ois.defaultReadObject();
-		manager = SeeIT3DManager.getInstance();
+		preferences = SeeIT3DAPILocator.findPreferences();
 		representation = new NoEclipseRepresentation();
 	}
 

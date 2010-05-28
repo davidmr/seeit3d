@@ -21,8 +21,8 @@ import java.util.*;
 
 import org.eclipse.jdt.core.*;
 
-import seeit3d.core.handler.error.ErrorHandler;
 import seeit3d.core.model.generator.metrics.AbstractContinuousMetricCalculator;
+import seeit3d.general.error.ErrorHandler;
 import seeit3d.modelers.java.LineOfCode;
 
 /**

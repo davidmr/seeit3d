@@ -19,8 +19,9 @@ package seeit3d.ui.ide.view.dnd;
 import org.eclipse.swt.dnd.*;
 import org.eclipse.swt.widgets.Group;
 
-import seeit3d.core.handler.SeeIT3DManager;
+import seeit3d.core.api.SeeIT3DCore;
 import seeit3d.core.model.generator.metrics.MetricCalculator;
+import seeit3d.general.SeeIT3DAPILocator;
 
 /**
  * This class listens for metrics drop on the metrics group and removing them from the visualization
@@ -32,11 +33,11 @@ public class DropMetricOnMetricContainerListener implements DropTargetListener {
 
 	private final Group groupToAdd;
 
-	private final SeeIT3DManager manager;
+	private final SeeIT3DCore core;
 
 	public DropMetricOnMetricContainerListener(Group groupToAdd) {
 		this.groupToAdd = groupToAdd;
-		manager = SeeIT3DManager.getInstance();
+		core = SeeIT3DAPILocator.findCore();
 	}
 
 	@Override
@@ -47,7 +48,7 @@ public class DropMetricOnMetricContainerListener implements DropTargetListener {
 	public void drop(DropTargetEvent event) {
 		if (TransferMetric.getInstance().isSupportedType(event.currentDataType)) {
 			MetricCalculator metric = (MetricCalculator) event.data;
-			manager.removeSelectContainersMapping(metric);
+			core.removeSelectContainersMapping(metric);
 			DragAndDropHelper.createMetricDraggableLabel(groupToAdd, metric);
 			groupToAdd.layout();
 		}

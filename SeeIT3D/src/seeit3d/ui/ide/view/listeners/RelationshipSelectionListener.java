@@ -20,7 +20,8 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.widgets.Combo;
 
-import seeit3d.core.handler.SeeIT3DManager;
+import seeit3d.core.api.SeeIT3DCore;
+import seeit3d.general.SeeIT3DAPILocator;
 import seeit3d.visual.relationships.ISceneGraphRelationshipGenerator;
 import seeit3d.visual.relationships.RelationShipsRegistry;
 
@@ -32,10 +33,10 @@ import seeit3d.visual.relationships.RelationShipsRegistry;
  */
 public class RelationshipSelectionListener implements SelectionListener {
 
-	private final SeeIT3DManager manager;
+	private final SeeIT3DCore core;
 
 	public RelationshipSelectionListener() {
-		manager = SeeIT3DManager.getInstance();
+		core = SeeIT3DAPILocator.findCore();
 	}
 
 	@Override
@@ -56,8 +57,8 @@ public class RelationshipSelectionListener implements SelectionListener {
 		for (Class<? extends ISceneGraphRelationshipGenerator> generator : allRelationshipsGenerator) {
 			String relationName = registry.getRelationName(generator);
 			if (relationName.equals(selectedGeneratorName)) {
-				manager.useSceneGraphRelationshipGenerator(generator);
-				manager.refreshVisualization();
+				core.useSceneGraphRelationshipGenerator(generator);
+				core.refreshVisualization();
 				break;
 			}
 		}

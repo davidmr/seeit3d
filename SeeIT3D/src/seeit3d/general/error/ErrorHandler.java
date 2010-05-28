@@ -14,12 +14,12 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package seeit3d.core.handler.error;
+package seeit3d.general.error;
 
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Shell;
 
-import seeit3d.core.handler.error.exception.SeeIT3DException;
+import seeit3d.general.error.exception.SeeIT3DException;
 
 /**
  * Error handler class. Presents the user and information dialog with the specific error on it

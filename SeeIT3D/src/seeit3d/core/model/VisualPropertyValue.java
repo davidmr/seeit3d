@@ -23,8 +23,9 @@ import java.io.Serializable;
 
 import javax.vecmath.Color3f;
 
-import seeit3d.core.handler.SeeIT3DManager;
 import seeit3d.core.model.generator.metrics.MetricCalculator;
+import seeit3d.general.SeeIT3DAPILocator;
+import seeit3d.visual.api.SeeIT3DVisualProperties;
 import seeit3d.visual.colorscale.IColorScale;
 
 /**
@@ -37,19 +38,19 @@ public class VisualPropertyValue implements Serializable {
 
 	private static final long serialVersionUID = 5696083743076942768L;
 
-	private transient final SeeIT3DManager manager;
+	private transient final SeeIT3DVisualProperties visualProperties;
 
-	private VisualProperty property;
+	private final VisualProperty property;
 
-	private String value;
+	private final String value;
 
-	private MetricCalculator calculator;
+	private final MetricCalculator calculator;
 
 	public VisualPropertyValue(VisualProperty property, String value, MetricCalculator calculator) {
 		this.property = property;
 		this.value = value;
 		this.calculator = calculator;
-		manager = SeeIT3DManager.getInstance();
+		visualProperties = SeeIT3DAPILocator.findVisualProperties();
 	}
 
 	public VisualProperty getProperty() {
@@ -62,7 +63,7 @@ public class VisualPropertyValue implements Serializable {
 	}
 
 	public Color3f getColorFromValue() {
-		IColorScale colorScale = manager.getColorScale();
+		IColorScale colorScale = visualProperties.getColorScale();
 		float val = getValidValue();
 		return colorScale.generateCuantitavieColor(val);
 	}

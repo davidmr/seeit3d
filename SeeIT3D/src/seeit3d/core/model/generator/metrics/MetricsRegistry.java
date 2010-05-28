@@ -19,7 +19,7 @@ package seeit3d.core.model.generator.metrics;
 import java.util.ArrayList;
 import java.util.List;
 
-import seeit3d.core.handler.error.exception.SeeIT3DMetricNotFoundException;
+import seeit3d.general.error.exception.SeeIT3DMetricNotFoundException;
 
 /**
  * Is where all the metrics instances live. Every metric within the plugin must be registered with this class in order to be accesible

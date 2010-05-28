@@ -14,20 +14,19 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package seeit3d.core.handler.error.exception;
+package seeit3d.general.error.exception;
 
 /**
- * Exception to indicate that a specific metric was not found in the general metric registry
+ * Exception to indicate an error in the model creation
  * 
  * @author David Montaño
  * 
  */
-public class SeeIT3DMetricNotFoundException extends SeeIT3DException {
+public class SeeIT3DModelGeneratorException extends SeeIT3DException {
 
 	private static final long serialVersionUID = 1L;
 
-	public SeeIT3DMetricNotFoundException(String metricName) {
-		super("Metric with name '" + metricName + "' not found in registry. Please register it before using the metric");
-
+	public SeeIT3DModelGeneratorException(String message) {
+		super(message);
 	}
 }

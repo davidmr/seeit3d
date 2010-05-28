@@ -18,7 +18,7 @@ package seeit3d.ui.ide.utils;
 
 import org.eclipse.ui.*;
 
-import seeit3d.core.handler.error.ErrorHandler;
+import seeit3d.general.error.ErrorHandler;
 import seeit3d.ui.ide.view.SeeIT3DView;
 
 /**

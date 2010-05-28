@@ -18,9 +18,11 @@ package seeit3d.ui.behavior;
 
 import javax.media.j3d.*;
 
-import seeit3d.core.handler.SeeIT3DManager;
+import seeit3d.core.api.SeeIT3DCore;
 import seeit3d.core.model.Container;
 import seeit3d.core.model.PolyCylinder;
+import seeit3d.general.SeeIT3DAPILocator;
+import seeit3d.ui.api.SeeIT3DUI;
 import seeit3d.utils.ViewConstants;
 
 import com.sun.j3d.utils.geometry.Box;
@@ -38,7 +40,9 @@ public class MouseClickedBehavior extends PickMouseBehavior {
 
 	private static final int DELTA_PRESS_MBUTTON = 250;
 
-	private final SeeIT3DManager manager;
+	private final SeeIT3DCore core;
+
+	private final SeeIT3DUI ui;
 
 	private long lastPressedTime = 0;
 
@@ -47,7 +51,8 @@ public class MouseClickedBehavior extends PickMouseBehavior {
 		setSchedulingBounds(bounds);
 		pickCanvas.setTolerance(ViewConstants.PICKING_TOLERANCE);
 		pickCanvas.setMode(PickTool.GEOMETRY);
-		manager = SeeIT3DManager.getInstance();
+		core = SeeIT3DAPILocator.findCore();
+		ui = SeeIT3DAPILocator.findUI();
 	}
 
 	@Override
@@ -66,12 +71,12 @@ public class MouseClickedBehavior extends PickMouseBehavior {
 		}
 		if (doubleClick()) {
 			if (selectedPolyCylinder != null) {
-				manager.openEditor(selectedPolyCylinder);
+				ui.openEditor(selectedPolyCylinder);
 			}
 		} else {
 			boolean toggleContainerSelection = mevent.isControlDown();
 			boolean togglePolycylinderSelection = mevent.isShiftDown();
-			manager.changeSelectionAndUpdateMappingView(selectedContainer, selectedPolyCylinder, toggleContainerSelection, togglePolycylinderSelection);
+			core.changeSelectionAndUpdateMappingView(selectedContainer, selectedPolyCylinder, toggleContainerSelection, togglePolycylinderSelection);
 		}
 
 		lastPressedTime = System.currentTimeMillis();

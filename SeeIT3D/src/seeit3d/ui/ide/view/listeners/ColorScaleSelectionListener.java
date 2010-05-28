@@ -20,7 +20,8 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.widgets.Combo;
 
-import seeit3d.core.handler.SeeIT3DManager;
+import seeit3d.core.api.SeeIT3DCore;
+import seeit3d.general.SeeIT3DAPILocator;
 import seeit3d.visual.colorscale.ColorScaleRegistry;
 import seeit3d.visual.colorscale.IColorScale;
 
@@ -32,10 +33,10 @@ import seeit3d.visual.colorscale.IColorScale;
  */
 public class ColorScaleSelectionListener implements SelectionListener {
 
-	private final SeeIT3DManager manager;
+	private final SeeIT3DCore core;
 
 	public ColorScaleSelectionListener() {
-		manager = SeeIT3DManager.getInstance();
+		core = SeeIT3DAPILocator.findCore();
 	}
 
 	@Override
@@ -52,8 +53,8 @@ public class ColorScaleSelectionListener implements SelectionListener {
 
 		for (IColorScale colorScale : allColorScales) {
 			if (colorScaleName.equals(colorScale.getName())) {
-				manager.setColorScale(colorScale);
-				manager.refreshVisualization();
+				core.setColorScale(colorScale);
+				core.refreshVisualization();
 				break;
 			}
 		}

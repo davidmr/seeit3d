@@ -29,6 +29,7 @@ import seeit3d.core.model.Container;
 import seeit3d.core.model.VisualProperty;
 import seeit3d.core.model.generator.metrics.MetricCalculator;
 import seeit3d.feedback.IMappingView;
+import seeit3d.general.SeeIT3DAPILocator;
 import seeit3d.ui.ide.view.dnd.*;
 import seeit3d.ui.ide.view.listeners.*;
 import seeit3d.visual.colorscale.ColorScaleRegistry;
@@ -229,7 +230,7 @@ public class MappingViewComposite extends Composite implements IMappingView {
 
 		Combo combo = new Combo(colorScalesGroup, SWT.READ_ONLY);
 
-		IColorScale currentColorScale = SeeIT3DManager.getInstance().getColorScale();
+		IColorScale currentColorScale = SeeIT3DAPILocator.findCore().getColorScale();
 		int index = 0;
 		for (IColorScale colorScale : allColorScales) {
 			combo.add(colorScale.getName());
@@ -270,7 +271,7 @@ public class MappingViewComposite extends Composite implements IMappingView {
 		Button checkAddToView = new Button(relationshipsGroup, SWT.CHECK | SWT.DRAW_DELIMITER);
 		checkAddToView.setText("Show related");
 		checkAddToView.setToolTipText("When checked adds the related containers automatically to the visualization area");
-		boolean isShowRelatedContainers = SeeIT3DManager.getInstance().isShowRelatedContainers();
+		boolean isShowRelatedContainers = SeeIT3DAPILocator.findCore().isShowRelatedContainers();
 		checkAddToView.setSelection(isShowRelatedContainers);
 
 		checkAddToView.addSelectionListener(new ShowRelatedListener());

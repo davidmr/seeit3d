@@ -24,6 +24,10 @@ import seeit3d.core.handler.SeeIT3DManager;
  * @author David Montaño
  * 
  */
+/**
+ * Use eventbus
+ */
+@Deprecated
 public interface IMappingView {
 
 	public void updateMappingView(SeeIT3DManager manager);

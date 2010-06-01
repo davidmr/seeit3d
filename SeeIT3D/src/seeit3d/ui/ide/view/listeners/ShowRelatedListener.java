@@ -46,6 +46,7 @@ public class ShowRelatedListener implements SelectionListener {
 	public void widgetSelected(SelectionEvent e) {
 		Button check = (Button) e.widget;
 		boolean checked = check.getSelection();
+		// TODO use eventbus to trigger show related change
 		core.setShowRelatedContainers(checked);
 		core.refreshVisualization();
 	}

@@ -63,6 +63,7 @@ public class SeeIT3DView extends ViewPart {
 		labelData.heightHint = 30;
 		label.setLayoutData(labelData);
 
+		// TODO use eventbus to register for changes in feedback
 		LabelInformation infoLabel = new LabelInformation(label);
 		core.registerSelectionInformatioAware(infoLabel);
 

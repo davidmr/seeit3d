@@ -52,7 +52,7 @@ public class RelationshipSelectionListener implements SelectionListener {
 		Combo combo = (Combo) event.widget;
 
 		String selectedGeneratorName = combo.getItem(combo.getSelectionIndex());
-
+		// TODO use eventbus to trigger relationship selection changed
 		Iterable<Class<? extends ISceneGraphRelationshipGenerator>> allRelationshipsGenerator = registry.allRelationshipsGenerator();
 		for (Class<? extends ISceneGraphRelationshipGenerator> generator : allRelationshipsGenerator) {
 			String relationName = registry.getRelationName(generator);

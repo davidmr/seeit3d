@@ -47,6 +47,7 @@ public class SelectionComponentListener implements SelectionListener {
 	@Override
 	public void widgetSelected(SelectionEvent event) {
 		Button source = (Button) event.getSource();
+		// TODO use eventbus to trigger change in option level
 		ChangeLevelOption option = (ChangeLevelOption) source.getData(COMPONENT_LEVEL_DETAIL);
 		core.updateViewUsingLevelOnSelectedContainer(option.moreDetail);
 	}

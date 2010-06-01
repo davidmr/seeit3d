@@ -78,6 +78,7 @@ public class Preferences implements IPropertyChangeListener {
 	private IColorScale colorScale;
 
 	@Override
+	// TODO Use eventbus to trigger prefence changed
 	public void propertyChange(PropertyChangeEvent event) {
 		String property = event.getProperty();
 		if (property.equals(CONTAINERS_PER_ROW)) {

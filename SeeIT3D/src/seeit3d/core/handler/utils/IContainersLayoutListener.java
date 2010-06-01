@@ -22,6 +22,10 @@ package seeit3d.core.handler.utils;
  * @author David Montaño
  * 
  */
+/**
+ * Use eventbus
+ */
+@Deprecated
 public interface IContainersLayoutListener {
 
 	void containerLayoutChanged();

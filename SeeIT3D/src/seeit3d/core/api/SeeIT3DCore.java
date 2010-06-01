@@ -5,7 +5,6 @@ import java.util.List;
 
 import javax.vecmath.Color3f;
 
-import seeit3d.core.handler.SceneGraphHandler;
 import seeit3d.core.handler.SeeIT3DCanvas;
 import seeit3d.core.handler.utils.IContainersLayoutListener;
 import seeit3d.core.model.*;
@@ -19,6 +18,10 @@ public interface SeeIT3DCore {
 
 	SeeIT3DCanvas getMainCanvas();
 
+	/**
+	 * Use eventbus
+	 */
+	@Deprecated
 	void registerContainersLayoutListener(IContainersLayoutListener listener);
 
 	void setupMappingView(IMappingView newMappingView);
@@ -63,6 +66,10 @@ public interface SeeIT3DCore {
 
 	void changeCurrentSortingPolyCylindersProperty(VisualProperty visualProperty);
 
+	/**
+	 * Should be handled internally
+	 */
+	@Deprecated
 	void refreshVisualization();
 
 	Iterable<Container> containersInView();
@@ -93,8 +100,6 @@ public interface SeeIT3DCore {
 
 	@Deprecated
 	void useSceneGraphRelationshipGenerator(Class<? extends ISceneGraphRelationshipGenerator> sceneGraphRelationshipGenerator);
-
-	SceneGraphHandler getSceneGraphHandler();
 
 	@Deprecated
 	void setShowRelatedContainers(boolean showRelated);

@@ -30,6 +30,10 @@ import seeit3d.feedback.ISelectionInformationAware;
  * @author David Montaño
  * 
  */
+/**
+ * Use eventbus
+ */
+@Deprecated
 public class LabelInformation implements ISelectionInformationAware {
 
 	private final Label label;

@@ -50,6 +50,7 @@ import com.sun.j3d.utils.pickfast.behaviors.PickingCallback;
  * @author David Montaño
  * 
  */
+@Deprecated
 public class SeeIT3DManager implements SeeIT3DCore {
 
 	private final VisualizationState state;
@@ -76,6 +77,10 @@ public class SeeIT3DManager implements SeeIT3DCore {
 
 	private float transparencyStep;
 
+	/**
+	 * Use eventbus
+	 */
+	@Deprecated
 	private final List<IContainersLayoutListener> containerLayoutListener;
 
 	public SeeIT3DManager() {
@@ -131,12 +136,20 @@ public class SeeIT3DManager implements SeeIT3DCore {
 
 	}
 
+	/**
+	 * Use eventbus
+	 */
+	@Deprecated
 	private void notifyLayoutChanged() {
 		for (IContainersLayoutListener listener : containerLayoutListener) {
 			listener.containerLayoutChanged();
 		}
 	}
 
+	/**
+	 * Use eventbus
+	 */
+	@Deprecated
 	@Override
 	public synchronized void registerContainersLayoutListener(IContainersLayoutListener listener) {
 		this.containerLayoutListener.add(listener);
@@ -397,7 +410,6 @@ public class SeeIT3DManager implements SeeIT3DCore {
 		out.close();
 	}
 
-
 	/************************/
 	/**** STATE UPDATES ***/
 	@Override
@@ -541,11 +553,6 @@ public class SeeIT3DManager implements SeeIT3DCore {
 	}
 
 	@Override
-	public synchronized SceneGraphHandler getSceneGraphHandler() {
-		return sceneGraphHandler;
-	}
-
-	@Override
 	public synchronized void setShowRelatedContainers(boolean showRelated) {
 		sceneGraphHandler.setShowRelatedContainers(showRelated);
 	}
@@ -554,6 +561,5 @@ public class SeeIT3DManager implements SeeIT3DCore {
 	public synchronized boolean isShowRelatedContainers() {
 		return sceneGraphHandler.isShowRelatedContainers();
 	}
-
 
 }

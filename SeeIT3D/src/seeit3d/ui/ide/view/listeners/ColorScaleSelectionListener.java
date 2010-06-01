@@ -51,6 +51,7 @@ public class ColorScaleSelectionListener implements SelectionListener {
 
 		Iterable<IColorScale> allColorScales = ColorScaleRegistry.getInstance().allColorScales();
 
+		// TODO use eventbus to trigger colorscale changed
 		for (IColorScale colorScale : allColorScales) {
 			if (colorScaleName.equals(colorScale.getName())) {
 				core.setColorScale(colorScale);

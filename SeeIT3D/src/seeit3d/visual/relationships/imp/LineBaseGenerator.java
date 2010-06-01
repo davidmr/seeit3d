@@ -6,27 +6,24 @@ import javax.media.j3d.*;
 import javax.vecmath.Point3f;
 import javax.vecmath.Vector3f;
 
-import seeit3d.core.api.SeeIT3DCore;
-import seeit3d.core.handler.utils.IContainersLayoutListener;
 import seeit3d.core.model.Container;
 import seeit3d.general.SeeIT3DAPILocator;
+import seeit3d.general.bus.*;
+import seeit3d.general.bus.events.ContainersLayoutDone;
 import seeit3d.visual.relationships.ISceneGraphRelationshipGenerator;
 
 import com.sun.j3d.utils.pickfast.behaviors.PickingCallback;
 
-public class LineBaseGenerator implements ISceneGraphRelationshipGenerator, PickingCallback, IContainersLayoutListener {
+public class LineBaseGenerator implements ISceneGraphRelationshipGenerator, PickingCallback, IEventListener {
 
 	private static final String NAME = "Lines";
-
-	private final SeeIT3DCore core;
 
 	private final Map<Container, Shape3D> relatedShapes;
 
 	private Container baseContainer;
 
 	public LineBaseGenerator() {
-		core = SeeIT3DAPILocator.findCore();
-		core.registerContainersLayoutListener(this);
+		EventBus.registerListener(ContainersLayoutDone.class, this);
 		relatedShapes = new TreeMap<Container, Shape3D>();
 	}
 
@@ -49,10 +46,12 @@ public class LineBaseGenerator implements ISceneGraphRelationshipGenerator, Pick
 	}
 
 	@Override
-	public void containerLayoutChanged() {
-		for (Map.Entry<Container, Shape3D> containerShape : relatedShapes.entrySet()) {
-			LineArray line = createLineContainers(baseContainer, containerShape.getKey());
-			containerShape.getValue().setGeometry(line);
+	public void processEvent(IEvent event) {
+		if (event instanceof ContainersLayoutDone) {
+			for (Map.Entry<Container, Shape3D> containerShape : relatedShapes.entrySet()) {
+				LineArray line = createLineContainers(baseContainer, containerShape.getKey());
+				containerShape.getValue().setGeometry(line);
+			}
 		}
 	}
 
@@ -108,6 +107,5 @@ public class LineBaseGenerator implements ISceneGraphRelationshipGenerator, Pick
 	public String getName() {
 		return NAME;
 	}
-
 
 }

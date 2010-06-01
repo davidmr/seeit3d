@@ -24,19 +24,11 @@ import javax.media.j3d.TransformGroup;
 import javax.vecmath.Color3f;
 import javax.vecmath.Vector3f;
 
-import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.StructuredSelection;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.ui.IViewPart;
-import org.eclipse.ui.PlatformUI;
-
 import seeit3d.core.api.SeeIT3DCore;
-import seeit3d.core.handler.utils.IContainersLayoutListener;
 import seeit3d.core.model.*;
 import seeit3d.core.model.generator.metrics.MetricCalculator;
-import seeit3d.feedback.IMappingView;
-import seeit3d.feedback.ISelectionInformationAware;
-import seeit3d.utils.Utils;
+import seeit3d.general.bus.*;
+import seeit3d.general.bus.events.*;
 import seeit3d.utils.ViewConstants;
 import seeit3d.visual.colorscale.IColorScale;
 import seeit3d.visual.colorscale.imp.ColdToHotColorScale;
@@ -51,19 +43,16 @@ import com.sun.j3d.utils.pickfast.behaviors.PickingCallback;
  * 
  */
 @Deprecated
-public class SeeIT3DManager implements SeeIT3DCore {
+public class SeeIT3DManager implements SeeIT3DCore, IEventListener {
 
+	// TODO trigger event on polycylinders change, listeners responsible for tracking the state of them
 	private final VisualizationState state;
 
 	private final SceneGraphHandler sceneGraphHandler;
 
 	private IColorScale colorScale;
 
-	private IMappingView mappingView = null;
-
 	private boolean isSynchronzationWithPackageExplorerSet = false;
-
-	private ISelectionInformationAware selectionInformatioAware;
 
 	private double scaleStep;
 
@@ -77,17 +66,20 @@ public class SeeIT3DManager implements SeeIT3DCore {
 
 	private float transparencyStep;
 
-	/**
-	 * Use eventbus
-	 */
-	@Deprecated
-	private final List<IContainersLayoutListener> containerLayoutListener;
-
 	public SeeIT3DManager() {
 		state = new VisualizationState(this);
 		sceneGraphHandler = new SceneGraphHandler(this);
 		colorScale = new ColdToHotColorScale();
-		containerLayoutListener = new ArrayList<IContainersLayoutListener>();
+	}
+
+	/****************************************/
+	/******* EVENT PROCESSOR ******************/
+	@Override
+	public void processEvent(IEvent event) {
+		if (event instanceof ToggleSynchronizationPackageExplorerVsView) {
+			isSynchronzationWithPackageExplorerSet = !isSynchronzationWithPackageExplorerSet;
+			triggerSyncronizationPackageExplorerVsViewEvent();
+		}
 	}
 
 	/**************************************/
@@ -132,41 +124,12 @@ public class SeeIT3DManager implements SeeIT3DCore {
 		}
 
 		sceneGraphHandler.setViewersPosition(maxX);
-		notifyLayoutChanged();
+		EventBus.publishEvent(new ContainersLayoutDone());
 
-	}
-
-	/**
-	 * Use eventbus
-	 */
-	@Deprecated
-	private void notifyLayoutChanged() {
-		for (IContainersLayoutListener listener : containerLayoutListener) {
-			listener.containerLayoutChanged();
-		}
-	}
-
-	/**
-	 * Use eventbus
-	 */
-	@Deprecated
-	@Override
-	public synchronized void registerContainersLayoutListener(IContainersLayoutListener listener) {
-		this.containerLayoutListener.add(listener);
 	}
 
 	/**************************************/
 	/******* OPERATIONS ON VIEW PROPERTIES **/
-	@Override
-	public synchronized void setupMappingView(IMappingView newMappingView) {
-		mappingView = newMappingView;
-	}
-
-	@Override
-	public void registerSelectionInformatioAware(ISelectionInformationAware selectionInformatioAware) {
-		this.selectionInformatioAware = selectionInformatioAware;
-	}
-
 	@Override
 	public synchronized void addContainerToView(Container container) {
 		state.addContainerToView(container);
@@ -237,9 +200,7 @@ public class SeeIT3DManager implements SeeIT3DCore {
 			if (state.hasContainersSelected()) {
 				boolean selectionPolyCylinderChanged = state.addPolyCylinderToSelection(polycylinder, togglePolycylinderSelection);
 				selectionNeedsRefresh |= selectionPolyCylinderChanged;
-				if (isSynchronzationWithPackageExplorerSet) {
-					activateSelection();
-				}
+				triggerSyncronizationPackageExplorerVsViewEvent();
 			} else {
 				state.clearSelectionOnPolycylinders();
 				selectionNeedsRefresh |= true;
@@ -258,9 +219,10 @@ public class SeeIT3DManager implements SeeIT3DCore {
 		}
 	}
 
-	private synchronized void setSelectionToView(String viewId, ISelection newSelection) {
-		IViewPart view = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView(viewId);
-		view.getSite().getSelectionProvider().setSelection(newSelection);
+	private void triggerSyncronizationPackageExplorerVsViewEvent() {
+		if (isSynchronzationWithPackageExplorerSet) {
+			EventBus.publishEvent(new SynchronizePackageExplorerVsView(state.iteratorOnSelectedPolycylinders()));
+		}
 	}
 
 	private synchronized void updateCurrentSelectionValues(PolyCylinder poly) {
@@ -283,7 +245,8 @@ public class SeeIT3DManager implements SeeIT3DCore {
 				}
 			}
 		}
-		selectionInformatioAware.updateInformation(state.selectedContainers(), currentMetricsValuesFromSelection);
+		IEvent event = new SelectedInformationChanged(state.selectedContainers(), currentMetricsValuesFromSelection);
+		EventBus.publishEvent(event);
 	}
 
 	@Override
@@ -325,9 +288,8 @@ public class SeeIT3DManager implements SeeIT3DCore {
 	}
 
 	private synchronized void updateMappingView() {
-		if (mappingView != null) {
-			mappingView.updateMappingView(this);
-		}
+		IEvent event = new MappingNeedsUpdate(getCurrentSelectedContainers());
+		EventBus.publishEvent(event);
 	}
 
 	@Override
@@ -335,33 +297,6 @@ public class SeeIT3DManager implements SeeIT3DCore {
 		state.reset();
 		sceneGraphHandler.rebuildSceneGraph();
 		doContainerLayout();
-	}
-
-	private synchronized void activateSelection() {
-		Display.getDefault().asyncExec(new Runnable() {
-			@Override
-			public void run() {
-				boolean hasJava = false;
-				List<Object> objectsInSelection = new ArrayList<Object>();
-				Iterator<PolyCylinder> iterator = state.iteratorOnSelectedPolycylinders();
-				while (iterator.hasNext()) {
-					PolyCylinder poly = iterator.next();
-					IEclipseResourceRepresentation representation = poly.getRepresentation();
-					objectsInSelection.add(representation.getAssociatedResource());
-					if (representation.hasJavaElementRepresentation()) {
-						objectsInSelection.add(representation.getAssociatedJavaElement());
-						hasJava = true;
-					}
-
-				}
-				ISelection newSelection = new StructuredSelection(objectsInSelection);
-				setSelectionToView(Utils.NAVIGATOR_VIEW_ID, newSelection);
-				if (hasJava) {
-					setSelectionToView(Utils.ID_PACKAGE_EXPLORER, newSelection);
-				}
-
-			}
-		});
 	}
 
 	@Override
@@ -412,14 +347,6 @@ public class SeeIT3DManager implements SeeIT3DCore {
 
 	/************************/
 	/**** STATE UPDATES ***/
-	@Override
-	public synchronized void toggleSynchronizationInPackageVsView() {
-		isSynchronzationWithPackageExplorerSet = !isSynchronzationWithPackageExplorerSet;
-		if (isSynchronzationWithPackageExplorerSet) {
-			activateSelection();
-		}
-	}
-
 	@Override
 	public synchronized void changeCurrentSortingPolyCylindersProperty(VisualProperty visualProperty) {
 		state.setSortingProperty(visualProperty);

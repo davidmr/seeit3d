@@ -6,28 +6,15 @@ import java.util.List;
 import javax.vecmath.Color3f;
 
 import seeit3d.core.handler.SeeIT3DCanvas;
-import seeit3d.core.handler.utils.IContainersLayoutListener;
 import seeit3d.core.model.*;
 import seeit3d.core.model.generator.metrics.MetricCalculator;
-import seeit3d.feedback.IMappingView;
-import seeit3d.feedback.ISelectionInformationAware;
 import seeit3d.visual.colorscale.IColorScale;
 import seeit3d.visual.relationships.ISceneGraphRelationshipGenerator;
 
 public interface SeeIT3DCore {
 
+	@Deprecated
 	SeeIT3DCanvas getMainCanvas();
-
-	/**
-	 * Use eventbus
-	 */
-	@Deprecated
-	void registerContainersLayoutListener(IContainersLayoutListener listener);
-
-	void setupMappingView(IMappingView newMappingView);
-
-	@Deprecated
-	void registerSelectionInformatioAware(ISelectionInformationAware selectionInformatioAware);
 
 	void addContainerToView(Container container);
 
@@ -53,8 +40,10 @@ public interface SeeIT3DCore {
 
 	void resetVisualization();
 
+	@Deprecated
 	void changeTransparencyPolyCylindersSelection(boolean moreTransparent);
 
+	@Deprecated
 	void sortPolyCylinders();
 
 	void loadVisualization(InputStream input) throws IOException;
@@ -62,8 +51,6 @@ public interface SeeIT3DCore {
 	void saveVisualization(OutputStream output) throws IOException;
 
 	@Deprecated
-	void toggleSynchronizationInPackageVsView();
-
 	void changeCurrentSortingPolyCylindersProperty(VisualProperty visualProperty);
 
 	/**
@@ -74,8 +61,10 @@ public interface SeeIT3DCore {
 
 	Iterable<Container> containersInView();
 
+	@Deprecated
 	List<Container> getCurrentSelectedContainers();
 
+	@Deprecated
 	VisualProperty getCurrentSortingProperty();
 
 	String getCurrentSelectedContainersAsString();

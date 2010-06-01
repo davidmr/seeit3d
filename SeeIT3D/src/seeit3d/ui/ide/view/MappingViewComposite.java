@@ -24,12 +24,13 @@ import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.layout.*;
 import org.eclipse.swt.widgets.*;
 
-import seeit3d.core.handler.SeeIT3DManager;
 import seeit3d.core.model.Container;
 import seeit3d.core.model.VisualProperty;
 import seeit3d.core.model.generator.metrics.MetricCalculator;
-import seeit3d.feedback.IMappingView;
 import seeit3d.general.SeeIT3DAPILocator;
+import seeit3d.general.bus.IEvent;
+import seeit3d.general.bus.IEventListener;
+import seeit3d.general.bus.events.MappingNeedsUpdate;
 import seeit3d.ui.ide.view.dnd.*;
 import seeit3d.ui.ide.view.listeners.*;
 import seeit3d.visual.colorscale.ColorScaleRegistry;
@@ -46,7 +47,7 @@ import com.google.common.collect.HashBiMap;
  * @author David Montaño
  * 
  */
-public class MappingViewComposite extends Composite implements IMappingView {
+public class MappingViewComposite extends Composite implements IEventListener {
 
 	public static final String VISUAL_PROPERTY = "visualProperty";
 
@@ -296,8 +297,6 @@ public class MappingViewComposite extends Composite implements IMappingView {
 			combo.addSelectionListener(new RelationshipSelectionListener());
 		}
 
-
-
 	}
 
 	private Class<? extends ISceneGraphRelationshipGenerator> buildCurrentRelationShipGenerator(List<Container> currentContainers) {
@@ -315,14 +314,15 @@ public class MappingViewComposite extends Composite implements IMappingView {
 	}
 
 	@Override
-	public void updateMappingView(final SeeIT3DManager manager) {
-		final List<Container> currentContainers = manager.getCurrentSelectedContainers();
-		Display.getDefault().asyncExec(new Runnable() {
-			@Override
-			public void run() {
-				updateComponents(currentContainers);
-			}
-
-		});
+	public void processEvent(IEvent event) {
+		if (event instanceof MappingNeedsUpdate) {
+			final List<Container> currentContainers = ((MappingNeedsUpdate) event).getContainers();
+			Display.getDefault().asyncExec(new Runnable() {
+				@Override
+				public void run() {
+					updateComponents(currentContainers);
+				}
+			});
+		}
 	}
 }

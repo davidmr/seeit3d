@@ -22,7 +22,9 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 
 import seeit3d.core.model.Container;
-import seeit3d.feedback.ISelectionInformationAware;
+import seeit3d.general.bus.IEvent;
+import seeit3d.general.bus.IEventListener;
+import seeit3d.general.bus.events.SelectedInformationChanged;
 
 /**
  * This class is the feedback listener that is shown to the user
@@ -30,11 +32,8 @@ import seeit3d.feedback.ISelectionInformationAware;
  * @author David Montaño
  * 
  */
-/**
- * Use eventbus
- */
-@Deprecated
-public class LabelInformation implements ISelectionInformationAware {
+
+public class LabelInformation implements IEventListener {
 
 	private final Label label;
 
@@ -43,32 +42,39 @@ public class LabelInformation implements ISelectionInformationAware {
 	}
 
 	@Override
-	public void updateInformation(Iterable<Container> selectedContainers, Map<String, String> metricValues) {
-		final StringBuilder formattedString = new StringBuilder();
-		if (!selectedContainers.iterator().hasNext()) {
-			formattedString.append("Select a Container to show information");
-		}else{
-			formattedString.append("Current selected container: ");
-		}
-		for (Container container : selectedContainers) {
-			formattedString.append(container.getName());
-			formattedString.append(",");
-		}
-		formattedString.deleteCharAt(formattedString.length() - 2).append("\n");
-		if (metricValues.isEmpty()) {
-			formattedString.append("Select a Polycylinder to show information");
-		} else {
-			formattedString.append("Metric Values: ");
-			for (Map.Entry<String, String> entry : metricValues.entrySet()) {
-				formattedString.append(entry.getKey()).append(": ").append(entry.getValue()).append(" | ");
+	public void processEvent(IEvent event) {
+		if (event instanceof SelectedInformationChanged) {
+			SelectedInformationChanged information = (SelectedInformationChanged) event;
+			Iterable<Container> selectedContainers = information.getSelectedContainers();
+			Map<String, String> metricValues = information.getCurrentMetricsValuesFromSelection();
+
+			final StringBuilder formattedString = new StringBuilder();
+			if (!selectedContainers.iterator().hasNext()) {
+				formattedString.append("Select a Container to show information");
+			} else {
+				formattedString.append("Current selected container: ");
 			}
-		}
-		Display.getDefault().asyncExec(new Runnable() {
-			@Override
-			public void run() {
-				label.setText(formattedString.toString());
+			for (Container container : selectedContainers) {
+				formattedString.append(container.getName());
+				formattedString.append(",");
 			}
-		});
+			formattedString.deleteCharAt(formattedString.length() - 2).append("\n");
+			if (metricValues.isEmpty()) {
+				formattedString.append("Select a Polycylinder to show information");
+			} else {
+				formattedString.append("Metric Values: ");
+				for (Map.Entry<String, String> entry : metricValues.entrySet()) {
+					formattedString.append(entry.getKey()).append(": ").append(entry.getValue()).append(" | ");
+				}
+			}
+			Display.getDefault().asyncExec(new Runnable() {
+				@Override
+				public void run() {
+					label.setText(formattedString.toString());
+				}
+			});
+		}
 
 	}
+
 }

@@ -19,12 +19,12 @@ package seeit3d.modelers.xml;
 
 import java.util.*;
 
-import seeit3d.core.api.SeeIT3DCore;
 import seeit3d.core.model.*;
 import seeit3d.core.model.Container;
 import seeit3d.core.model.generator.IModelGenerator;
 import seeit3d.core.model.generator.metrics.MetricCalculator;
-import seeit3d.general.SeeIT3DAPILocator;
+import seeit3d.general.bus.EventBus;
+import seeit3d.general.bus.events.AddContainerEvent;
 import seeit3d.modelers.xml.generator.metrics.XMLCategorizedMetricCalculator;
 import seeit3d.modelers.xml.generator.metrics.XMLContinuousMetricCalculator;
 import seeit3d.modelers.xml.internal.*;
@@ -37,13 +37,10 @@ import seeit3d.modelers.xml.internal.*;
  */
 public class XMLBasedModelGenerator implements IModelGenerator {
 
-	private final SeeIT3DCore core;
-
 	private final seeit3d.modelers.xml.internal.Container containerXML;
 
 	public XMLBasedModelGenerator(seeit3d.modelers.xml.internal.Container container) {
 		this.containerXML = container;
-		core = SeeIT3DAPILocator.findCore();
 	}
 
 	@Override
@@ -116,8 +113,7 @@ public class XMLBasedModelGenerator implements IModelGenerator {
 	@Override
 	public void analizeAndRegisterInView(boolean includeDependecies) {
 		Container container = analize(includeDependecies);
-		core.addContainerToView(container);
-
+		EventBus.publishEvent(new AddContainerEvent(container));
 	}
 
 }

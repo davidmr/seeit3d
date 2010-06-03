@@ -9,7 +9,7 @@ import javax.vecmath.Vector3f;
 import seeit3d.core.model.Container;
 import seeit3d.general.SeeIT3DAPILocator;
 import seeit3d.general.bus.*;
-import seeit3d.general.bus.events.ContainersLayoutDone;
+import seeit3d.general.bus.events.ContainersLayoutDoneEvent;
 import seeit3d.visual.relationships.ISceneGraphRelationshipGenerator;
 
 import com.sun.j3d.utils.pickfast.behaviors.PickingCallback;
@@ -23,7 +23,7 @@ public class LineBaseGenerator implements ISceneGraphRelationshipGenerator, Pick
 	private Container baseContainer;
 
 	public LineBaseGenerator() {
-		EventBus.registerListener(ContainersLayoutDone.class, this);
+		EventBus.registerListener(ContainersLayoutDoneEvent.class, this);
 		relatedShapes = new TreeMap<Container, Shape3D>();
 	}
 
@@ -47,7 +47,7 @@ public class LineBaseGenerator implements ISceneGraphRelationshipGenerator, Pick
 
 	@Override
 	public void processEvent(IEvent event) {
-		if (event instanceof ContainersLayoutDone) {
+		if (event instanceof ContainersLayoutDoneEvent) {
 			for (Map.Entry<Container, Shape3D> containerShape : relatedShapes.entrySet()) {
 				LineArray line = createLineContainers(baseContainer, containerShape.getKey());
 				containerShape.getValue().setGeometry(line);

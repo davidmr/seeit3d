@@ -30,7 +30,7 @@ import seeit3d.core.model.generator.metrics.MetricCalculator;
 import seeit3d.general.SeeIT3DAPILocator;
 import seeit3d.general.bus.IEvent;
 import seeit3d.general.bus.IEventListener;
-import seeit3d.general.bus.events.MappingNeedsUpdate;
+import seeit3d.general.bus.events.MappingViewNeedsUpdateEvent;
 import seeit3d.ui.ide.view.dnd.*;
 import seeit3d.ui.ide.view.listeners.*;
 import seeit3d.visual.colorscale.ColorScaleRegistry;
@@ -231,7 +231,7 @@ public class MappingViewComposite extends Composite implements IEventListener {
 
 		Combo combo = new Combo(colorScalesGroup, SWT.READ_ONLY);
 
-		IColorScale currentColorScale = SeeIT3DAPILocator.findCore().getColorScale();
+		IColorScale currentColorScale = SeeIT3DAPILocator.findVisualProperties().getColorScale();
 		int index = 0;
 		for (IColorScale colorScale : allColorScales) {
 			combo.add(colorScale.getName());
@@ -315,8 +315,8 @@ public class MappingViewComposite extends Composite implements IEventListener {
 
 	@Override
 	public void processEvent(IEvent event) {
-		if (event instanceof MappingNeedsUpdate) {
-			final List<Container> currentContainers = ((MappingNeedsUpdate) event).getContainers();
+		if (event instanceof MappingViewNeedsUpdateEvent) {
+			final List<Container> currentContainers = ((MappingViewNeedsUpdateEvent) event).getContainers();
 			Display.getDefault().asyncExec(new Runnable() {
 				@Override
 				public void run() {

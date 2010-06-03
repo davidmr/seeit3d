@@ -21,7 +21,6 @@ import java.util.*;
 
 import javax.media.j3d.Transform3D;
 import javax.media.j3d.TransformGroup;
-import javax.vecmath.Color3f;
 import javax.vecmath.Vector3f;
 
 import seeit3d.core.api.SeeIT3DCore;
@@ -30,8 +29,6 @@ import seeit3d.core.model.generator.metrics.MetricCalculator;
 import seeit3d.general.bus.*;
 import seeit3d.general.bus.events.*;
 import seeit3d.utils.ViewConstants;
-import seeit3d.visual.colorscale.IColorScale;
-import seeit3d.visual.colorscale.imp.ColdToHotColorScale;
 import seeit3d.visual.relationships.ISceneGraphRelationshipGenerator;
 
 import com.sun.j3d.utils.pickfast.behaviors.PickingCallback;
@@ -50,35 +47,54 @@ public class SeeIT3DManager implements SeeIT3DCore, IEventListener {
 
 	private final SceneGraphHandler sceneGraphHandler;
 
-	private IColorScale colorScale;
-
 	private boolean isSynchronzationWithPackageExplorerSet = false;
 
-	private double scaleStep;
-
-	private int containersPerRow;
-
-	private int polycylindersPerRow;
-
-	private Color3f highlightColor;
-
-	private Color3f relationMarkColor;
-
-	private float transparencyStep;
+	private final Preferences preferences;
 
 	public SeeIT3DManager() {
 		state = new VisualizationState(this);
 		sceneGraphHandler = new SceneGraphHandler(this);
-		colorScale = new ColdToHotColorScale();
+		preferences = Preferences.getInstance();
+
+		EventBus.registerListener(ToggleSynchronizationPackageExplorerVsViewEvent.class, this);
+		EventBus.registerListener(AddContainerEvent.class, this);
+		EventBus.registerListener(MappingChangedEvent.class, this);
+		EventBus.registerListener(RemoveMetricEvent.class, this);
+		EventBus.registerListener(DeleteContainersEvent.class, this);
 	}
 
 	/****************************************/
 	/******* EVENT PROCESSOR ******************/
 	@Override
 	public void processEvent(IEvent event) {
-		if (event instanceof ToggleSynchronizationPackageExplorerVsView) {
+		if (event instanceof ToggleSynchronizationPackageExplorerVsViewEvent) {
 			isSynchronzationWithPackageExplorerSet = !isSynchronzationWithPackageExplorerSet;
 			triggerSyncronizationPackageExplorerVsViewEvent();
+		}
+		if (event instanceof AddContainerEvent) {
+			Container container = ((AddContainerEvent) event).getContainer();
+			state.addContainerToView(container);
+		}
+
+		if (event instanceof MappingChangedEvent) {
+			MappingChangedEvent mappingChanged = (MappingChangedEvent) event;
+			VisualProperty visualProp = mappingChanged.getVisualProperty();
+			MetricCalculator metric = mappingChanged.getMetricCalculator();
+			updateSelectedContainersMapping(metric, visualProp);
+		}
+
+		if (event instanceof RemoveMetricEvent) {
+			MetricCalculator metric = ((RemoveMetricEvent) event).getMetric();
+			removeSelectContainersMapping(metric);
+		}
+
+		if (event instanceof DeleteContainersEvent) {
+			boolean all = ((DeleteContainersEvent) event).isAll();
+			if (all) {
+				deleteAllContainers();
+			} else {
+				deleteSelectedContainers();
+			}
 		}
 	}
 
@@ -112,7 +128,7 @@ public class SeeIT3DManager implements SeeIT3DCore, IEventListener {
 
 			container.setPosition(newPosition);
 
-			if (added % containersPerRow == 0) {
+			if (added % preferences.getContainersPerRow() == 0) {
 				currentXPosition = 0.0f;
 				currentZPosition += container.getDepth() * 2 + ViewConstants.CONTAINERS_SPACING;
 			} else {
@@ -124,32 +140,21 @@ public class SeeIT3DManager implements SeeIT3DCore, IEventListener {
 		}
 
 		sceneGraphHandler.setViewersPosition(maxX);
-		EventBus.publishEvent(new ContainersLayoutDone());
+		EventBus.publishEvent(new ContainersLayoutDoneEvent());
 
 	}
 
 	/**************************************/
 	/******* OPERATIONS ON VIEW PROPERTIES **/
-	@Override
-	public synchronized void addContainerToView(Container container) {
-		state.addContainerToView(container);
-	}
 
-	@Override
-	public synchronized void clearContainers() {
-		state.clearContainers();
-	}
-
-	@Override
-	public synchronized void updateSelectedContainersMapping(MetricCalculator metric, VisualProperty visualProp) {
+	private synchronized void updateSelectedContainersMapping(MetricCalculator metric, VisualProperty visualProp) {
 		for (Container container : state.selectedContainers()) {
 			container.updateMapping(metric, visualProp);
 		}
 		refreshVisualization();
 	}
 
-	@Override
-	public void removeSelectContainersMapping(MetricCalculator metric) {
+	private void removeSelectContainersMapping(MetricCalculator metric) {
 		for (Container container : state.selectedContainers()) {
 			container.removeFromMapping(metric);
 		}
@@ -157,27 +162,14 @@ public class SeeIT3DManager implements SeeIT3DCore, IEventListener {
 
 	}
 
-	@Override
-	public synchronized void updateCurrentSelectedContainer() {
-		for (Container container : state.selectedContainers()) {
-			sceneGraphHandler.removeScene(container);
-			container.updateVisualRepresentation();
-			container.setSelected(true);
-			refreshVisualization();
-		}
-		updateMappingView();
-	}
-
-	@Override
-	public synchronized void deleteSelectedContainers() {
+	private synchronized void deleteSelectedContainers() {
 		for (Container container : state.selectedContainers()) {
 			sceneGraphHandler.removeScene(container);
 		}
 		state.deleteSelectedContainers();
 	}
 
-	@Override
-	public synchronized void deleteAllContainers() {
+	private synchronized void deleteAllContainers() {
 		state.clearContainers();
 		sceneGraphHandler.clearScene();
 		updateMappingView();
@@ -221,7 +213,7 @@ public class SeeIT3DManager implements SeeIT3DCore, IEventListener {
 
 	private void triggerSyncronizationPackageExplorerVsViewEvent() {
 		if (isSynchronzationWithPackageExplorerSet) {
-			EventBus.publishEvent(new SynchronizePackageExplorerVsView(state.iteratorOnSelectedPolycylinders()));
+			EventBus.publishEvent(new SynchronizePackageExplorerVsViewEvent(state.iteratorOnSelectedPolycylinders()));
 		}
 	}
 
@@ -245,7 +237,7 @@ public class SeeIT3DManager implements SeeIT3DCore, IEventListener {
 				}
 			}
 		}
-		IEvent event = new SelectedInformationChanged(state.selectedContainers(), currentMetricsValuesFromSelection);
+		IEvent event = new SelectedInformationChangedEvent(state.selectedContainers(), currentMetricsValuesFromSelection);
 		EventBus.publishEvent(event);
 	}
 
@@ -269,6 +261,7 @@ public class SeeIT3DManager implements SeeIT3DCore, IEventListener {
 			TransformGroup transformGroup = container.getTransformGroup();
 			Transform3D transform = new Transform3D();
 			transformGroup.getTransform(transform);
+			double scaleStep = preferences.getScaleStep();
 			if (scaleUp) {
 				transform.setScale(transform.getScale() + scaleStep);
 			} else {
@@ -288,7 +281,7 @@ public class SeeIT3DManager implements SeeIT3DCore, IEventListener {
 	}
 
 	private synchronized void updateMappingView() {
-		IEvent event = new MappingNeedsUpdate(getCurrentSelectedContainers());
+		IEvent event = new MappingViewNeedsUpdateEvent(getCurrentSelectedContainers());
 		EventBus.publishEvent(event);
 	}
 
@@ -442,36 +435,6 @@ public class SeeIT3DManager implements SeeIT3DCore, IEventListener {
 		}
 
 		return names.toString();
-	}
-
-	@Override
-	public synchronized IColorScale getColorScale() {
-		return colorScale;
-	}
-
-	@Override
-	public synchronized int getPolycylindersPerRow() {
-		return polycylindersPerRow;
-	}
-
-	@Override
-	public synchronized Color3f getHighlightColor() {
-		return highlightColor;
-	}
-
-	@Override
-	public synchronized Color3f getRelationMarkColor() {
-		return relationMarkColor;
-	}
-
-	@Override
-	public synchronized float getTransparencyStep() {
-		return transparencyStep;
-	}
-
-	@Override
-	public synchronized void setColorScale(IColorScale colorScale) {
-		this.colorScale = colorScale;
 	}
 
 	@Override

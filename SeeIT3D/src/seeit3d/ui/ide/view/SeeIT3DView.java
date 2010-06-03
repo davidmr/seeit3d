@@ -31,8 +31,8 @@ import org.eclipse.ui.part.ViewPart;
 import seeit3d.core.api.SeeIT3DCore;
 import seeit3d.general.SeeIT3DAPILocator;
 import seeit3d.general.bus.EventBus;
-import seeit3d.general.bus.events.MappingNeedsUpdate;
-import seeit3d.general.bus.events.SelectedInformationChanged;
+import seeit3d.general.bus.events.MappingViewNeedsUpdateEvent;
+import seeit3d.general.bus.events.SelectedInformationChangedEvent;
 import seeit3d.ui.ide.view.listeners.LabelInformation;
 
 /**
@@ -67,7 +67,7 @@ public class SeeIT3DView extends ViewPart {
 		label.setLayoutData(labelData);
 
 		LabelInformation infoLabel = new LabelInformation(label);
-		EventBus.registerListener(SelectedInformationChanged.class, infoLabel);
+		EventBus.registerListener(SelectedInformationChangedEvent.class, infoLabel);
 
 		Composite visualizationComposite = new Composite(parent, SWT.EMBEDDED);
 
@@ -82,7 +82,7 @@ public class SeeIT3DView extends ViewPart {
 		mappingCompositeData.heightHint = 180;
 		mappingComposite.setLayoutData(mappingCompositeData);
 
-		EventBus.registerListener(MappingNeedsUpdate.class, mappingComposite);
+		EventBus.registerListener(MappingViewNeedsUpdateEvent.class, mappingComposite);
 
 	}
 

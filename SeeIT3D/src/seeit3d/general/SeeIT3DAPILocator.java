@@ -6,14 +6,18 @@ import seeit3d.core.model.Preferences;
 import seeit3d.feedback.api.SeeIT3DFeedback;
 import seeit3d.modelers.api.SeeIT3DModelers;
 import seeit3d.ui.api.SeeIT3DUI;
+import seeit3d.visual.api.DefaultSeeIT3DVisualProperties;
 import seeit3d.visual.api.SeeIT3DVisualProperties;
 
 public class SeeIT3DAPILocator {
 	
 	private static final SeeIT3DCore core;
 	
+	private static final SeeIT3DVisualProperties visual;
+
 	static{
 		core = new SeeIT3DManager();
+		visual = new DefaultSeeIT3DVisualProperties();
 	}
 
 	public static SeeIT3DCore findCore() {
@@ -33,7 +37,7 @@ public class SeeIT3DAPILocator {
 	}
 
 	public static SeeIT3DVisualProperties findVisualProperties() {
-		return null;
+		return visual;
 	}
 
 	public static Preferences findPreferences() {

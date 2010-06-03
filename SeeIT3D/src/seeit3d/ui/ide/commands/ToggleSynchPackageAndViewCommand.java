@@ -19,7 +19,7 @@ package seeit3d.ui.ide.commands;
 import org.eclipse.core.commands.*;
 
 import seeit3d.general.bus.EventBus;
-import seeit3d.general.bus.events.ToggleSynchronizationPackageExplorerVsView;
+import seeit3d.general.bus.events.ToggleSynchronizationPackageExplorerVsViewEvent;
 
 /**
  * Command to active/deactive the synchronization between the visualization area and the package explorer/navigator
@@ -31,7 +31,7 @@ public class ToggleSynchPackageAndViewCommand extends AbstractHandler {
 
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
-		EventBus.publishEvent(new ToggleSynchronizationPackageExplorerVsView());
+		EventBus.publishEvent(new ToggleSynchronizationPackageExplorerVsViewEvent());
 		return null;
 	}
 

@@ -19,10 +19,10 @@ package seeit3d.ui.ide.view.dnd;
 import org.eclipse.swt.dnd.*;
 import org.eclipse.swt.widgets.Group;
 
-import seeit3d.core.api.SeeIT3DCore;
 import seeit3d.core.model.VisualProperty;
 import seeit3d.core.model.generator.metrics.MetricCalculator;
-import seeit3d.general.SeeIT3DAPILocator;
+import seeit3d.general.bus.EventBus;
+import seeit3d.general.bus.events.MappingChangedEvent;
 import seeit3d.ui.ide.view.MappingViewComposite;
 
 /**
@@ -35,23 +35,19 @@ public class DropMetricOnVisualPropertyListener implements DropTargetListener {
 
 	private final Group groupToAdd;
 
-	private final SeeIT3DCore core;
-
 	public DropMetricOnVisualPropertyListener(Group groupToAdd) {
 		this.groupToAdd = groupToAdd;
-		core = SeeIT3DAPILocator.findCore();
 	}
 
 	@Override
-	public void dropAccept(DropTargetEvent event) {
-	}
+	public void dropAccept(DropTargetEvent event) {}
 
 	@Override
 	public void drop(DropTargetEvent event) {
 		if (TransferMetric.getInstance().isSupportedType(event.currentDataType)) {
 			MetricCalculator metric = (MetricCalculator) event.data;
 			VisualProperty visualProperty = (VisualProperty) groupToAdd.getData(MappingViewComposite.VISUAL_PROPERTY);
-			core.updateSelectedContainersMapping(metric, visualProperty);
+			EventBus.publishEvent(new MappingChangedEvent(visualProperty, metric));
 			DragAndDropHelper.createMetricDraggableLabel(groupToAdd, metric);
 			groupToAdd.layout();
 		}
@@ -63,15 +59,12 @@ public class DropMetricOnVisualPropertyListener implements DropTargetListener {
 	}
 
 	@Override
-	public void dragOperationChanged(DropTargetEvent event) {
-	}
+	public void dragOperationChanged(DropTargetEvent event) {}
 
 	@Override
-	public void dragLeave(DropTargetEvent event) {
-	}
+	public void dragLeave(DropTargetEvent event) {}
 
 	@Override
-	public void dragEnter(DropTargetEvent event) {
-	}
+	public void dragEnter(DropTargetEvent event) {}
 
 }

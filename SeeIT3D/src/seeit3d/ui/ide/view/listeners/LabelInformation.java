@@ -24,7 +24,7 @@ import org.eclipse.swt.widgets.Label;
 import seeit3d.core.model.Container;
 import seeit3d.general.bus.IEvent;
 import seeit3d.general.bus.IEventListener;
-import seeit3d.general.bus.events.SelectedInformationChanged;
+import seeit3d.general.bus.events.SelectedInformationChangedEvent;
 
 /**
  * This class is the feedback listener that is shown to the user
@@ -43,8 +43,8 @@ public class LabelInformation implements IEventListener {
 
 	@Override
 	public void processEvent(IEvent event) {
-		if (event instanceof SelectedInformationChanged) {
-			SelectedInformationChanged information = (SelectedInformationChanged) event;
+		if (event instanceof SelectedInformationChangedEvent) {
+			SelectedInformationChangedEvent information = (SelectedInformationChangedEvent) event;
 			Iterable<Container> selectedContainers = information.getSelectedContainers();
 			Map<String, String> metricValues = information.getCurrentMetricsValuesFromSelection();
 

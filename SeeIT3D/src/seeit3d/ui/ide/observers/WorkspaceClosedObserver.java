@@ -18,8 +18,8 @@ package seeit3d.ui.ide.observers;
 
 import org.eclipse.core.resources.*;
 
-import seeit3d.core.api.SeeIT3DCore;
-import seeit3d.general.SeeIT3DAPILocator;
+import seeit3d.general.bus.EventBus;
+import seeit3d.general.bus.events.DeleteContainersEvent;
 
 /**
  * This class listens to the close event of projects within the workspace and cleans the visualization according to that.
@@ -29,17 +29,11 @@ import seeit3d.general.SeeIT3DAPILocator;
  */
 public class WorkspaceClosedObserver implements IResourceChangeListener {
 
-	private final SeeIT3DCore core;
-
-	public WorkspaceClosedObserver() {
-		core = SeeIT3DAPILocator.findCore();
-	}
-
 	@Override
 	public void resourceChanged(IResourceChangeEvent event) {
 		IResource resource = event.getResource();
 		if (event.getType() == IResourceChangeEvent.PRE_CLOSE && resource != null && resource.getType() == IResource.PROJECT) {
-			core.deleteAllContainers();
+			EventBus.publishEvent(new DeleteContainersEvent(true));
 		}
 
 	}

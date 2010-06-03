@@ -12,19 +12,22 @@ import org.eclipse.ui.part.FileEditorInput;
 
 import seeit3d.core.model.IEclipseResourceRepresentation;
 import seeit3d.core.model.PolyCylinder;
-import seeit3d.general.bus.IEvent;
-import seeit3d.general.bus.IEventListener;
-import seeit3d.general.bus.events.SynchronizePackageExplorerVsView;
+import seeit3d.general.bus.*;
+import seeit3d.general.bus.events.SynchronizePackageExplorerVsViewEvent;
 import seeit3d.general.error.ErrorHandler;
 import seeit3d.ui.api.SeeIT3DUI;
 import seeit3d.utils.Utils;
 
 public class SeeIT3DUIManager implements SeeIT3DUI, IEventListener {
 
+	public SeeIT3DUIManager() {
+		EventBus.registerListener(SynchronizePackageExplorerVsViewEvent.class, this);
+	}
+
 	@Override
 	public void processEvent(IEvent event) {
-		if (event instanceof SynchronizePackageExplorerVsView) {
-			Iterator<PolyCylinder> polycylinders = ((SynchronizePackageExplorerVsView) event).getIteratorOnSelectedPolycylinders();
+		if (event instanceof SynchronizePackageExplorerVsViewEvent) {
+			Iterator<PolyCylinder> polycylinders = ((SynchronizePackageExplorerVsViewEvent) event).getIteratorOnSelectedPolycylinders();
 			activateSelection(polycylinders);
 		}
 	}

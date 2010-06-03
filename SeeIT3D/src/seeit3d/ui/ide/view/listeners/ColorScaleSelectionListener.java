@@ -22,6 +22,7 @@ import org.eclipse.swt.widgets.Combo;
 
 import seeit3d.core.api.SeeIT3DCore;
 import seeit3d.general.SeeIT3DAPILocator;
+import seeit3d.visual.api.SeeIT3DVisualProperties;
 import seeit3d.visual.colorscale.ColorScaleRegistry;
 import seeit3d.visual.colorscale.IColorScale;
 
@@ -35,8 +36,11 @@ public class ColorScaleSelectionListener implements SelectionListener {
 
 	private final SeeIT3DCore core;
 
+	private final SeeIT3DVisualProperties visual;
+
 	public ColorScaleSelectionListener() {
 		core = SeeIT3DAPILocator.findCore();
+		visual = SeeIT3DAPILocator.findVisualProperties();
 	}
 
 	@Override
@@ -54,7 +58,7 @@ public class ColorScaleSelectionListener implements SelectionListener {
 		// TODO use eventbus to trigger colorscale changed
 		for (IColorScale colorScale : allColorScales) {
 			if (colorScaleName.equals(colorScale.getName())) {
-				core.setColorScale(colorScale);
+				visual.setColorScale(colorScale);
 				core.refreshVisualization();
 				break;
 			}

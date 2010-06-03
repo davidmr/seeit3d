@@ -5,11 +5,11 @@ import java.util.List;
 import seeit3d.core.model.Container;
 import seeit3d.general.bus.IEvent;
 
-public class MappingNeedsUpdate implements IEvent {
+public class MappingViewNeedsUpdateEvent implements IEvent {
 
 	private final List<Container> containers;
 
-	public MappingNeedsUpdate(List<Container> containers) {
+	public MappingViewNeedsUpdateEvent(List<Container> containers) {
 		this.containers = containers;
 	}
 

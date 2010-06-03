@@ -6,4 +6,6 @@ public interface SeeIT3DVisualProperties {
 
 	IColorScale getColorScale();
 
+	void setColorScale(IColorScale colorScale);
+
 }

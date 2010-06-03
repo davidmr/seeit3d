@@ -21,12 +21,12 @@ import java.util.*;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.JavaModelException;
 
-import seeit3d.core.api.SeeIT3DCore;
 import seeit3d.core.model.*;
 import seeit3d.core.model.generator.IModelGenerator;
 import seeit3d.core.model.generator.metrics.MetricCalculator;
 import seeit3d.core.model.generator.metrics.MetricsRegistry;
-import seeit3d.general.SeeIT3DAPILocator;
+import seeit3d.general.bus.EventBus;
+import seeit3d.general.bus.events.AddContainerEvent;
 import seeit3d.general.error.ErrorHandler;
 import seeit3d.modelers.java.EclipseJavaResource;
 import seeit3d.modelers.java.JavaRepresentation;
@@ -43,21 +43,18 @@ import seeit3d.modelers.java.JavaRepresentation;
  */
 public abstract class AbstracModelGenerator<ElementToAnalize extends IJavaElement, Children extends IJavaElement> implements IModelGenerator {
 
-	private final SeeIT3DCore core;
-
 	private final ElementToAnalize elementToAnalize;
 
 	protected boolean analizeDependecies = false;
 
 	public AbstracModelGenerator(ElementToAnalize elementToAnalize) {
 		this.elementToAnalize = elementToAnalize;
-		core = SeeIT3DAPILocator.findCore();
 	}
 
 	@Override
 	public final void analizeAndRegisterInView(boolean includeDependecies) {
 		Container container = analize(includeDependecies);
-		core.addContainerToView(container);
+		EventBus.publishEvent(new AddContainerEvent(container));
 	}
 
 	protected abstract Children[] fetchChildren(ElementToAnalize element) throws JavaModelException;
@@ -66,8 +63,7 @@ public abstract class AbstracModelGenerator<ElementToAnalize extends IJavaElemen
 
 	protected abstract IModelGenerator lowerLevelModelGenerator(Children childrenElement);
 
-	protected void extraOperationsOnContainer(Container createdContainer, ElementToAnalize element) throws JavaModelException {
-	};
+	protected void extraOperationsOnContainer(Container createdContainer, ElementToAnalize element) throws JavaModelException {};
 
 	@Override
 	public final Container analize(boolean analizeDependencies) {

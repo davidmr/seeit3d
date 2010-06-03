@@ -3,32 +3,14 @@ package seeit3d.core.api;
 import java.io.*;
 import java.util.List;
 
-import javax.vecmath.Color3f;
-
 import seeit3d.core.handler.SeeIT3DCanvas;
 import seeit3d.core.model.*;
-import seeit3d.core.model.generator.metrics.MetricCalculator;
-import seeit3d.visual.colorscale.IColorScale;
 import seeit3d.visual.relationships.ISceneGraphRelationshipGenerator;
 
 public interface SeeIT3DCore {
 
 	@Deprecated
 	SeeIT3DCanvas getMainCanvas();
-
-	void addContainerToView(Container container);
-
-	void clearContainers();
-
-	void updateSelectedContainersMapping(MetricCalculator metric, VisualProperty visualProp);
-
-	void removeSelectContainersMapping(MetricCalculator metric);
-
-	void updateCurrentSelectedContainer();
-
-	void deleteSelectedContainers();
-
-	void deleteAllContainers();
 
 	void changeSelectionAndUpdateMappingView(Container newContainer, PolyCylinder polycylinder, boolean toggleContainerSelection, boolean togglePolycylinderSelection);
 
@@ -68,24 +50,6 @@ public interface SeeIT3DCore {
 	VisualProperty getCurrentSortingProperty();
 
 	String getCurrentSelectedContainersAsString();
-
-	@Deprecated
-	IColorScale getColorScale();
-
-	@Deprecated
-	int getPolycylindersPerRow();
-
-	@Deprecated
-	Color3f getHighlightColor();
-
-	@Deprecated
-	Color3f getRelationMarkColor();
-
-	@Deprecated
-	float getTransparencyStep();
-
-	@Deprecated
-	void setColorScale(IColorScale colorScale);
 
 	@Deprecated
 	void useSceneGraphRelationshipGenerator(Class<? extends ISceneGraphRelationshipGenerator> sceneGraphRelationshipGenerator);

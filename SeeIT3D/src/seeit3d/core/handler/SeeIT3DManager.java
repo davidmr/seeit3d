@@ -28,6 +28,7 @@ import seeit3d.core.model.*;
 import seeit3d.core.model.generator.metrics.MetricCalculator;
 import seeit3d.general.bus.*;
 import seeit3d.general.bus.events.*;
+import seeit3d.general.error.ErrorHandler;
 import seeit3d.utils.ViewConstants;
 import seeit3d.visual.relationships.ISceneGraphRelationshipGenerator;
 
@@ -42,7 +43,8 @@ import com.sun.j3d.utils.pickfast.behaviors.PickingCallback;
 @Deprecated
 public class SeeIT3DManager implements SeeIT3DCore, IEventListener {
 
-	// TODO trigger event on polycylinders change, listeners responsible for tracking the state of them
+	// TODO handle operations on polycylinders as a function to apply them. This means that the interested on performing
+	// an operation on the must trigger an event which includes the function to be applied as an implementation of an interface like IOperationOnPolycylinders
 	private final VisualizationState state;
 
 	private final SceneGraphHandler sceneGraphHandler;
@@ -61,6 +63,17 @@ public class SeeIT3DManager implements SeeIT3DCore, IEventListener {
 		EventBus.registerListener(MappingChangedEvent.class, this);
 		EventBus.registerListener(RemoveMetricEvent.class, this);
 		EventBus.registerListener(DeleteContainersEvent.class, this);
+		EventBus.registerListener(ChangeSelectionEvent.class, this);
+		EventBus.registerListener(KeyBasedChangeSelectionEvent.class, this);
+		EventBus.registerListener(ScaleContainerEvent.class, this);
+		EventBus.registerListener(ChangeGranularityLevelEvent.class, this);
+		EventBus.registerListener(ResetVisualizationEvent.class, this);
+		EventBus.registerListener(ChangeTransparencyEvent.class, this);
+		EventBus.registerListener(SortPolycylindersEvent.class, this);
+		EventBus.registerListener(LoadVisualizationEvent.class, this);
+		EventBus.registerListener(SaveVisualizationEvent.class, this);
+		EventBus.registerListener(ChangeSortingVisualPropertyEvent.class, this);
+
 	}
 
 	/****************************************/
@@ -96,6 +109,53 @@ public class SeeIT3DManager implements SeeIT3DCore, IEventListener {
 				deleteSelectedContainers();
 			}
 		}
+
+		if (event instanceof ChangeSelectionEvent) {
+			ChangeSelectionEvent selectionChanged = (ChangeSelectionEvent) event;
+			boolean tooglePolycylinderSelection = selectionChanged.isTogglePolycylinderSelection();
+			boolean toogleContainerSelection = selectionChanged.isToggleContainerSelection();
+			PolyCylinder polycylinder = selectionChanged.getPolycylinder();
+			Container container = selectionChanged.getContainer();
+			changeSelectionAndUpdateMappingView(container, polycylinder, toogleContainerSelection, tooglePolycylinderSelection);
+		}
+
+		if (event instanceof KeyBasedChangeSelectionEvent) {
+			changeContainerSelection(((KeyBasedChangeSelectionEvent) event).isIncrease());
+		}
+
+		if (event instanceof ScaleContainerEvent) {
+			scaleCurrentContainer(((ScaleContainerEvent) event).isUp());
+		}
+
+		if (event instanceof ChangeGranularityLevelEvent) {
+			updateViewUsingLevelOnSelectedContainer(((ChangeGranularityLevelEvent) event).isFiner());
+		}
+
+		if (event instanceof ResetVisualizationEvent) {
+			resetVisualization();
+		}
+
+		if (event instanceof ChangeTransparencyEvent) {
+			changeTransparencyPolyCylindersSelection(((ChangeTransparencyEvent) event).isMoreTransparent());
+		}
+
+		if (event instanceof SortPolycylindersEvent) {
+			sortPolyCylinders();
+		}
+
+		if (event instanceof LoadVisualizationEvent) {
+			loadVisualization(((LoadVisualizationEvent) event).getInput());
+		}
+
+		if (event instanceof SaveVisualizationEvent) {
+			saveVisualization(((SaveVisualizationEvent) event).getOutput());
+		}
+
+		if (event instanceof ChangeSortingVisualPropertyEvent) {
+			state.setSortingProperty(((ChangeSortingVisualPropertyEvent) event).getVisualProperty());
+		}
+
+
 	}
 
 	/**************************************/
@@ -175,8 +235,7 @@ public class SeeIT3DManager implements SeeIT3DCore, IEventListener {
 		updateMappingView();
 	}
 
-	@Override
-	public synchronized void changeSelectionAndUpdateMappingView(Container newContainer, PolyCylinder polycylinder, boolean toggleContainerSelection, boolean togglePolycylinderSelection) {
+	private synchronized void changeSelectionAndUpdateMappingView(Container newContainer, PolyCylinder polycylinder, boolean toggleContainerSelection, boolean togglePolycylinderSelection) {
 		boolean mappingNeedsRefresh = false;
 		synchronized (SeeIT3DManager.class) {
 			sceneGraphHandler.disableOrbiting();
@@ -241,8 +300,7 @@ public class SeeIT3DManager implements SeeIT3DCore, IEventListener {
 		EventBus.publishEvent(event);
 	}
 
-	@Override
-	public synchronized void changeContainerSelection(boolean increase) {
+	private synchronized void changeContainerSelection(boolean increase) {
 		if (state.hasContainersInView()) {
 			Container container = null;
 			if (increase) {
@@ -255,8 +313,7 @@ public class SeeIT3DManager implements SeeIT3DCore, IEventListener {
 		}
 	}
 
-	@Override
-	public synchronized void scaleCurrentContainer(boolean scaleUp) {
+	private synchronized void scaleCurrentContainer(boolean scaleUp) {
 		for (Container container : state.selectedContainers()) {
 			TransformGroup transformGroup = container.getTransformGroup();
 			Transform3D transform = new Transform3D();
@@ -271,9 +328,8 @@ public class SeeIT3DManager implements SeeIT3DCore, IEventListener {
 		}
 	}
 
-	@Override
-	public void updateViewUsingLevelOnSelectedContainer(boolean nextLevel) {
-		if (nextLevel) {
+	private void updateViewUsingLevelOnSelectedContainer(boolean finerLevel) {
+		if (finerLevel) {
 			state.useNextLevelContainers();
 		} else {
 			state.usePreviousLevelContainers();
@@ -285,15 +341,13 @@ public class SeeIT3DManager implements SeeIT3DCore, IEventListener {
 		EventBus.publishEvent(event);
 	}
 
-	@Override
-	public synchronized void resetVisualization() {
+	private synchronized void resetVisualization() {
 		state.reset();
 		sceneGraphHandler.rebuildSceneGraph();
 		doContainerLayout();
 	}
 
-	@Override
-	public synchronized void changeTransparencyPolyCylindersSelection(boolean moreTransparent) {
+	private synchronized void changeTransparencyPolyCylindersSelection(boolean moreTransparent) {
 		Iterator<PolyCylinder> iterator = state.iteratorOnSelectedPolycylinders();
 		while (iterator.hasNext()) {
 			PolyCylinder poly = iterator.next();
@@ -301,8 +355,7 @@ public class SeeIT3DManager implements SeeIT3DCore, IEventListener {
 		}
 	}
 
-	@Override
-	public synchronized void sortPolyCylinders() {
+	private synchronized void sortPolyCylinders() {
 		for (Container container : state.selectedContainers()) {
 			sceneGraphHandler.removeScene(container);
 			container.setSortingProperty(state.getSortingProperty());
@@ -312,11 +365,10 @@ public class SeeIT3DManager implements SeeIT3DCore, IEventListener {
 		}
 	}
 
-	@Override
 	@SuppressWarnings("unchecked")
-	public synchronized void loadVisualization(InputStream input) throws IOException {
-		ObjectInputStream in = new ObjectInputStream(input);
+	private synchronized void loadVisualization(InputStream input) {
 		try {
+			ObjectInputStream in = new ObjectInputStream(input);
 			List<Container> containers = (List<Container>) in.readObject();
 			for (Container container : containers) {
 				state.addContainerToView(container);
@@ -324,26 +376,28 @@ public class SeeIT3DManager implements SeeIT3DCore, IEventListener {
 			refreshVisualization();
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
+		} catch (IOException e) {
+			ErrorHandler.error("Error while reading visualization file. Possibly wrong format or type");
+			e.printStackTrace();
 		}
 	}
 
-	@Override
-	public void saveVisualization(OutputStream output) throws IOException {
-		ObjectOutputStream out = new ObjectOutputStream(output);
-		List<Container> allContainers = new ArrayList<Container>();
-		for (Container container : state.containersInView()) {
-			allContainers.add(container);
+	private synchronized void saveVisualization(OutputStream output) {
+		try {
+			ObjectOutputStream out = new ObjectOutputStream(output);
+			List<Container> allContainers = new ArrayList<Container>();
+			for (Container container : state.containersInView()) {
+				allContainers.add(container);
+			}
+			out.writeObject(allContainers);
+			out.close();
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
-		out.writeObject(allContainers);
-		out.close();
 	}
 
 	/************************/
 	/**** STATE UPDATES ***/
-	@Override
-	public synchronized void changeCurrentSortingPolyCylindersProperty(VisualProperty visualProperty) {
-		state.setSortingProperty(visualProperty);
-	}
 
 	@Override
 	public synchronized void refreshVisualization() {

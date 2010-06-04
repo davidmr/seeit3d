@@ -20,8 +20,8 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.widgets.Button;
 
-import seeit3d.core.api.SeeIT3DCore;
-import seeit3d.general.SeeIT3DAPILocator;
+import seeit3d.general.bus.EventBus;
+import seeit3d.general.bus.events.ChangeGranularityLevelEvent;
 
 /**
  * Listener for change on level of granularity selected
@@ -33,12 +33,6 @@ public class SelectionComponentListener implements SelectionListener {
 
 	public static final String COMPONENT_LEVEL_DETAIL = "component_level_detail";
 
-	private final SeeIT3DCore core;
-
-	public SelectionComponentListener() {
-		core = SeeIT3DAPILocator.findCore();
-	}
-
 	@Override
 	public void widgetDefaultSelected(SelectionEvent e) {
 
@@ -47,8 +41,7 @@ public class SelectionComponentListener implements SelectionListener {
 	@Override
 	public void widgetSelected(SelectionEvent event) {
 		Button source = (Button) event.getSource();
-		// TODO use eventbus to trigger change in option level
 		ChangeLevelOption option = (ChangeLevelOption) source.getData(COMPONENT_LEVEL_DETAIL);
-		core.updateViewUsingLevelOnSelectedContainer(option.moreDetail);
+		EventBus.publishEvent(new ChangeGranularityLevelEvent(option.moreDetail));
 	}
 }

@@ -1,25 +1,23 @@
 package seeit3d.ui.ide.commands.jobs;
 
-import java.io.*;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 
 import org.eclipse.core.runtime.*;
 import org.eclipse.core.runtime.jobs.Job;
 
-import seeit3d.core.api.SeeIT3DCore;
-import seeit3d.general.SeeIT3DAPILocator;
+import seeit3d.general.bus.EventBus;
+import seeit3d.general.bus.events.SaveVisualizationEvent;
 import seeit3d.general.error.ErrorHandler;
 import seeit3d.utils.ViewConstants;
 
 public class SaveVisualizationJob extends Job {
-
-	private final SeeIT3DCore core;
 
 	private String filename;
 
 	public SaveVisualizationJob(String filename) {
 		super("Save visualization");
 		this.filename = filename;
-		core = SeeIT3DAPILocator.findCore();
 	}
 
 	@Override
@@ -30,12 +28,9 @@ public class SaveVisualizationJob extends Job {
 				filename += "." + ViewConstants.VISUALIZATION_EXTENSION;
 			}
 			FileOutputStream output = new FileOutputStream(filename);
-			core.saveVisualization(output);
+			EventBus.publishEvent(new SaveVisualizationEvent(output));
 		} catch (FileNotFoundException e) {
 			ErrorHandler.error("Visualization file not found");
-			e.printStackTrace();
-		} catch (IOException e) {
-			ErrorHandler.error("Error while writing visualization file");
 			e.printStackTrace();
 		}
 		monitor.done();

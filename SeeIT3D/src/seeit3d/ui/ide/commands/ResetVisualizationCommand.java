@@ -18,8 +18,8 @@ package seeit3d.ui.ide.commands;
 
 import org.eclipse.core.commands.*;
 
-import seeit3d.core.api.SeeIT3DCore;
-import seeit3d.general.SeeIT3DAPILocator;
+import seeit3d.general.bus.EventBus;
+import seeit3d.general.bus.events.ResetVisualizationEvent;
 
 /**
  * Command to reset the state of the visualization. This must be executed to allow the application of changed preferences.
@@ -29,15 +29,9 @@ import seeit3d.general.SeeIT3DAPILocator;
  */
 public class ResetVisualizationCommand extends AbstractHandler {
 
-	private final SeeIT3DCore core;
-
-	public ResetVisualizationCommand() {
-		core = SeeIT3DAPILocator.findCore();
-	}
-
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
-		core.resetVisualization();
+		EventBus.publishEvent(new ResetVisualizationEvent());
 		return null;
 	}
 

@@ -18,8 +18,8 @@ package seeit3d.ui.ide.commands;
 
 import org.eclipse.core.commands.*;
 
-import seeit3d.core.api.SeeIT3DCore;
-import seeit3d.general.SeeIT3DAPILocator;
+import seeit3d.general.bus.EventBus;
+import seeit3d.general.bus.events.KeyBasedChangeSelectionEvent;
 
 /**
  * Command to change the selected container (next) using the TAB key
@@ -29,15 +29,9 @@ import seeit3d.general.SeeIT3DAPILocator;
  */
 public class ChangeContainerSelectionDecrease extends AbstractHandler {
 
-	private final SeeIT3DCore core;
-
-	public ChangeContainerSelectionDecrease() {
-		core = SeeIT3DAPILocator.findCore();
-	}
-
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
-		core.changeContainerSelection(false);
+		EventBus.publishEvent(new KeyBasedChangeSelectionEvent(false));
 		return null;
 	}
 

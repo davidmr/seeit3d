@@ -23,8 +23,8 @@ import java.util.List;
 import javax.media.j3d.*;
 import javax.vecmath.*;
 
-import seeit3d.core.model.Container;
 import seeit3d.general.error.exception.SeeIT3DException;
+import seeit3d.general.model.Container;
 import seeit3d.ui.behavior.*;
 import seeit3d.utils.Utils;
 import seeit3d.utils.ViewConstants;
@@ -44,7 +44,7 @@ import com.sun.j3d.utils.universe.ViewingPlatform;
  */
 public class SceneGraphHandler {
 
-	private final SeeIT3DManager manager;
+	private final SeeIT3DCoreHandler manager;
 
 	private SeeIT3DCanvas canvas = null;
 
@@ -72,9 +72,9 @@ public class SceneGraphHandler {
 
 	private boolean initialized = false;
 
-	SceneGraphHandler(SeeIT3DManager manager) {
+	SceneGraphHandler(SeeIT3DCoreHandler manager) {
 		this.manager = manager;
-		this.backgroundColor = new Color3f(1.0f, 1.0f, 1.0f);
+		this.backgroundColor = ViewConstants.DEFAULT_BACKGROUND_COLOR;
 	}
 
 	void clearScene() {

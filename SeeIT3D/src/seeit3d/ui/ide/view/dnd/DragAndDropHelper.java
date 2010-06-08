@@ -21,7 +21,7 @@ import org.eclipse.swt.dnd.*;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.*;
 
-import seeit3d.core.model.generator.metrics.MetricCalculator;
+import seeit3d.general.model.generator.metrics.MetricCalculator;
 
 /**
  * This class provide utility methods to create register and handle different options of Drag and Drop operations for mapping view

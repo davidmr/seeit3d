@@ -22,7 +22,7 @@ import java.util.List;
 
 import org.eclipse.jdt.core.*;
 
-import seeit3d.core.model.IContainerRepresentedObject;
+import seeit3d.general.model.IContainerRepresentedObject;
 
 /**
  * This class represents a <code>IJavaElement</code> associated to a container in the view

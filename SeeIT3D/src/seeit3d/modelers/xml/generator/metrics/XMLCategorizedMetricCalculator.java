@@ -20,7 +20,7 @@ import java.util.List;
 
 import org.eclipse.jdt.core.IJavaElement;
 
-import seeit3d.core.model.generator.metrics.AbstractCategorizedMetricCalculator;
+import seeit3d.general.model.generator.metrics.AbstractCategorizedMetricCalculator;
 
 /**
  * Categorized metric calculator for XML based visualization. This metric can be instantiated multiple times, one for each time it appears on the XML file

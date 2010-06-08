@@ -21,7 +21,7 @@ import java.util.List;
 import org.eclipse.jdt.core.IMethod;
 import org.eclipse.jdt.core.JavaModelException;
 
-import seeit3d.core.model.generator.IModelGenerator;
+import seeit3d.general.model.generator.IModelGenerator;
 import seeit3d.modelers.java.LineOfCode;
 import seeit3d.modelers.java.generator.metrics.ControlStructureCalculator;
 import seeit3d.modelers.java.generator.metrics.LOCCalculator;

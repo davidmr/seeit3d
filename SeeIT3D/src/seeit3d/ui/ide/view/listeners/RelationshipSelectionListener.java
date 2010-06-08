@@ -20,10 +20,16 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.widgets.Combo;
 
-import seeit3d.core.api.SeeIT3DCore;
-import seeit3d.general.SeeIT3DAPILocator;
+import seeit3d.general.bus.EventBus;
+import seeit3d.general.bus.events.PerformOperationOnSelectedContainersEvent;
+import seeit3d.general.bus.events.RegisterPickingCallbackEvent;
+import seeit3d.general.bus.utils.FunctionToApplyOnContainer;
+import seeit3d.general.error.ErrorHandler;
+import seeit3d.general.model.Container;
 import seeit3d.visual.relationships.ISceneGraphRelationshipGenerator;
 import seeit3d.visual.relationships.RelationShipsRegistry;
+
+import com.sun.j3d.utils.pickfast.behaviors.PickingCallback;
 
 /**
  * Listener for relationships generator selection in the mapping view
@@ -32,12 +38,6 @@ import seeit3d.visual.relationships.RelationShipsRegistry;
  * 
  */
 public class RelationshipSelectionListener implements SelectionListener {
-
-	private final SeeIT3DCore core;
-
-	public RelationshipSelectionListener() {
-		core = SeeIT3DAPILocator.findCore();
-	}
 
 	@Override
 	public void widgetDefaultSelected(SelectionEvent e) {
@@ -52,17 +52,49 @@ public class RelationshipSelectionListener implements SelectionListener {
 		Combo combo = (Combo) event.widget;
 
 		String selectedGeneratorName = combo.getItem(combo.getSelectionIndex());
-		// TODO use eventbus to trigger relationship selection changed
 		Iterable<Class<? extends ISceneGraphRelationshipGenerator>> allRelationshipsGenerator = registry.allRelationshipsGenerator();
 		for (Class<? extends ISceneGraphRelationshipGenerator> generator : allRelationshipsGenerator) {
 			String relationName = registry.getRelationName(generator);
 			if (relationName.equals(selectedGeneratorName)) {
-				core.useSceneGraphRelationshipGenerator(generator);
-				core.refreshVisualization();
+				PerformOperationOnSelectedContainersEvent operation = createEvent(generator);
+				EventBus.publishEvent(operation);
 				break;
 			}
 		}
 
+	}
+
+	private PerformOperationOnSelectedContainersEvent createEvent(final Class<? extends ISceneGraphRelationshipGenerator> generatorClass) {
+		FunctionToApplyOnContainer function = new ApplyChangeRelationShipGenerator(generatorClass);
+		return new PerformOperationOnSelectedContainersEvent(function, true);
+	}
+
+	private final class ApplyChangeRelationShipGenerator extends FunctionToApplyOnContainer {
+
+		private final Class<? extends ISceneGraphRelationshipGenerator> generatorClass;
+
+		private ApplyChangeRelationShipGenerator(Class<? extends ISceneGraphRelationshipGenerator> generatorClass) {
+			this.generatorClass = generatorClass;
+		}
+
+		@Override
+		public Container apply(Container container) {
+			try {
+				ISceneGraphRelationshipGenerator generator = generatorClass.newInstance();
+				container.setSceneGraphRelationshipGenerator(generator);
+				if (generator instanceof PickingCallback) {
+					PickingCallback callback = (PickingCallback) generator;
+					EventBus.publishEvent(new RegisterPickingCallbackEvent(callback));
+				}
+			} catch (InstantiationException e) {
+				ErrorHandler.error(e);
+				e.printStackTrace();
+			} catch (IllegalAccessException e) {
+				ErrorHandler.error(e);
+				e.printStackTrace();
+			}
+			return container;
+		}
 	}
 
 }

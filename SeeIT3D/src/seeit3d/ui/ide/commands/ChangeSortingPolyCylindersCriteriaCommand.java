@@ -24,9 +24,11 @@ import org.eclipse.ui.commands.IElementUpdater;
 import org.eclipse.ui.handlers.HandlerUtil;
 import org.eclipse.ui.menus.UIElement;
 
-import seeit3d.core.model.VisualProperty;
 import seeit3d.general.bus.EventBus;
-import seeit3d.general.bus.events.ChangeSortingVisualPropertyEvent;
+import seeit3d.general.bus.events.PerformOperationOnSelectedContainersEvent;
+import seeit3d.general.bus.utils.FunctionToApplyOnContainer;
+import seeit3d.general.model.Container;
+import seeit3d.general.model.VisualProperty;
 
 /**
  * Command to change the criteria to sort polycylinders when the sorting is executed
@@ -58,11 +60,26 @@ public class ChangeSortingPolyCylindersCriteriaCommand extends AbstractHandler i
 
 		VisualProperty property = VisualProperty.valueOf(currentCriteria);
 
-		EventBus.publishEvent(new ChangeSortingVisualPropertyEvent(property));
+		PerformOperationOnSelectedContainersEvent eventChangeSorting = createEvent(property);
+		EventBus.publishEvent(eventChangeSorting);
+
 		ICommandService service = (ICommandService) HandlerUtil.getActiveWorkbenchWindowChecked(event).getService(ICommandService.class);
 		service.refreshElements(event.getCommand().getId(), null);
 
 		return null;
+	}
+
+	private PerformOperationOnSelectedContainersEvent createEvent(final VisualProperty property) {
+		FunctionToApplyOnContainer function = new FunctionToApplyOnContainer() {
+			@Override
+			public Container apply(Container container) {
+				container.setSortingProperty(property);
+				return container;
+			}
+		};
+
+		return new PerformOperationOnSelectedContainersEvent(function, false);
+
 	}
 
 	@SuppressWarnings("unchecked")

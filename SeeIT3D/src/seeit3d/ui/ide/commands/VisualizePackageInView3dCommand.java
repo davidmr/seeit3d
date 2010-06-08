@@ -19,8 +19,8 @@ package seeit3d.ui.ide.commands;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IPackageFragment;
 
-import seeit3d.core.model.generator.IModelGenerator;
-import seeit3d.core.model.utils.NoOpModelGenerator;
+import seeit3d.general.model.generator.IModelGenerator;
+import seeit3d.general.model.utils.NoOpModelGenerator;
 import seeit3d.modelers.java.generator.PackageModelGenerator;
 
 /**

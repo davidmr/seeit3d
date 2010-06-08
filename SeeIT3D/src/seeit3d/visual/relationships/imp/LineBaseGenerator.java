@@ -6,10 +6,10 @@ import javax.media.j3d.*;
 import javax.vecmath.Point3f;
 import javax.vecmath.Vector3f;
 
-import seeit3d.core.model.Container;
 import seeit3d.general.SeeIT3DAPILocator;
 import seeit3d.general.bus.*;
 import seeit3d.general.bus.events.ContainersLayoutDoneEvent;
+import seeit3d.general.model.Container;
 import seeit3d.visual.relationships.ISceneGraphRelationshipGenerator;
 
 import com.sun.j3d.utils.pickfast.behaviors.PickingCallback;

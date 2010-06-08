@@ -20,12 +20,8 @@ import java.util.*;
 
 import seeit3d.core.handler.utils.ContainersSelectedIterator;
 import seeit3d.core.handler.utils.VisualizationStateChecker;
-import seeit3d.core.model.*;
-import seeit3d.general.error.ErrorHandler;
 import seeit3d.general.error.exception.IllegalVisualizationStateException;
-import seeit3d.visual.relationships.ISceneGraphRelationshipGenerator;
-
-import com.sun.j3d.utils.pickfast.behaviors.PickingCallback;
+import seeit3d.general.model.*;
 
 /**
  * This class keeps track of the visualization state, like the selected containers in the view, checks of visualization state and sorting property
@@ -41,11 +37,11 @@ public class VisualizationState {
 
 	private VisualProperty sortingProperty = VisualProperty.HEIGHT;
 
-	private final SeeIT3DManager manager;
+	private final SeeIT3DCoreHandler manager;
 
 	private final VisualizationStateChecker stateChecker;
 
-	VisualizationState(SeeIT3DManager manager) {
+	VisualizationState(SeeIT3DCoreHandler manager) {
 		this.manager = manager;
 		containersInView = new ArrayList<Container>();
 		currentSelectionPolyCylinder = new ArrayList<PolyCylinder>();
@@ -250,28 +246,6 @@ public class VisualizationState {
 		viewNeedUpdate();
 	}
 
-	void useScenGraphRelationshipGeneratorOnSelectedContainers(Class<? extends ISceneGraphRelationshipGenerator> sceneGraphRelationshipGenerator) {
-		for (Container container : selectedContainers()) {
-			try {
-				ISceneGraphRelationshipGenerator generator = sceneGraphRelationshipGenerator.newInstance();
-				registerBehaviorCallback(generator);
-				container.setSceneGraphRelationshipGenerator(generator);
-			} catch (InstantiationException e) {
-				ErrorHandler.error(e);
-				e.printStackTrace();
-			} catch (IllegalAccessException e) {
-				ErrorHandler.error(e);
-				e.printStackTrace();
-			}
-		}
-	}
-
-	private void registerBehaviorCallback(ISceneGraphRelationshipGenerator generator) {
-		if (generator instanceof PickingCallback) {
-			manager.setupTranslationCallback((PickingCallback) generator);
-		}
-	}
-
 	/***********************************/
 	/*********** POLYCYLINDERS **********/
 
@@ -311,8 +285,8 @@ public class VisualizationState {
 		}
 	}
 
-	Iterator<PolyCylinder> iteratorOnSelectedPolycylinders() {
-		return currentSelectionPolyCylinder.iterator();
+	List<PolyCylinder> unmodifiableSelectedPolycylinders() {
+		return Collections.unmodifiableList(currentSelectionPolyCylinder);
 	}
 
 	boolean hasMultiplePolyCylindersSelected() {
@@ -321,6 +295,26 @@ public class VisualizationState {
 
 	/*************************/
 	/**** OTHER OPERATIONS ****/
+
+	void validatePolycylindersSelection() {
+		Iterator<PolyCylinder> iteratorOnPolycylinders = currentSelectionPolyCylinder.iterator();
+		while (iteratorOnPolycylinders.hasNext()) {
+			PolyCylinder poly = iteratorOnPolycylinders.next();
+			if (!isPolyCylinderInSelection(poly)) {
+				poly.setSelected(false);
+				iteratorOnPolycylinders.remove();
+			}
+		}
+	}
+
+	private boolean isPolyCylinderInSelection(PolyCylinder poly) {
+		for (Container container : selectedContainers()) {
+			if (container.hasPolycylinder(poly)) {
+				return true;
+			}
+		}
+		return false;
+	}
 
 	void reset() {
 		for (Container container : containersInView) {

@@ -20,15 +20,14 @@ import java.util.List;
 
 import org.eclipse.core.runtime.*;
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
-import seeit3d.core.api.SeeIT3DCore;
-import seeit3d.core.model.generator.IModelGenerator;
-import seeit3d.general.SeeIT3DAPILocator;
+import seeit3d.general.bus.EventBus;
+import seeit3d.general.bus.events.OpenSeeIT3DViewEvent;
+import seeit3d.general.bus.events.RefreshVisualizationEvent;
 import seeit3d.general.error.ErrorHandler;
 import seeit3d.general.error.exception.SeeIT3DException;
-import seeit3d.ui.ide.utils.OpenSeeIT3DView;
+import seeit3d.general.model.generator.IModelGenerator;
 
 /**
  * Generic visualization job to show information in the visualization area. Takes <code>IModelGenerator</code> to analyze and register containers in the view.
@@ -40,12 +39,9 @@ public class VisualizeJob extends Job {
 
 	private final List<IModelGenerator> modelGenerators;
 
-	private final SeeIT3DCore core;
-
 	public VisualizeJob(Shell shell, List<IModelGenerator> modelGenerators) {
 		super("Visualize in SeeIT 3D");
 		this.modelGenerators = modelGenerators;
-		core = SeeIT3DAPILocator.findCore();
 	}
 
 	@Override
@@ -58,9 +54,9 @@ public class VisualizeJob extends Job {
 		} catch (SeeIT3DException e) {
 			ErrorHandler.error(e);
 		}
-		core.refreshVisualization();
+		EventBus.publishEvent(new RefreshVisualizationEvent());
+		EventBus.publishEvent(new OpenSeeIT3DViewEvent());
 		monitor.done();
-		Display.getDefault().syncExec(new OpenSeeIT3DView());
 		return Status.OK_STATUS;
 	}
 

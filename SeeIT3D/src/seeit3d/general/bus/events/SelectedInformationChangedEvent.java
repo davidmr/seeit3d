@@ -2,8 +2,8 @@ package seeit3d.general.bus.events;
 
 import java.util.Map;
 
-import seeit3d.core.model.Container;
 import seeit3d.general.bus.IEvent;
+import seeit3d.general.model.Container;
 
 public class SelectedInformationChangedEvent implements IEvent {
 

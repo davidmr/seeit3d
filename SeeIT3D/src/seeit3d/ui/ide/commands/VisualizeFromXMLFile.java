@@ -28,9 +28,9 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.handlers.HandlerUtil;
 
-import seeit3d.core.model.generator.IModelGenerator;
 import seeit3d.general.error.ErrorHandler;
 import seeit3d.general.error.exception.SeeIT3DXMLParsingException;
+import seeit3d.general.model.generator.IModelGenerator;
 import seeit3d.modelers.xml.SeeIT3DSchema;
 import seeit3d.modelers.xml.XMLBasedModelGenerator;
 import seeit3d.modelers.xml.internal.Container;

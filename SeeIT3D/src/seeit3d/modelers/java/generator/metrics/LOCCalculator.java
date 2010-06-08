@@ -20,8 +20,8 @@ import java.util.*;
 
 import org.eclipse.jdt.core.*;
 
-import seeit3d.core.model.generator.metrics.AbstractContinuousMetricCalculator;
 import seeit3d.general.error.ErrorHandler;
+import seeit3d.general.model.generator.metrics.AbstractContinuousMetricCalculator;
 
 /**
  * Lines of code calculator. Only takes into account the lines of actual code, not comments. This metric must be manually registered

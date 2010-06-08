@@ -21,13 +21,13 @@ import java.util.*;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.JavaModelException;
 
-import seeit3d.core.model.*;
-import seeit3d.core.model.generator.IModelGenerator;
-import seeit3d.core.model.generator.metrics.MetricCalculator;
-import seeit3d.core.model.generator.metrics.MetricsRegistry;
 import seeit3d.general.bus.EventBus;
 import seeit3d.general.bus.events.AddContainerEvent;
 import seeit3d.general.error.ErrorHandler;
+import seeit3d.general.model.*;
+import seeit3d.general.model.generator.IModelGenerator;
+import seeit3d.general.model.generator.metrics.MetricCalculator;
+import seeit3d.general.model.generator.metrics.MetricsRegistry;
 import seeit3d.modelers.java.EclipseJavaResource;
 import seeit3d.modelers.java.JavaRepresentation;
 

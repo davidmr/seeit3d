@@ -1,8 +1,8 @@
 package seeit3d.general.bus.events;
 
-import seeit3d.core.model.Container;
-import seeit3d.core.model.PolyCylinder;
 import seeit3d.general.bus.IEvent;
+import seeit3d.general.model.Container;
+import seeit3d.general.model.PolyCylinder;
 
 public class ChangeSelectionEvent implements IEvent {
 

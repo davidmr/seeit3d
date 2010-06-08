@@ -21,10 +21,10 @@ import java.util.Map;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 
-import seeit3d.core.model.Container;
 import seeit3d.general.bus.IEvent;
 import seeit3d.general.bus.IEventListener;
 import seeit3d.general.bus.events.SelectedInformationChangedEvent;
+import seeit3d.general.model.Container;
 
 /**
  * This class is the feedback listener that is shown to the user
@@ -58,7 +58,7 @@ public class LabelInformation implements IEventListener {
 				formattedString.append(container.getName());
 				formattedString.append(",");
 			}
-			formattedString.deleteCharAt(formattedString.length() - 2).append("\n");
+			formattedString.deleteCharAt(formattedString.length() - 1).append("\n");
 			if (metricValues.isEmpty()) {
 				formattedString.append("Select a Polycylinder to show information");
 			} else {

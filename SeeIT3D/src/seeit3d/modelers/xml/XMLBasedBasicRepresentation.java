@@ -17,7 +17,7 @@
 
 package seeit3d.modelers.xml;
 
-import seeit3d.core.model.IContainerRepresentedObject;
+import seeit3d.general.model.IContainerRepresentedObject;
 import seeit3d.modelers.xml.internal.Container;
 
 /**

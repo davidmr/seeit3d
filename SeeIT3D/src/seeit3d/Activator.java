@@ -29,10 +29,10 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.eclipse.ui.progress.UIJob;
 import org.osgi.framework.BundleContext;
 
-import seeit3d.core.model.Preferences;
-import seeit3d.core.model.generator.metrics.MetricsRegistry;
-import seeit3d.core.model.utils.NoOpMetricCalculator;
 import seeit3d.general.error.ErrorHandler;
+import seeit3d.general.model.Preferences;
+import seeit3d.general.model.generator.metrics.MetricsRegistry;
+import seeit3d.general.model.utils.NoOpMetricCalculator;
 import seeit3d.modelers.java.generator.metrics.*;
 import seeit3d.ui.ide.commands.ChangeSortingPolyCylindersCriteriaCommand;
 import seeit3d.ui.ide.observers.WorkspaceClosedObserver;

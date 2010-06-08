@@ -19,7 +19,7 @@ package seeit3d.core.handler.utils;
 import java.util.Iterator;
 import java.util.List;
 
-import seeit3d.core.model.Container;
+import seeit3d.general.model.Container;
 
 /**
  * Iterator on selected containers

@@ -25,7 +25,7 @@ import org.eclipse.jface.viewers.ITreeSelection;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.handlers.HandlerUtil;
 
-import seeit3d.core.model.generator.IModelGenerator;
+import seeit3d.general.model.generator.IModelGenerator;
 import seeit3d.ui.ide.commands.jobs.VisualizeJob;
 
 /**

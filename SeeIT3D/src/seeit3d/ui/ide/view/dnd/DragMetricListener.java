@@ -19,7 +19,7 @@ package seeit3d.ui.ide.view.dnd;
 import org.eclipse.swt.dnd.*;
 import org.eclipse.swt.widgets.Label;
 
-import seeit3d.core.model.generator.metrics.MetricCalculator;
+import seeit3d.general.model.generator.metrics.MetricCalculator;
 
 /**
  * This class listens for metrics that are dragged from the mapping view

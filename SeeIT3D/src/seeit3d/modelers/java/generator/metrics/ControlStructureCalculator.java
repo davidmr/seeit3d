@@ -20,7 +20,7 @@ import java.util.List;
 
 import org.eclipse.jdt.core.IJavaElement;
 
-import seeit3d.core.model.generator.metrics.AbstractCategorizedMetricCalculator;
+import seeit3d.general.model.generator.metrics.AbstractCategorizedMetricCalculator;
 import seeit3d.modelers.java.LineOfCode;
 
 import com.google.common.collect.Lists;

@@ -18,7 +18,7 @@ package seeit3d.visual.relationships;
 
 import java.util.List;
 
-import seeit3d.core.model.Container;
+import seeit3d.general.model.Container;
 
 /**
  * Interface representing a visualization generator for relationships

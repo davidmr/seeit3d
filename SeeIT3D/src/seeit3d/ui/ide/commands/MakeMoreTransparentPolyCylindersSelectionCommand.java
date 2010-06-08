@@ -16,10 +16,6 @@
  */
 package seeit3d.ui.ide.commands;
 
-import org.eclipse.core.commands.*;
-
-import seeit3d.general.bus.EventBus;
-import seeit3d.general.bus.events.ChangeTransparencyEvent;
 
 /**
  * Command to make the selected polycylinders more transparent
@@ -27,12 +23,11 @@ import seeit3d.general.bus.events.ChangeTransparencyEvent;
  * @author David Montaño
  * 
  */
-public class MakeMoreTransparentPolyCylindersSelectionCommand extends AbstractHandler {
+public class MakeMoreTransparentPolyCylindersSelectionCommand extends ChangeTransparencyBaseCommand {
 
 	@Override
-	public Object execute(ExecutionEvent event) throws ExecutionException {
-		EventBus.publishEvent(new ChangeTransparencyEvent(true));
-		return null;
+	protected boolean moreTransparent() {
+		return true;
 	}
 
 }

@@ -6,8 +6,8 @@ import javax.media.j3d.*;
 import javax.vecmath.Color3f;
 import javax.vecmath.Vector3f;
 
-import seeit3d.core.model.Container;
 import seeit3d.general.SeeIT3DAPILocator;
+import seeit3d.general.model.Container;
 import seeit3d.utils.Utils;
 import seeit3d.visual.relationships.ISceneGraphRelationshipGenerator;
 

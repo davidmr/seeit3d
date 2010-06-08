@@ -16,8 +16,7 @@
  */
 package seeit3d.utils;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 import javax.media.j3d.*;
 import javax.vecmath.*;
@@ -25,11 +24,12 @@ import javax.vecmath.*;
 import org.eclipse.jdt.core.IMethod;
 import org.eclipse.jdt.core.JavaModelException;
 
-import seeit3d.core.model.Container;
-import seeit3d.core.model.IContainerRepresentedObject;
-import seeit3d.core.model.generator.metrics.MetricCalculator;
+import seeit3d.general.model.Container;
+import seeit3d.general.model.IContainerRepresentedObject;
+import seeit3d.general.model.generator.metrics.MetricCalculator;
 import seeit3d.modelers.java.LineOfCode;
 
+import com.google.common.base.Function;
 import com.sun.j3d.utils.geometry.Box;
 import com.sun.j3d.utils.geometry.Sphere;
 
@@ -265,6 +265,12 @@ public class Utils {
 			if (!points.contains(point)) {
 				points.add(point);
 			}
+		}
+	}
+
+	public static <T> void applyTransformation(Collection<T> collection, Function<T, T> function) {
+		for (T object : collection) {
+			function.apply(object);
 		}
 	}
 

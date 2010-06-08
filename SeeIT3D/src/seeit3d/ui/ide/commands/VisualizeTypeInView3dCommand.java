@@ -19,7 +19,7 @@ package seeit3d.ui.ide.commands;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IType;
 
-import seeit3d.core.model.generator.IModelGenerator;
+import seeit3d.general.model.generator.IModelGenerator;
 import seeit3d.modelers.java.generator.TypeClassModelGenerator;
 
 /**

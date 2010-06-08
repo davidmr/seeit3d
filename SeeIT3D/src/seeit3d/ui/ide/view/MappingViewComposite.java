@@ -24,13 +24,13 @@ import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.layout.*;
 import org.eclipse.swt.widgets.*;
 
-import seeit3d.core.model.Container;
-import seeit3d.core.model.VisualProperty;
-import seeit3d.core.model.generator.metrics.MetricCalculator;
 import seeit3d.general.SeeIT3DAPILocator;
 import seeit3d.general.bus.IEvent;
 import seeit3d.general.bus.IEventListener;
 import seeit3d.general.bus.events.MappingViewNeedsUpdateEvent;
+import seeit3d.general.model.Container;
+import seeit3d.general.model.VisualProperty;
+import seeit3d.general.model.generator.metrics.MetricCalculator;
 import seeit3d.ui.ide.view.dnd.*;
 import seeit3d.ui.ide.view.listeners.*;
 import seeit3d.visual.colorscale.ColorScaleRegistry;
@@ -272,6 +272,7 @@ public class MappingViewComposite extends Composite implements IEventListener {
 		Button checkAddToView = new Button(relationshipsGroup, SWT.CHECK | SWT.DRAW_DELIMITER);
 		checkAddToView.setText("Show related");
 		checkAddToView.setToolTipText("When checked adds the related containers automatically to the visualization area");
+
 		boolean isShowRelatedContainers = SeeIT3DAPILocator.findCore().isShowRelatedContainers();
 		checkAddToView.setSelection(isShowRelatedContainers);
 

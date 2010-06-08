@@ -17,9 +17,9 @@
 package seeit3d.general.bus;
 
 import java.util.Collection;
+import java.util.concurrent.ArrayBlockingQueue;
 
-import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.Multimap;
+import com.google.common.collect.*;
 
 /**
  * Bus to handle interactions between components in application
@@ -29,29 +29,64 @@ import com.google.common.collect.Multimap;
  */
 public class EventBus {
 
+	private static final ArrayBlockingQueue<IEvent> eventQueue;
+
 	private static final Multimap<Class<? extends IEvent>, IEventListener> listeners;
 
-	private EventBus() {}
+	private EventBus() {
+	}
 
 	static {
-		listeners = ArrayListMultimap.create();
+		eventQueue = new ArrayBlockingQueue<IEvent>(10);
+		ArrayListMultimap<Class<? extends IEvent>, IEventListener> temporalMultimap = ArrayListMultimap.create();
+		listeners = Multimaps.synchronizedMultimap(temporalMultimap);
+		Thread eventDispatcherThread = new Thread(new EventDispatcher(), "SeeIT3DEventDispatcher");
+		eventDispatcherThread.start();
 	}
 
-	public synchronized static void registerListener(Class<? extends IEvent> eventClass, IEventListener listener) {
+	public static void registerListener(Class<? extends IEvent> eventClass, IEventListener listener) {
 		listeners.put(eventClass, listener);
+		System.out.println("Register listener for class: " + eventClass);
 	}
 
-	// TODO try to use a queue where the bus reads events to avoid possible deadlock if this method is synchronized
 	public static void publishEvent(IEvent event) {
-		Collection<IEventListener> listenersByClass = listeners.get(event.getClass());
+		try {
+			eventQueue.put(event);
+		} catch (InterruptedException e) {
+			System.err.println("Event " + event.getClass() + " couldn't be registered");
+			e.printStackTrace();
+		}
+	}
 
-		if (listenersByClass == null || listenersByClass.isEmpty()) {
-			System.err.println("No listeners for class: " + event.getClass());
-		} else {
-			for (IEventListener listener : listenersByClass) {
-				listener.processEvent(event);
+	private static final class EventDispatcher implements Runnable {
+
+		@Override
+		public void run() {
+			System.out.println("Starting event dispatcher");
+			while (true) {
+				try {
+					IEvent event = eventQueue.take();
+					dispatchEvent(event);
+				} catch (InterruptedException e) {
+					System.err.println("Error retrieving event from queue");
+					e.printStackTrace();
+				}
 			}
 		}
+
+		private void dispatchEvent(IEvent event) {
+			System.out.println("Dispatching event: " + event);
+			Collection<IEventListener> listenersByClass = listeners.get(event.getClass());
+
+			if (listenersByClass == null || listenersByClass.isEmpty()) {
+				System.err.println("No listeners for class: " + event.getClass());
+			} else {
+				for (IEventListener listener : listenersByClass) {
+					listener.processEvent(event);
+				}
+			}
+		}
+
 	}
 
 }

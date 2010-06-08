@@ -19,10 +19,10 @@ package seeit3d.ui.ide.view.dnd;
 import org.eclipse.swt.dnd.*;
 import org.eclipse.swt.widgets.Group;
 
-import seeit3d.core.model.VisualProperty;
-import seeit3d.core.model.generator.metrics.MetricCalculator;
 import seeit3d.general.bus.EventBus;
 import seeit3d.general.bus.events.MappingChangedEvent;
+import seeit3d.general.model.VisualProperty;
+import seeit3d.general.model.generator.metrics.MetricCalculator;
 import seeit3d.ui.ide.view.MappingViewComposite;
 
 /**

@@ -19,7 +19,7 @@ package seeit3d.ui.ide.view.dnd;
 import org.eclipse.swt.dnd.ByteArrayTransfer;
 import org.eclipse.swt.dnd.TransferData;
 
-import seeit3d.core.model.generator.metrics.MetricCalculator;
+import seeit3d.general.model.generator.metrics.MetricCalculator;
 
 /**
  * This class allows to transfer metrics instances from the metrics group to the visual property group. Based on the implementation at

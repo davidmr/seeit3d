@@ -18,7 +18,7 @@ package seeit3d.modelers.xml.generator.metrics;
 
 import org.eclipse.jdt.core.IJavaElement;
 
-import seeit3d.core.model.generator.metrics.AbstractContinuousMetricCalculator;
+import seeit3d.general.model.generator.metrics.AbstractContinuousMetricCalculator;
 
 /**
  * Continuous metric calculator for XML based visualization. This metric can be instantiated multiple times, one for each time it appears on the XML file

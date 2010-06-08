@@ -19,12 +19,12 @@ package seeit3d.modelers.xml;
 
 import java.util.*;
 
-import seeit3d.core.model.*;
-import seeit3d.core.model.Container;
-import seeit3d.core.model.generator.IModelGenerator;
-import seeit3d.core.model.generator.metrics.MetricCalculator;
 import seeit3d.general.bus.EventBus;
 import seeit3d.general.bus.events.AddContainerEvent;
+import seeit3d.general.model.*;
+import seeit3d.general.model.Container;
+import seeit3d.general.model.generator.IModelGenerator;
+import seeit3d.general.model.generator.metrics.MetricCalculator;
 import seeit3d.modelers.xml.generator.metrics.XMLCategorizedMetricCalculator;
 import seeit3d.modelers.xml.generator.metrics.XMLContinuousMetricCalculator;
 import seeit3d.modelers.xml.internal.*;

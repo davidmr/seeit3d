@@ -144,11 +144,12 @@ public class PolyCylinder implements Serializable {
 
 		Appearance app = new Appearance();
 
-		Color3f lighterColor = new Color3f(0.5f, 0.5f, 0.5f);
+		Color3f lighterColor = new Color3f(0.2f, 0.2f, 0.2f);
 
 		boxColor = new Material(ViewConstants.BLACK, ViewConstants.BLACK, baseColor, lighterColor, 64.0f);
 		boxColor.setLightingEnable(true);
 		boxColor.setCapability(Material.ALLOW_COMPONENT_WRITE);
+
 		app.setMaterial(boxColor);
 
 		transparency = new TransparencyAttributes(TransparencyAttributes.SCREEN_DOOR, 0.0f);

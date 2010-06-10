@@ -23,9 +23,11 @@ import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.swt.graphics.RGB;
 
-import seeit3d.utils.ViewConstants;
 import seeit3d.visual.colorscale.ColorScaleRegistry;
 import seeit3d.visual.colorscale.IColorScale;
+import seeit3d.visual.colorscale.imp.ColdToHotColorScale;
+
+import com.google.common.base.Preconditions;
 
 /**
  * SeeIT3D preferences representation. It holds the values of each preference
@@ -61,21 +63,21 @@ public class Preferences implements IPropertyChangeListener {
 		return instance;
 	}
 
-	private Color3f backgroundColor;
+	private Color3f backgroundColor = null;
 
-	private int containersPerRow;
+	private int containersPerRow = -1;
 
-	private double scaleStep;
+	private double scaleStep = -1;
 
-	private int polycylindersPerRow;
+	private int polycylindersPerRow = -1;
 
-	private Color3f highlightColor;
+	private Color3f highlightColor = null;
 
-	private Color3f relationMarkColor;
+	private Color3f relationMarkColor = null;
 
-	private float transparencyStep;
+	private float transparencyStep = -1;
 
-	private IColorScale colorScale;
+	private IColorScale colorScale = null;
 
 	@Override
 	public void propertyChange(PropertyChangeEvent event) {
@@ -125,35 +127,51 @@ public class Preferences implements IPropertyChangeListener {
 		}
 	}
 
+	private <T> void checkInitialized(T reference) {
+		Preconditions.checkNotNull(reference, "Not initialized");
+	}
+
+	private void checkInitialized(Number value) {
+		Preconditions.checkArgument(value.doubleValue() >= 0, "Not initialized");
+	}
+
 	public Color3f getBackgroundColor() {
+		checkInitialized(backgroundColor);
 		return backgroundColor;
 	}
 
 	public int getContainersPerRow() {
+		checkInitialized(containersPerRow);
 		return containersPerRow;
 	}
 
 	public double getScaleStep() {
+		checkInitialized(scaleStep);
 		return scaleStep;
 	}
 
 	public int getPolycylindersPerRow() {
+		checkInitialized(polycylindersPerRow);
 		return polycylindersPerRow;
 	}
 
 	public Color3f getHighlightColor() {
+		checkInitialized(highlightColor);
 		return highlightColor;
 	}
 
 	public Color3f getRelationMarkColor() {
+		checkInitialized(relationMarkColor);
 		return relationMarkColor;
 	}
 
 	public float getTransparencyStep() {
+		checkInitialized(transparencyStep);
 		return transparencyStep;
 	}
 
 	public IColorScale getColorScale() {
+		checkInitialized(colorScale);
 		return colorScale;
 	}
 
@@ -165,7 +183,7 @@ public class Preferences implements IPropertyChangeListener {
 		preferenceStore.setDefault(RELATION_COLOR, "255,255,0");
 		preferenceStore.setDefault(SCALE_STEP, 20);
 		preferenceStore.setDefault(TRANSPARENCY_STEP, 10);
-		preferenceStore.setDefault(COLOR_SCALE, ViewConstants.DEFAULT_COLOR_SCALE.getName());
+		preferenceStore.setDefault(COLOR_SCALE, new ColdToHotColorScale().getName());
 	}
 
 	public void loadStoredPreferences(IPreferenceStore preferenceStore) {
@@ -254,6 +272,10 @@ public class Preferences implements IPropertyChangeListener {
 		float g = (new Float(color.green) / 255f);
 		float b = (new Float(color.blue) / 255f);
 		return new Color3f(r, g, b);
+	}
+
+	public boolean isInitialized() {
+		return false;
 	}
 
 }

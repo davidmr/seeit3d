@@ -19,8 +19,6 @@ package seeit3d.utils;
 import javax.vecmath.Color3f;
 
 import seeit3d.general.model.VisualProperty;
-import seeit3d.visual.colorscale.IColorScale;
-import seeit3d.visual.colorscale.imp.ColdToHotColorScale;
 
 /**
  * Constants in the view (Colors, and sizes)
@@ -51,9 +49,5 @@ public class ViewConstants {
 	public static final float HIGHLIGHT_PADDING = 0.1f;
 
 	public static final VisualProperty DEFAULT_SORTING_PROPERTY = VisualProperty.HEIGHT;
-
-	public static final IColorScale DEFAULT_COLOR_SCALE = new ColdToHotColorScale();
-
-	public static final Color3f DEFAULT_BACKGROUND_COLOR = WHITE;
 
 }

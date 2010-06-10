@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2010  David Montaï¿½o
+ * Copyright (C) 2010  David Montaño
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,6 +25,7 @@ import javax.vecmath.*;
 
 import seeit3d.general.error.exception.SeeIT3DException;
 import seeit3d.general.model.Container;
+import seeit3d.general.model.Preferences;
 import seeit3d.ui.behavior.*;
 import seeit3d.utils.Utils;
 import seeit3d.utils.ViewConstants;
@@ -74,7 +75,7 @@ public class SceneGraphHandler {
 
 	SceneGraphHandler(SeeIT3DCoreHandler manager) {
 		this.manager = manager;
-		this.backgroundColor = ViewConstants.DEFAULT_BACKGROUND_COLOR;
+		this.backgroundColor = Preferences.getInstance().getBackgroundColor();
 	}
 
 	void clearScene() {
@@ -132,16 +133,6 @@ public class SceneGraphHandler {
 		if (!initialized) {
 			buildAllVisualization();
 		}
-	}
-
-	private void updateBackgroundColor() {
-		// TODO fix background update
-		// if (back != null) {
-		// rootObj.removeChild(back);
-		// }
-		// back = new Background(backgroundColor);
-		// back.setApplicationBounds(bounds);
-		// rootObj.addChild(back);
 	}
 
 	private void buildAllVisualization() {
@@ -214,7 +205,6 @@ public class SceneGraphHandler {
 		back = new Background(backgroundColor);
 		back.setApplicationBounds(bounds);
 		rootObj.addChild(back);
-		updateBackgroundColor();
 
 	}
 

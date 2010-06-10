@@ -18,12 +18,11 @@ package seeit3d.ui.behavior;
 
 import javax.media.j3d.*;
 
-import seeit3d.general.bus.EventBus;
+import static seeit3d.general.bus.EventBus.*;
 import seeit3d.general.bus.events.ChangeSelectionEvent;
 import seeit3d.general.bus.events.OpenEditorEvent;
 import seeit3d.general.model.Container;
 import seeit3d.general.model.PolyCylinder;
-import seeit3d.utils.ViewConstants;
 
 import com.sun.j3d.utils.geometry.Box;
 import com.sun.j3d.utils.picking.PickResult;
@@ -45,7 +44,6 @@ public class MouseClickedBehavior extends PickMouseBehavior {
 	public MouseClickedBehavior(Canvas3D canvas, BranchGroup rootBg, Bounds bounds) {
 		super(canvas, rootBg, bounds);
 		setSchedulingBounds(bounds);
-		pickCanvas.setTolerance(ViewConstants.PICKING_TOLERANCE);
 		pickCanvas.setMode(PickTool.GEOMETRY);
 	}
 
@@ -65,12 +63,12 @@ public class MouseClickedBehavior extends PickMouseBehavior {
 		}
 		if (doubleClick()) {
 			if (selectedPolyCylinder != null) {
-				EventBus.publishEvent(new OpenEditorEvent(selectedPolyCylinder));
+				publishEvent(new OpenEditorEvent(selectedPolyCylinder));
 			}
 		} else {
 			boolean toggleContainerSelection = mevent.isControlDown();
 			boolean togglePolycylinderSelection = mevent.isShiftDown();
-			EventBus.publishEvent(new ChangeSelectionEvent(selectedContainer, selectedPolyCylinder, toggleContainerSelection, togglePolycylinderSelection));
+			publishEvent(new ChangeSelectionEvent(selectedContainer, selectedPolyCylinder, toggleContainerSelection, togglePolycylinderSelection));
 		}
 
 		lastPressedTime = System.currentTimeMillis();

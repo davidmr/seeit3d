@@ -19,7 +19,7 @@ package seeit3d.modelers.xml;
 
 import java.util.*;
 
-import seeit3d.general.bus.EventBus;
+import static seeit3d.general.bus.EventBus.*;
 import seeit3d.general.bus.events.AddContainerEvent;
 import seeit3d.general.model.*;
 import seeit3d.general.model.Container;
@@ -113,7 +113,7 @@ public class XMLBasedModelGenerator implements IModelGenerator {
 	@Override
 	public void analizeAndRegisterInView(boolean includeDependecies) {
 		Container container = analize(includeDependecies);
-		EventBus.publishEvent(new AddContainerEvent(container));
+		publishEvent(new AddContainerEvent(container));
 	}
 
 }

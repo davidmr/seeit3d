@@ -24,7 +24,7 @@ import org.eclipse.ui.commands.IElementUpdater;
 import org.eclipse.ui.handlers.HandlerUtil;
 import org.eclipse.ui.menus.UIElement;
 
-import seeit3d.general.bus.EventBus;
+import static seeit3d.general.bus.EventBus.*;
 import seeit3d.general.bus.events.PerformOperationOnSelectedContainersEvent;
 import seeit3d.general.bus.utils.FunctionToApplyOnContainer;
 import seeit3d.general.model.Container;
@@ -61,7 +61,7 @@ public class ChangeSortingPolyCylindersCriteriaCommand extends AbstractHandler i
 		VisualProperty property = VisualProperty.valueOf(currentCriteria);
 
 		PerformOperationOnSelectedContainersEvent eventChangeSorting = createEvent(property);
-		EventBus.publishEvent(eventChangeSorting);
+		publishEvent(eventChangeSorting);
 
 		ICommandService service = (ICommandService) HandlerUtil.getActiveWorkbenchWindowChecked(event).getService(ICommandService.class);
 		service.refreshElements(event.getCommand().getId(), null);

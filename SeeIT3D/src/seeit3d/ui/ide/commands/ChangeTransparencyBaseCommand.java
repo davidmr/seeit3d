@@ -18,7 +18,7 @@ package seeit3d.ui.ide.commands;
 
 import org.eclipse.core.commands.*;
 
-import seeit3d.general.bus.EventBus;
+import static seeit3d.general.bus.EventBus.*;
 import seeit3d.general.bus.events.PerformOperationOnSelectedPolycylindersEvent;
 import seeit3d.general.bus.utils.FunctionToApplyOnPolycylinders;
 import seeit3d.general.model.PolyCylinder;
@@ -35,7 +35,7 @@ public abstract class ChangeTransparencyBaseCommand extends AbstractHandler {
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		ChangeTransparencyFunction function = new ChangeTransparencyFunction(moreTransparent());
 		PerformOperationOnSelectedPolycylindersEvent operation = new PerformOperationOnSelectedPolycylindersEvent(function, false);
-		EventBus.publishEvent(operation);
+		publishEvent(operation);
 		return null;
 	}
 

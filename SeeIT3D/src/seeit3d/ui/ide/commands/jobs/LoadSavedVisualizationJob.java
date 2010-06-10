@@ -6,7 +6,7 @@ import java.io.FileNotFoundException;
 import org.eclipse.core.runtime.*;
 import org.eclipse.core.runtime.jobs.Job;
 
-import seeit3d.general.bus.EventBus;
+import static seeit3d.general.bus.EventBus.*;
 import seeit3d.general.bus.events.LoadVisualizationEvent;
 import seeit3d.general.error.ErrorHandler;
 
@@ -24,7 +24,7 @@ public class LoadSavedVisualizationJob extends Job {
 		monitor.beginTask("Loading", IProgressMonitor.UNKNOWN);
 		try {
 			FileInputStream input = new FileInputStream(filename);
-			EventBus.publishEvent(new LoadVisualizationEvent(input));
+			publishEvent(new LoadVisualizationEvent(input));
 		} catch (FileNotFoundException e) {
 			ErrorHandler.error("Visualization file not found");
 			e.printStackTrace();

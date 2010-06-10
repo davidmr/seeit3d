@@ -22,7 +22,7 @@ import org.eclipse.core.runtime.*;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.swt.widgets.Shell;
 
-import seeit3d.general.bus.EventBus;
+import static seeit3d.general.bus.EventBus.*;
 import seeit3d.general.bus.events.OpenSeeIT3DViewEvent;
 import seeit3d.general.bus.events.RefreshVisualizationEvent;
 import seeit3d.general.error.ErrorHandler;
@@ -54,8 +54,8 @@ public class VisualizeJob extends Job {
 		} catch (SeeIT3DException e) {
 			ErrorHandler.error(e);
 		}
-		EventBus.publishEvent(new RefreshVisualizationEvent());
-		EventBus.publishEvent(new OpenSeeIT3DViewEvent());
+		publishEvent(new RefreshVisualizationEvent());
+		publishEvent(new OpenSeeIT3DViewEvent());
 		monitor.done();
 		return Status.OK_STATUS;
 	}

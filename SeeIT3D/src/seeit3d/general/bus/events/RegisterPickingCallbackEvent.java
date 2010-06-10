@@ -2,7 +2,7 @@ package seeit3d.general.bus.events;
 
 import seeit3d.general.bus.IEvent;
 
-import com.sun.j3d.utils.pickfast.behaviors.PickingCallback;
+import com.sun.j3d.utils.picking.behaviors.PickingCallback;
 
 public class RegisterPickingCallbackEvent implements IEvent {
 

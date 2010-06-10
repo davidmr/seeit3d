@@ -20,7 +20,7 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.widgets.Combo;
 
-import seeit3d.general.bus.EventBus;
+import static seeit3d.general.bus.EventBus.*;
 import seeit3d.general.bus.events.ChangeColorScaleEvent;
 import seeit3d.general.bus.events.RefreshVisualizationEvent;
 import seeit3d.visual.colorscale.ColorScaleRegistry;
@@ -48,8 +48,8 @@ public class ColorScaleSelectionListener implements SelectionListener {
 
 		for (IColorScale colorScale : allColorScales) {
 			if (colorScaleName.equals(colorScale.getName())) {
-				EventBus.publishEvent(new ChangeColorScaleEvent(colorScale));
-				EventBus.publishEvent(new RefreshVisualizationEvent());
+				publishEvent(new ChangeColorScaleEvent(colorScale));
+				publishEvent(new RefreshVisualizationEvent());
 				break;
 			}
 		}

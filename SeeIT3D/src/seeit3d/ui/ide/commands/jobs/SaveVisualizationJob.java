@@ -6,7 +6,7 @@ import java.io.FileOutputStream;
 import org.eclipse.core.runtime.*;
 import org.eclipse.core.runtime.jobs.Job;
 
-import seeit3d.general.bus.EventBus;
+import static seeit3d.general.bus.EventBus.*;
 import seeit3d.general.bus.events.SaveVisualizationEvent;
 import seeit3d.general.error.ErrorHandler;
 import seeit3d.utils.ViewConstants;
@@ -28,7 +28,7 @@ public class SaveVisualizationJob extends Job {
 				filename += "." + ViewConstants.VISUALIZATION_EXTENSION;
 			}
 			FileOutputStream output = new FileOutputStream(filename);
-			EventBus.publishEvent(new SaveVisualizationEvent(output));
+			publishEvent(new SaveVisualizationEvent(output));
 		} catch (FileNotFoundException e) {
 			ErrorHandler.error("Visualization file not found");
 			e.printStackTrace();

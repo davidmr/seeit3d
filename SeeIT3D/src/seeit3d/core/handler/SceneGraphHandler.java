@@ -32,8 +32,7 @@ import seeit3d.utils.ViewConstants;
 import seeit3d.visual.relationships.ISceneGraphRelationshipGenerator;
 
 import com.sun.j3d.utils.behaviors.vp.OrbitBehavior;
-import com.sun.j3d.utils.pickfast.behaviors.PickingCallback;
-import com.sun.j3d.utils.picking.behaviors.PickMouseBehavior;
+import com.sun.j3d.utils.picking.behaviors.PickingCallback;
 import com.sun.j3d.utils.universe.SimpleUniverse;
 import com.sun.j3d.utils.universe.ViewingPlatform;
 
@@ -65,7 +64,7 @@ public class SceneGraphHandler {
 
 	private PickTranslate3DBehavior translation;
 
-	private PickMouseBehavior selectionBehavior;
+	private MouseClickedBehavior selectionBehavior;
 
 	private PickRotate3DBehavior rotate;
 

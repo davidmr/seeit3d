@@ -21,7 +21,7 @@ import java.util.*;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.JavaModelException;
 
-import seeit3d.general.bus.EventBus;
+import static seeit3d.general.bus.EventBus.*;
 import seeit3d.general.bus.events.AddContainerEvent;
 import seeit3d.general.error.ErrorHandler;
 import seeit3d.general.model.*;
@@ -54,7 +54,7 @@ public abstract class AbstracModelGenerator<ElementToAnalize extends IJavaElemen
 	@Override
 	public final void analizeAndRegisterInView(boolean includeDependecies) {
 		Container container = analize(includeDependecies);
-		EventBus.publishEvent(new AddContainerEvent(container));
+		publishEvent(new AddContainerEvent(container));
 	}
 
 	protected abstract Children[] fetchChildren(ElementToAnalize element) throws JavaModelException;

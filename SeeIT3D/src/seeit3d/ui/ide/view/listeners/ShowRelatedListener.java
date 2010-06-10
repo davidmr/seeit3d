@@ -20,7 +20,7 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.widgets.Button;
 
-import seeit3d.general.bus.EventBus;
+import static seeit3d.general.bus.EventBus.*;
 import seeit3d.general.bus.events.ChangeShowRelatedEvent;
 
 /**
@@ -40,7 +40,7 @@ public class ShowRelatedListener implements SelectionListener {
 	public void widgetSelected(SelectionEvent e) {
 		Button check = (Button) e.widget;
 		boolean checked = check.getSelection();
-		EventBus.publishEvent(new ChangeShowRelatedEvent(checked));
+		publishEvent(new ChangeShowRelatedEvent(checked));
 	}
 
 }

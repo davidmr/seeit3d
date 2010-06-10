@@ -18,7 +18,7 @@ package seeit3d.ui.ide.commands;
 
 import org.eclipse.core.commands.*;
 
-import seeit3d.general.bus.EventBus;
+import static seeit3d.general.bus.EventBus.*;
 import seeit3d.general.bus.events.KeyBasedChangeSelectionEvent;
 
 /**
@@ -31,7 +31,7 @@ public class ChangeContainerSelectionIncrease extends AbstractHandler {
 
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
-		EventBus.publishEvent(new KeyBasedChangeSelectionEvent(true));
+		publishEvent(new KeyBasedChangeSelectionEvent(true));
 		return null;
 	}
 

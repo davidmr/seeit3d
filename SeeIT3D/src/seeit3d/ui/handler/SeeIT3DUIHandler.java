@@ -1,5 +1,7 @@
 package seeit3d.ui.handler;
 
+import static seeit3d.general.bus.EventBus.*;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,7 +13,8 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.*;
 import org.eclipse.ui.part.FileEditorInput;
 
-import seeit3d.general.bus.*;
+import seeit3d.general.bus.IEvent;
+import seeit3d.general.bus.IEventListener;
 import seeit3d.general.bus.events.*;
 import seeit3d.general.error.ErrorHandler;
 import seeit3d.general.model.IEclipseResourceRepresentation;
@@ -22,9 +25,9 @@ import seeit3d.utils.Utils;
 public class SeeIT3DUIHandler implements IEventListener {
 
 	public SeeIT3DUIHandler() {
-		EventBus.registerListener(SynchronizePackageExplorerVsViewEvent.class, this);
-		EventBus.registerListener(OpenEditorEvent.class, this);
-		EventBus.registerListener(OpenSeeIT3DViewEvent.class, this);
+		registerListener(SynchronizePackageExplorerVsViewEvent.class, this);
+		registerListener(OpenEditorEvent.class, this);
+		registerListener(OpenSeeIT3DViewEvent.class, this);
 	}
 
 	@Override

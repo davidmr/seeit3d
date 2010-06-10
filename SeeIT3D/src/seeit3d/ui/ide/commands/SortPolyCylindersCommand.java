@@ -18,7 +18,7 @@ package seeit3d.ui.ide.commands;
 
 import org.eclipse.core.commands.*;
 
-import seeit3d.general.bus.EventBus;
+import static seeit3d.general.bus.EventBus.*;
 import seeit3d.general.bus.events.SortPolycylindersEvent;
 
 /**
@@ -31,7 +31,7 @@ public class SortPolyCylindersCommand extends AbstractHandler {
 
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
-		EventBus.publishEvent(new SortPolycylindersEvent());
+		publishEvent(new SortPolycylindersEvent());
 		return null;
 	}
 

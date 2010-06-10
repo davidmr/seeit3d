@@ -19,7 +19,7 @@ package seeit3d.ui.ide.view.dnd;
 import org.eclipse.swt.dnd.*;
 import org.eclipse.swt.widgets.Group;
 
-import seeit3d.general.bus.EventBus;
+import static seeit3d.general.bus.EventBus.*;
 import seeit3d.general.bus.events.RemoveMetricEvent;
 import seeit3d.general.model.generator.metrics.MetricCalculator;
 
@@ -44,7 +44,7 @@ public class DropMetricOnMetricContainerListener implements DropTargetListener {
 	public void drop(DropTargetEvent event) {
 		if (TransferMetric.getInstance().isSupportedType(event.currentDataType)) {
 			MetricCalculator metric = (MetricCalculator) event.data;
-			EventBus.publishEvent(new RemoveMetricEvent(metric));
+			publishEvent(new RemoveMetricEvent(metric));
 			DragAndDropHelper.createMetricDraggableLabel(groupToAdd, metric);
 			groupToAdd.layout();
 		}

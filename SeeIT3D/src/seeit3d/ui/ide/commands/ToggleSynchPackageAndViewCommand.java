@@ -18,7 +18,7 @@ package seeit3d.ui.ide.commands;
 
 import org.eclipse.core.commands.*;
 
-import seeit3d.general.bus.EventBus;
+import static seeit3d.general.bus.EventBus.*;
 import seeit3d.general.bus.events.ToggleSynchronizationPackageExplorerVsViewEvent;
 
 /**
@@ -31,7 +31,7 @@ public class ToggleSynchPackageAndViewCommand extends AbstractHandler {
 
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
-		EventBus.publishEvent(new ToggleSynchronizationPackageExplorerVsViewEvent());
+		publishEvent(new ToggleSynchronizationPackageExplorerVsViewEvent());
 		return null;
 	}
 

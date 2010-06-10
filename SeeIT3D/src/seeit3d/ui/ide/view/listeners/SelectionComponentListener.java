@@ -20,7 +20,7 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.widgets.Button;
 
-import seeit3d.general.bus.EventBus;
+import static seeit3d.general.bus.EventBus.*;
 import seeit3d.general.bus.events.ChangeGranularityLevelEvent;
 
 /**
@@ -42,6 +42,6 @@ public class SelectionComponentListener implements SelectionListener {
 	public void widgetSelected(SelectionEvent event) {
 		Button source = (Button) event.getSource();
 		ChangeLevelOption option = (ChangeLevelOption) source.getData(COMPONENT_LEVEL_DETAIL);
-		EventBus.publishEvent(new ChangeGranularityLevelEvent(option.moreDetail));
+		publishEvent(new ChangeGranularityLevelEvent(option.moreDetail));
 	}
 }

@@ -19,7 +19,7 @@ package seeit3d.ui.ide.view.dnd;
 import org.eclipse.swt.dnd.*;
 import org.eclipse.swt.widgets.Group;
 
-import seeit3d.general.bus.EventBus;
+import static seeit3d.general.bus.EventBus.*;
 import seeit3d.general.bus.events.MappingChangedEvent;
 import seeit3d.general.model.VisualProperty;
 import seeit3d.general.model.generator.metrics.MetricCalculator;
@@ -47,7 +47,7 @@ public class DropMetricOnVisualPropertyListener implements DropTargetListener {
 		if (TransferMetric.getInstance().isSupportedType(event.currentDataType)) {
 			MetricCalculator metric = (MetricCalculator) event.data;
 			VisualProperty visualProperty = (VisualProperty) groupToAdd.getData(MappingViewComposite.VISUAL_PROPERTY);
-			EventBus.publishEvent(new MappingChangedEvent(visualProperty, metric));
+			publishEvent(new MappingChangedEvent(visualProperty, metric));
 			DragAndDropHelper.createMetricDraggableLabel(groupToAdd, metric);
 			groupToAdd.layout();
 		}

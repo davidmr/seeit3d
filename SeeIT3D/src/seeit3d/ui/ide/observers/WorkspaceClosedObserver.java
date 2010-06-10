@@ -18,7 +18,7 @@ package seeit3d.ui.ide.observers;
 
 import org.eclipse.core.resources.*;
 
-import seeit3d.general.bus.EventBus;
+import static seeit3d.general.bus.EventBus.*;
 import seeit3d.general.bus.events.DeleteContainersEvent;
 
 /**
@@ -33,7 +33,7 @@ public class WorkspaceClosedObserver implements IResourceChangeListener {
 	public void resourceChanged(IResourceChangeEvent event) {
 		IResource resource = event.getResource();
 		if (event.getType() == IResourceChangeEvent.PRE_CLOSE && resource != null && resource.getType() == IResource.PROJECT) {
-			EventBus.publishEvent(new DeleteContainersEvent(true));
+			publishEvent(new DeleteContainersEvent(true));
 		}
 
 	}

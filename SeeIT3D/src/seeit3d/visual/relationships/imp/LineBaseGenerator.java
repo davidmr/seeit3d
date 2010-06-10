@@ -1,5 +1,7 @@
 package seeit3d.visual.relationships.imp;
 
+import static seeit3d.general.bus.EventBus.*;
+
 import java.util.*;
 
 import javax.media.j3d.*;
@@ -7,13 +9,13 @@ import javax.vecmath.Point3f;
 import javax.vecmath.Vector3f;
 
 import seeit3d.general.SeeIT3DAPILocator;
-import seeit3d.general.bus.*;
+import seeit3d.general.bus.IEvent;
+import seeit3d.general.bus.IEventListener;
 import seeit3d.general.bus.events.ContainersLayoutDoneEvent;
 import seeit3d.general.model.Container;
 import seeit3d.visual.relationships.ISceneGraphRelationshipGenerator;
 
-import com.sun.j3d.utils.pickfast.behaviors.PickingCallback;
-
+import com.sun.j3d.utils.picking.behaviors.PickingCallback;
 public class LineBaseGenerator implements ISceneGraphRelationshipGenerator, PickingCallback, IEventListener {
 
 	private static final String NAME = "Lines";
@@ -23,7 +25,7 @@ public class LineBaseGenerator implements ISceneGraphRelationshipGenerator, Pick
 	private Container baseContainer;
 
 	public LineBaseGenerator() {
-		EventBus.registerListener(ContainersLayoutDoneEvent.class, this);
+		registerListener(ContainersLayoutDoneEvent.class, this);
 		relatedShapes = new TreeMap<Container, Shape3D>();
 	}
 

@@ -20,7 +20,7 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.widgets.Combo;
 
-import seeit3d.general.bus.EventBus;
+import static seeit3d.general.bus.EventBus.*;
 import seeit3d.general.bus.events.PerformOperationOnSelectedContainersEvent;
 import seeit3d.general.bus.events.RegisterPickingCallbackEvent;
 import seeit3d.general.bus.utils.FunctionToApplyOnContainer;
@@ -29,7 +29,7 @@ import seeit3d.general.model.Container;
 import seeit3d.visual.relationships.ISceneGraphRelationshipGenerator;
 import seeit3d.visual.relationships.RelationShipsRegistry;
 
-import com.sun.j3d.utils.pickfast.behaviors.PickingCallback;
+import com.sun.j3d.utils.picking.behaviors.PickingCallback;
 
 /**
  * Listener for relationships generator selection in the mapping view
@@ -57,7 +57,7 @@ public class RelationshipSelectionListener implements SelectionListener {
 			String relationName = registry.getRelationName(generator);
 			if (relationName.equals(selectedGeneratorName)) {
 				PerformOperationOnSelectedContainersEvent operation = createEvent(generator);
-				EventBus.publishEvent(operation);
+				publishEvent(operation);
 				break;
 			}
 		}
@@ -84,7 +84,7 @@ public class RelationshipSelectionListener implements SelectionListener {
 				container.setSceneGraphRelationshipGenerator(generator);
 				if (generator instanceof PickingCallback) {
 					PickingCallback callback = (PickingCallback) generator;
-					EventBus.publishEvent(new RegisterPickingCallbackEvent(callback));
+					publishEvent(new RegisterPickingCallbackEvent(callback));
 				}
 			} catch (InstantiationException e) {
 				ErrorHandler.error(e);

@@ -18,6 +18,7 @@ package seeit3d.modelers.xml.generator.metrics;
 
 import org.eclipse.jdt.core.IJavaElement;
 
+import seeit3d.general.model.factory.annotations.SeeIT3DFactoryEnabled;
 import seeit3d.general.model.generator.metrics.AbstractContinuousMetricCalculator;
 
 /**
@@ -26,6 +27,7 @@ import seeit3d.general.model.generator.metrics.AbstractContinuousMetricCalculato
  * @author David Montaño
  * 
  */
+@SeeIT3DFactoryEnabled(singleton = false)
 public class XMLContinuousMetricCalculator extends AbstractContinuousMetricCalculator {
 
 	private static final long serialVersionUID = -1527870355609839773L;
@@ -33,7 +35,7 @@ public class XMLContinuousMetricCalculator extends AbstractContinuousMetricCalcu
 	private final float maxValue;
 
 	public XMLContinuousMetricCalculator(String name, float maxValue) {
-		super(name, true);
+		super(name);
 		this.maxValue = maxValue;
 	}
 

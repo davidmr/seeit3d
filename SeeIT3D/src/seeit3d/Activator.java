@@ -19,7 +19,9 @@ package seeit3d;
 import org.eclipse.core.commands.Command;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
@@ -31,9 +33,6 @@ import org.osgi.framework.BundleContext;
 
 import seeit3d.general.error.ErrorHandler;
 import seeit3d.general.model.Preferences;
-import seeit3d.general.model.generator.metrics.MetricsRegistry;
-import seeit3d.general.model.utils.NoOpMetricCalculator;
-import seeit3d.modelers.java.generator.metrics.*;
 import seeit3d.ui.ide.commands.ChangeSortingPolyCylindersCriteriaCommand;
 import seeit3d.ui.ide.observers.WorkspaceClosedObserver;
 
@@ -66,7 +65,6 @@ public class Activator extends AbstractUIPlugin {
 		initializePreferences();
 		initializeSortRadio();
 		registerGlobalListener();
-		registerSingletonMetrics();
 		ErrorHandler.setShell(new Shell(Display.getDefault()));
 	}
 
@@ -97,14 +95,6 @@ public class Activator extends AbstractUIPlugin {
 
 		};
 		job.schedule();
-	}
-
-	private void registerSingletonMetrics() {
-		MetricsRegistry registry = MetricsRegistry.getInstance();
-		registry.registerMetric(new LOCCalculator());
-		registry.registerMetric(new ControlStructureCalculator());
-		registry.registerMetric(new ComplexityCalculator());
-		registry.registerMetric(new NoOpMetricCalculator());
 	}
 
 	/*

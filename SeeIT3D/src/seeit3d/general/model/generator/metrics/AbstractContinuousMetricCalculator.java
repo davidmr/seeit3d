@@ -28,8 +28,8 @@ public abstract class AbstractContinuousMetricCalculator extends MetricCalculato
 
 	protected static final String DEFAULT_VALUE = "0.0";
 
-	public AbstractContinuousMetricCalculator(String name, boolean register) {
-		super(name, register);
+	public AbstractContinuousMetricCalculator(String name) {
+		super(name);
 	}
 
 	public abstract float getMaxValue();

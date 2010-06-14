@@ -16,7 +16,9 @@
  */
 package seeit3d.general.model;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.Serializable;
 import java.util.*;
 
 import javax.media.j3d.*;
@@ -25,7 +27,6 @@ import javax.vecmath.Vector3f;
 import seeit3d.general.SeeIT3DAPILocator;
 import seeit3d.general.error.exception.SeeIT3DException;
 import seeit3d.general.model.generator.metrics.MetricCalculator;
-import seeit3d.general.model.generator.metrics.MetricsRegistry;
 import seeit3d.utils.Utils;
 import seeit3d.utils.ViewConstants;
 import seeit3d.visual.relationships.ISceneGraphRelationshipGenerator;
@@ -86,7 +87,6 @@ public class Container implements Serializable, Comparable<Container> {
 	private final int currentLevel;
 
 	private Container(IContainerRepresentedObject representedObject, List<MetricCalculator> metrics, int currentLevel) {
-		checkMetricsValidity(metrics);
 		this.identifier = Utils.generateContainerIdentifier();
 		this.preferences = SeeIT3DAPILocator.findPreferences();
 		this.polycylinders = new ArrayList<PolyCylinder>();
@@ -107,13 +107,6 @@ public class Container implements Serializable, Comparable<Container> {
 
 	public Container(IContainerRepresentedObject representedObject, List<MetricCalculator> metrics) {
 		this(representedObject, metrics, 1);
-	}
-
-	private void checkMetricsValidity(List<MetricCalculator> metricsToEvaluate) {
-		MetricsRegistry registry = MetricsRegistry.getInstance();
-		for (MetricCalculator metric : metricsToEvaluate) {
-			registry.checkMetricRegistered(metric.getMetricName());
-		}
 	}
 
 	private void validateForVisualState() {

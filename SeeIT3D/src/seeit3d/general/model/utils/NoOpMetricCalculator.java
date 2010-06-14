@@ -18,6 +18,7 @@ package seeit3d.general.model.utils;
 
 import org.eclipse.jdt.core.IJavaElement;
 
+import seeit3d.general.model.factory.annotations.SeeIT3DFactoryEnabled;
 import seeit3d.general.model.generator.metrics.AbstractContinuousMetricCalculator;
 
 /**
@@ -26,6 +27,7 @@ import seeit3d.general.model.generator.metrics.AbstractContinuousMetricCalculato
  * @author David Montaño
  * 
  */
+@SeeIT3DFactoryEnabled(singleton = true)
 public class NoOpMetricCalculator extends AbstractContinuousMetricCalculator {
 
 	private static final long serialVersionUID = 5995124210204320439L;
@@ -33,7 +35,7 @@ public class NoOpMetricCalculator extends AbstractContinuousMetricCalculator {
 	public static final String NAME = "NoOp Metric";
 
 	public NoOpMetricCalculator() {
-		super(NAME, false);
+		super(NAME);
 	}
 
 	@Override

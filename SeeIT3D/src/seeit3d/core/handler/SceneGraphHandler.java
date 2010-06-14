@@ -26,7 +26,9 @@ import javax.vecmath.*;
 import seeit3d.general.error.exception.SeeIT3DException;
 import seeit3d.general.model.Container;
 import seeit3d.general.model.Preferences;
-import seeit3d.ui.behavior.*;
+import seeit3d.ui.behavior.MouseClickedBehavior;
+import seeit3d.ui.behavior.PickRotate3DBehavior;
+import seeit3d.ui.behavior.PickTranslate3DBehavior;
 import seeit3d.utils.Utils;
 import seeit3d.utils.ViewConstants;
 import seeit3d.visual.relationships.ISceneGraphRelationshipGenerator;
@@ -274,10 +276,10 @@ public class SceneGraphHandler {
 		TransformGroup tg = vp.getViewPlatformTransform();
 		Transform3D t3d = new Transform3D();
 		tg.getTransform(t3d);
-		// t3d.lookAt(new Point3d(xMax * 2, xMax, xMax * 2), new Point3d(0, 0, 0), new Vector3d(0, 1, 0));
+		t3d.lookAt(new Point3d(xMax * 2, xMax, xMax * 2), new Point3d(0, 0, 0), new Vector3d(0, 1, 0));
 		// t3d.lookAt(new Point3d(0, 0, 30), new Point3d(0, 0, 0), new Vector3d(0, 1, 0));
 		// t3d.lookAt(new Point3d(0, 30, 0), new Point3d(0, 0, 0), new Vector3d(0, 0, -1));
-		t3d.lookAt(new Point3d(30, 0, 0), new Point3d(0, 0, 0), new Vector3d(0, 1, 0));
+		// t3d.lookAt(new Point3d(30, 0, 0), new Point3d(0, 0, 0), new Vector3d(0, 1, 0));
 		t3d.invert();
 		tg.setTransform(t3d);
 	}

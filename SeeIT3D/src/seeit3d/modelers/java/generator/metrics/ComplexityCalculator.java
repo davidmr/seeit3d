@@ -17,11 +17,14 @@
 package seeit3d.modelers.java.generator.metrics;
 
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import org.eclipse.jdt.core.*;
 
 import seeit3d.general.error.ErrorHandler;
+import seeit3d.general.model.factory.annotations.SeeIT3DFactoryEnabled;
 import seeit3d.general.model.generator.metrics.AbstractContinuousMetricCalculator;
 import seeit3d.modelers.java.LineOfCode;
 
@@ -31,6 +34,7 @@ import seeit3d.modelers.java.LineOfCode;
  * @author David Montaño
  * 
  */
+@SeeIT3DFactoryEnabled(singleton = true)
 public class ComplexityCalculator extends AbstractContinuousMetricCalculator {
 
 	private static final long serialVersionUID = -8774645887099929391L;
@@ -40,7 +44,7 @@ public class ComplexityCalculator extends AbstractContinuousMetricCalculator {
 	public static final String name = "McCabe Complexity";
 
 	public ComplexityCalculator() {
-		super(name, false);
+		super(name);
 	}
 
 	@Override

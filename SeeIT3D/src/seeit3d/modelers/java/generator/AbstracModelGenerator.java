@@ -16,18 +16,21 @@
  */
 package seeit3d.modelers.java.generator;
 
+import static seeit3d.general.bus.EventBus.*;
+
 import java.util.*;
 
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.JavaModelException;
 
-import static seeit3d.general.bus.EventBus.*;
 import seeit3d.general.bus.events.AddContainerEvent;
 import seeit3d.general.error.ErrorHandler;
-import seeit3d.general.model.*;
+import seeit3d.general.model.Container;
+import seeit3d.general.model.IContainerRepresentedObject;
+import seeit3d.general.model.PolyCylinder;
+import seeit3d.general.model.factory.SeeIT3DFactory;
 import seeit3d.general.model.generator.IModelGenerator;
 import seeit3d.general.model.generator.metrics.MetricCalculator;
-import seeit3d.general.model.generator.metrics.MetricsRegistry;
 import seeit3d.modelers.java.EclipseJavaResource;
 import seeit3d.modelers.java.JavaRepresentation;
 
@@ -59,7 +62,7 @@ public abstract class AbstracModelGenerator<ElementToAnalize extends IJavaElemen
 
 	protected abstract Children[] fetchChildren(ElementToAnalize element) throws JavaModelException;
 
-	protected abstract List<String> getMetricNames();
+	protected abstract List<Class<? extends MetricCalculator>> getMetricNames();
 
 	protected abstract IModelGenerator lowerLevelModelGenerator(Children childrenElement);
 
@@ -106,11 +109,11 @@ public abstract class AbstracModelGenerator<ElementToAnalize extends IJavaElemen
 	}
 
 	private List<MetricCalculator> buildMetrics() {
-		List<String> metricNames = getMetricNames();
-		MetricsRegistry registry = MetricsRegistry.getInstance();
+		List<Class<? extends MetricCalculator>> metricNames = getMetricNames();
 		List<MetricCalculator> metrics = new ArrayList<MetricCalculator>();
-		for (String name : metricNames) {
-			metrics.add(registry.getMetric(name));
+		for (Class<? extends MetricCalculator> clazz : metricNames) {
+			MetricCalculator metric = SeeIT3DFactory.getInstance(clazz);
+			metrics.add(metric);
 		}
 		return metrics;
 	}

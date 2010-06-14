@@ -28,8 +28,8 @@ public abstract class AbstractCategorizedMetricCalculator extends MetricCalculat
 
 	private static final long serialVersionUID = 3242755411010446121L;
 
-	public AbstractCategorizedMetricCalculator(String name, boolean register) {
-		super(name, register);
+	public AbstractCategorizedMetricCalculator(String name) {
+		super(name);
 	}
 
 	public abstract int getNumCategories();

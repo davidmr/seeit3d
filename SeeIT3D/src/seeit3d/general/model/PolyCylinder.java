@@ -17,15 +17,17 @@
 
 package seeit3d.general.model;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.Serializable;
 import java.util.*;
 
 import javax.media.j3d.*;
 import javax.vecmath.Color3f;
 
 import seeit3d.general.SeeIT3DAPILocator;
+import seeit3d.general.model.factory.SeeIT3DFactory;
 import seeit3d.general.model.generator.metrics.MetricCalculator;
-import seeit3d.general.model.generator.metrics.MetricsRegistry;
 import seeit3d.general.model.utils.NoEclipseRepresentation;
 import seeit3d.general.model.utils.NoOpMetricCalculator;
 import seeit3d.utils.Utils;
@@ -121,7 +123,7 @@ public class PolyCylinder implements Serializable {
 	public void updateMapping(BiMap<MetricCalculator, VisualProperty> newPropertiesMap) {
 		propertiesMap.clear();
 		propertiesMap.putAll(newPropertiesMap);
-		MetricCalculator noOpMetric = MetricsRegistry.getInstance().getMetric(NoOpMetricCalculator.NAME);
+		MetricCalculator noOpMetric = SeeIT3DFactory.getInstance(NoOpMetricCalculator.class);
 		for (VisualProperty visualProperty : VisualProperty.values()) {
 			MetricCalculator metric = propertiesMap.inverse().get(visualProperty);
 			if (metric == null) {

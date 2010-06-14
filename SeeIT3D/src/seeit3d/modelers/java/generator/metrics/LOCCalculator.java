@@ -16,11 +16,14 @@
  */
 package seeit3d.modelers.java.generator.metrics;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 import org.eclipse.jdt.core.*;
 
 import seeit3d.general.error.ErrorHandler;
+import seeit3d.general.model.factory.annotations.SeeIT3DFactoryEnabled;
 import seeit3d.general.model.generator.metrics.AbstractContinuousMetricCalculator;
 
 /**
@@ -29,6 +32,7 @@ import seeit3d.general.model.generator.metrics.AbstractContinuousMetricCalculato
  * @author David Montaño
  * 
  */
+@SeeIT3DFactoryEnabled(singleton = true)
 public class LOCCalculator extends AbstractContinuousMetricCalculator {
 
 	private static final long serialVersionUID = -6148807468764636601L;
@@ -38,7 +42,7 @@ public class LOCCalculator extends AbstractContinuousMetricCalculator {
 	private static final float maxValue = 400;
 
 	public LOCCalculator() {
-		super(name, false);
+		super(name);
 	}
 
 	@Override

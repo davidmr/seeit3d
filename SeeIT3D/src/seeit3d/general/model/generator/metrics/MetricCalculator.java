@@ -21,7 +21,7 @@ import java.io.Serializable;
 import org.eclipse.jdt.core.IJavaElement;
 
 /**
- * Parent class for all metric calculators. Provides a mechanism to register the metric with the global metric registry
+ * Parent class for all metric calculators.
  * 
  * @author David Montaño
  * 
@@ -36,11 +36,8 @@ public abstract class MetricCalculator implements Serializable {
 
 	private final String name;
 
-	protected MetricCalculator(String name, boolean register) {
+	protected MetricCalculator(String name) {
 		this.name = name;
-		if (register) {
-			MetricsRegistry.getInstance().registerMetric(this);
-		}
 		checkAuthorizedSubclassing();
 	}
 

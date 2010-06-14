@@ -20,6 +20,7 @@ import java.util.List;
 
 import org.eclipse.jdt.core.IJavaElement;
 
+import seeit3d.general.model.factory.annotations.SeeIT3DFactoryEnabled;
 import seeit3d.general.model.generator.metrics.AbstractCategorizedMetricCalculator;
 
 /**
@@ -28,6 +29,7 @@ import seeit3d.general.model.generator.metrics.AbstractCategorizedMetricCalculat
  * @author David Montaño
  * 
  */
+@SeeIT3DFactoryEnabled(singleton = false)
 public class XMLCategorizedMetricCalculator extends AbstractCategorizedMetricCalculator {
 
 	private static final long serialVersionUID = -7574154133744003269L;
@@ -37,7 +39,7 @@ public class XMLCategorizedMetricCalculator extends AbstractCategorizedMetricCal
 	private final int numCategories;
 
 	public XMLCategorizedMetricCalculator(String name, List<String> categories, int numCategories) {
-		super(name, true);
+		super(name);
 		this.categories = categories;
 		this.numCategories = numCategories;
 	}

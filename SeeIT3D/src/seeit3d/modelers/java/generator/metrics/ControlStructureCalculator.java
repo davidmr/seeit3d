@@ -20,6 +20,7 @@ import java.util.List;
 
 import org.eclipse.jdt.core.IJavaElement;
 
+import seeit3d.general.model.factory.annotations.SeeIT3DFactoryEnabled;
 import seeit3d.general.model.generator.metrics.AbstractCategorizedMetricCalculator;
 import seeit3d.modelers.java.LineOfCode;
 
@@ -31,6 +32,7 @@ import com.google.common.collect.Lists;
  * @author David Montaño
  * 
  */
+@SeeIT3DFactoryEnabled(singleton = true)
 public class ControlStructureCalculator extends AbstractCategorizedMetricCalculator {
 
 	private static final long serialVersionUID = 8927710809333793473L;
@@ -48,7 +50,7 @@ public class ControlStructureCalculator extends AbstractCategorizedMetricCalcula
 	public static final String name = "Control Structure";
 
 	public ControlStructureCalculator() {
-		super(name, false);
+		super(name);
 	}
 
 	@Override

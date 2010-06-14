@@ -166,7 +166,7 @@ public class Container implements Serializable, Comparable<Container> {
 		}
 	}
 
-	public void autoReference() {
+	public void autoReferenceAsParentAndChild() {
 		parent = this;
 		children.add(this);
 	}

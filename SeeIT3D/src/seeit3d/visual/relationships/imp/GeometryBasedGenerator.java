@@ -54,10 +54,10 @@ public abstract class GeometryBasedGenerator implements ISceneGraphRelationshipG
 		Container movedContainer = (Container) tg.getParent().getUserData();
 
 		if (movedContainer.equals(relationshipSourceContainer)) {
-			// for (Container container : relatedContainers) {
-			// updateConnectionBetweenContainers(container);
-			// }
-			updateConnectionBetweenContainers(relatedContainers.get(0));
+			for (Container container : relatedContainers) {
+				updateConnectionBetweenContainers(container);
+			}
+			// updateConnectionBetweenContainers(relatedContainers.get(0));
 		} else {
 			updateConnectionBetweenContainers(movedContainer);
 		}

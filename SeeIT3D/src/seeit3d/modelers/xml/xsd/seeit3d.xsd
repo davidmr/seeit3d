@@ -19,15 +19,17 @@
 <xs:schema targetNamespace="http://dl.dropbox.com/u/2416325/seeit3d_xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:seeit3d="http://dl.dropbox.com/u/2416325/seeit3d_xsd">
     <xs:element name="container">
         <xs:complexType>
-            <xs:sequence>
-                <xs:element ref="seeit3d:metricsList" />
-                <xs:element ref="seeit3d:mapping" minOccurs="0" maxOccurs="1" />
-                <xs:element ref="seeit3d:polycylinder" minOccurs="1" maxOccurs="unbounded" />
+            <xs:sequence>            	
+            	<xs:element ref="seeit3d:metricsList" />
+            	<xs:element ref="seeit3d:mapping" minOccurs="0"
+            		maxOccurs="1" />
+            	<xs:element ref="seeit3d:polycylinder" minOccurs="1"
+            		maxOccurs="unbounded" />
             </xs:sequence>
             <xs:attribute name="name" type="xs:ID" use="required" />
             <xs:attribute name="granularityLevelName" type="xs:string" use="required"></xs:attribute>
-            <xs:attribute name="has" type="xs:IDREF" use="optional" />
-            <xs:attribute name="parent" type="xs:IDREF" use="optional" />
+            <xs:attribute name="related" type="xs:IDREFS" use="optional" />
+            <xs:attribute name="visible" type="xs:boolean" use="required" />
         </xs:complexType>
     </xs:element>
     <xs:element name="entryMetricValue">
@@ -67,7 +69,7 @@
                 <xs:element ref="seeit3d:metricDescription" minOccurs="1" maxOccurs="unbounded" />
             </xs:sequence>
         </xs:complexType>
-    </xs:element>
+    </xs:element>   	
     <xs:element name="metricDescription">
         <xs:complexType>
             <xs:simpleContent>
@@ -116,4 +118,16 @@
         </xs:complexType>
     </xs:element>
     <xs:element name="value" type="xs:string"></xs:element>
+<!--    <xs:element name="relatedList">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="seeit3d:related" minOccurs="0" maxOccurs="unbounded" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="related">
+    	<xs:complexType>
+    		<xs:attribute name="relatedName" type="xs:IDREF"></xs:attribute>
+    	</xs:complexType>    	
+    </xs:element>-->
 </xs:schema>

@@ -17,12 +17,14 @@
 
 package seeit3d.modelers.xml;
 
+import static seeit3d.general.bus.EventBus.*;
+
 import java.util.*;
 
-import static seeit3d.general.bus.EventBus.*;
 import seeit3d.general.bus.events.AddContainerEvent;
-import seeit3d.general.model.*;
 import seeit3d.general.model.Container;
+import seeit3d.general.model.IContainerRepresentedObject;
+import seeit3d.general.model.PolyCylinder;
 import seeit3d.general.model.generator.IModelGenerator;
 import seeit3d.general.model.generator.metrics.MetricCalculator;
 import seeit3d.modelers.xml.generator.metrics.XMLCategorizedMetricCalculator;
@@ -51,7 +53,15 @@ public class XMLBasedModelGenerator implements IModelGenerator {
 		List<MetricCalculator> metrics = buildMetricsList(metricsListXML);
 
 		Container analized = new Container(representedObject, metrics);
-		analized.autoReference();
+		analized.autoReferenceAsParentAndChild();
+
+		List<Object> relatedXMLObjects = containerXML.getRelated();
+		for (Object relatedXML : relatedXMLObjects) {
+			seeit3d.modelers.xml.internal.Container relatedContainerXML = (seeit3d.modelers.xml.internal.Container) relatedXML;
+			XMLBasedModelGenerator relatedModelGenerator = new XMLBasedModelGenerator(relatedContainerXML);
+			Container relatedContainer = relatedModelGenerator.analize(false);
+			analized.addRelatedContainer(relatedContainer);
+		}
 
 		List<Polycylinder> polycylindersXML = containerXML.getPolycylinder();
 		for (Polycylinder polyXML : polycylindersXML) {
@@ -112,8 +122,10 @@ public class XMLBasedModelGenerator implements IModelGenerator {
 
 	@Override
 	public void analizeAndRegisterInView(boolean includeDependecies) {
-		Container container = analize(includeDependecies);
-		publishEvent(new AddContainerEvent(container));
+		if (containerXML.isVisible()) {
+			Container container = analize(includeDependecies);
+			publishEvent(new AddContainerEvent(container));
+		}
 	}
 
 }

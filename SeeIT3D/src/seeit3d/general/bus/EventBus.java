@@ -19,7 +19,9 @@ package seeit3d.general.bus;
 import java.util.Collection;
 import java.util.concurrent.ArrayBlockingQueue;
 
-import com.google.common.collect.*;
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.Multimap;
+import com.google.common.collect.Multimaps;
 
 /**
  * Bus to handle interactions between components in application
@@ -37,7 +39,7 @@ public class EventBus {
 	}
 
 	static {
-		eventQueue = new ArrayBlockingQueue<IEvent>(10);
+		eventQueue = new ArrayBlockingQueue<IEvent>(20);
 		ArrayListMultimap<Class<? extends IEvent>, IEventListener> temporalMultimap = ArrayListMultimap.create();
 		listeners = Multimaps.synchronizedMultimap(temporalMultimap);
 		Thread eventDispatcherThread = new Thread(new EventDispatcher(), "SeeIT3DEventDispatcher");

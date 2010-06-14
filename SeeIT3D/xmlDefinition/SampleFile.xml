@@ -1,6 +1,118 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <seeit3d:containers xmlns:seeit3d="http://dl.dropbox.com/u/2416325/seeit3d_xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://dl.dropbox.com/u/2416325/seeit3d_xsd seeit3d.xsd ">
-    <seeit3d:container name="idvalue0" granularityLevelName="just this" parent="idvalue0" has="idvalue0">
+    <seeit3d:container name="idContainer1" granularityLevelName="just this" related="idContainer2 idContainer3" visible="true">
+        <seeit3d:metricsList>
+            <seeit3d:metricDescription type="CONTINUOUS" max="25">ABC</seeit3d:metricDescription>
+            <seeit3d:metricDescription type="CATEGORIZED" categories="text 123 ODF">DEF</seeit3d:metricDescription>
+        </seeit3d:metricsList>
+        <seeit3d:mapping>
+            <seeit3d:mappingValue>
+                <seeit3d:metricName>ABC</seeit3d:metricName>
+                <visualProperty>HEIGHT</visualProperty>
+            </seeit3d:mappingValue>
+            <seeit3d:mappingValue>
+                <seeit3d:metricName>DEF</seeit3d:metricName>
+                <visualProperty>COLOR</visualProperty>
+            </seeit3d:mappingValue>
+        </seeit3d:mapping>
+        <seeit3d:polycylinder>
+            <seeit3d:name>Poly 1</seeit3d:name>
+            <seeit3d:metricsValue>            
+                <seeit3d:entryMetricValue>
+                    <seeit3d:metricName>ABC</seeit3d:metricName>
+                    <seeit3d:value>1.2</seeit3d:value>
+                </seeit3d:entryMetricValue>
+                <seeit3d:entryMetricValue>
+                    <seeit3d:metricName>DEF</seeit3d:metricName>
+                    <seeit3d:value>text</seeit3d:value>
+                </seeit3d:entryMetricValue>
+            </seeit3d:metricsValue>
+        </seeit3d:polycylinder>
+        <seeit3d:polycylinder>
+            <seeit3d:name>Poly 2</seeit3d:name>
+            <seeit3d:metricsValue>
+                <seeit3d:entryMetricValue>
+                    <seeit3d:metricName>ABC</seeit3d:metricName>
+                    <seeit3d:value>5</seeit3d:value>
+                </seeit3d:entryMetricValue>
+                <seeit3d:entryMetricValue>
+                    <seeit3d:metricName>DEF</seeit3d:metricName>
+                    <seeit3d:value>123</seeit3d:value>
+                </seeit3d:entryMetricValue>
+            </seeit3d:metricsValue>
+        </seeit3d:polycylinder>
+        <seeit3d:polycylinder>
+            <seeit3d:name>Poly 3</seeit3d:name>
+            <seeit3d:metricsValue>
+                <seeit3d:entryMetricValue>
+                    <seeit3d:metricName>ABC</seeit3d:metricName>
+                    <seeit3d:value>25</seeit3d:value>
+                </seeit3d:entryMetricValue>
+                <seeit3d:entryMetricValue>
+                    <seeit3d:metricName>DEF</seeit3d:metricName>
+                    <seeit3d:value>ODF</seeit3d:value>
+                </seeit3d:entryMetricValue>
+            </seeit3d:metricsValue>
+        </seeit3d:polycylinder>
+    </seeit3d:container>
+    
+    <seeit3d:container name="idContainer2" granularityLevelName="just this" visible="false">
+        <seeit3d:metricsList>
+            <seeit3d:metricDescription type="CONTINUOUS" max="25">ABC</seeit3d:metricDescription>
+            <seeit3d:metricDescription type="CATEGORIZED" categories="text 123 ODF">DEF</seeit3d:metricDescription>
+        </seeit3d:metricsList>
+        <seeit3d:mapping>
+            <seeit3d:mappingValue>
+                <seeit3d:metricName>ABC</seeit3d:metricName>
+                <visualProperty>HEIGHT</visualProperty>
+            </seeit3d:mappingValue>
+            <seeit3d:mappingValue>
+                <seeit3d:metricName>DEF</seeit3d:metricName>
+                <visualProperty>COLOR</visualProperty>
+            </seeit3d:mappingValue>
+        </seeit3d:mapping>
+        <seeit3d:polycylinder>
+            <seeit3d:name>Poly 1</seeit3d:name>
+            <seeit3d:metricsValue>            
+                <seeit3d:entryMetricValue>
+                    <seeit3d:metricName>ABC</seeit3d:metricName>
+                    <seeit3d:value>1.2</seeit3d:value>
+                </seeit3d:entryMetricValue>
+                <seeit3d:entryMetricValue>
+                    <seeit3d:metricName>DEF</seeit3d:metricName>
+                    <seeit3d:value>text</seeit3d:value>
+                </seeit3d:entryMetricValue>
+            </seeit3d:metricsValue>
+        </seeit3d:polycylinder>
+        <seeit3d:polycylinder>
+            <seeit3d:name>Poly 2</seeit3d:name>
+            <seeit3d:metricsValue>
+                <seeit3d:entryMetricValue>
+                    <seeit3d:metricName>ABC</seeit3d:metricName>
+                    <seeit3d:value>5</seeit3d:value>
+                </seeit3d:entryMetricValue>
+                <seeit3d:entryMetricValue>
+                    <seeit3d:metricName>DEF</seeit3d:metricName>
+                    <seeit3d:value>123</seeit3d:value>
+                </seeit3d:entryMetricValue>
+            </seeit3d:metricsValue>
+        </seeit3d:polycylinder>
+        <seeit3d:polycylinder>
+            <seeit3d:name>Poly 3</seeit3d:name>
+            <seeit3d:metricsValue>
+                <seeit3d:entryMetricValue>
+                    <seeit3d:metricName>ABC</seeit3d:metricName>
+                    <seeit3d:value>25</seeit3d:value>
+                </seeit3d:entryMetricValue>
+                <seeit3d:entryMetricValue>
+                    <seeit3d:metricName>DEF</seeit3d:metricName>
+                    <seeit3d:value>ODF</seeit3d:value>
+                </seeit3d:entryMetricValue>
+            </seeit3d:metricsValue>
+        </seeit3d:polycylinder>
+    </seeit3d:container>
+    
+     <seeit3d:container name="idContainer3" granularityLevelName="just this" visible="false">
         <seeit3d:metricsList>
             <seeit3d:metricDescription type="CONTINUOUS" max="25">ABC</seeit3d:metricDescription>
             <seeit3d:metricDescription type="CATEGORIZED" categories="text 123 ODF">DEF</seeit3d:metricDescription>

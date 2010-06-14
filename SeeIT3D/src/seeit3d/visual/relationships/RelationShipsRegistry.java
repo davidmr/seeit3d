@@ -43,6 +43,7 @@ public class RelationShipsRegistry {
 		relationshipsGenerators.add(NoRelationships.class);
 		relationshipsGenerators.add(CommonBaseGenerator.class);
 		relationshipsGenerators.add(LineBaseGenerator.class);
+		relationshipsGenerators.add(ArcBasedGenerator.class);
 
 	}
 

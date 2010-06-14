@@ -229,7 +229,7 @@ public class SeeIT3DCoreHandler implements SeeIT3DCore, IEventListener {
 
 		sceneGraphHandler.setViewersPosition(maxX);
 		publishEvent(new ContainersLayoutDoneEvent());
-
+		// sceneGraphHandler.setViewersPosition(10);
 	}
 
 	/**************************************/

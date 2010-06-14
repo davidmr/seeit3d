@@ -49,6 +49,8 @@ public class Container implements Serializable, Comparable<Container> {
 
 	private transient BranchGroup containerBG;
 
+	private transient TransformGroup containerTG;
+
 	private transient Switch highlighRootNode;
 
 	private transient ISceneGraphRelationshipGenerator sceneGraphRelationshipGenerator;
@@ -160,7 +162,7 @@ public class Container implements Serializable, Comparable<Container> {
 			BranchGroup newBranchGroup = new BranchGroup();
 			TransformGroup newTransformGroup = new TransformGroup();
 			Transform3D transformation = new Transform3D();
-			((TransformGroup) containerBG.getChild(0)).getTransform(transformation);
+			containerTG.getTransform(transformation);
 			newTransformGroup.setTransform(transformation);
 			newBranchGroup.addChild(newTransformGroup);
 			newContainer.containerBG = newBranchGroup;
@@ -245,7 +247,7 @@ public class Container implements Serializable, Comparable<Container> {
 		if (isSelected) {
 			activateHighlight();
 		}
-
+		this.containerTG = containerTG;
 		containerBG.addChild(containerTG);
 		setPosition(oldPosition);
 	}
@@ -402,9 +404,8 @@ public class Container implements Serializable, Comparable<Container> {
 	}
 
 	public void setPosition(Vector3f position) {
-		if (containerBG != null) {
-			TransformGroup child = (TransformGroup) containerBG.getChild(0);
-			Utils.translateTranformGroup(child, position);
+		if (containerTG != null) {
+			Utils.translateTranformGroup(containerTG, position);
 		}
 	}
 
@@ -435,7 +436,8 @@ public class Container implements Serializable, Comparable<Container> {
 	}
 
 	public TransformGroup getTransformGroup() {
-		return (TransformGroup) getContainerBG().getChild(0);
+		validateForVisualState();
+		return containerTG;
 	}
 
 	public List<MetricCalculator> getMetrics() {
@@ -464,12 +466,11 @@ public class Container implements Serializable, Comparable<Container> {
 	}
 
 	public Vector3f getPosition() {
-		if (containerBG == null) {
+		if (containerBG == null || containerTG == null) {
 			return new Vector3f();
 		} else {
-			TransformGroup transform = (TransformGroup) containerBG.getChild(0);
 			Transform3D transformation = new Transform3D();
-			transform.getTransform(transformation);
+			containerTG.getTransform(transformation);
 			Vector3f position = new Vector3f();
 			transformation.get(position);
 			return position;

@@ -40,6 +40,8 @@ public class ViewConstants {
 
 	public static final Color3f BLUE = new Color3f(0.0f, 0.0f, 1.0f);
 
+	public static final Color3f YELLOW = new Color3f(1.0f, 1.0f, 0.0f);
+
 	public static final float PICKING_TOLERANCE = 0.0f;
 
 	public static final float POLYCYLINDER_SPACING = 0.15f;
@@ -49,5 +51,6 @@ public class ViewConstants {
 	public static final float HIGHLIGHT_PADDING = 0.1f;
 
 	public static final VisualProperty DEFAULT_SORTING_PROPERTY = VisualProperty.HEIGHT;
+
 
 }

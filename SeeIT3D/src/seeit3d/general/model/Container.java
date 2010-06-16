@@ -478,6 +478,22 @@ public class Container implements Serializable, Comparable<Container> {
 		return relatedContainers;
 	}
 
+	public List<Container> getRelatedContainersToHide() {
+		if (sceneGraphRelationshipGenerator == null || sceneGraphRelationshipGenerator instanceof NoRelationships) {
+			return relatedContainers;
+		} else {
+			return Collections.emptyList();
+		}
+	}
+
+	public List<Container> getRelatedContainersToShow() {
+		if (sceneGraphRelationshipGenerator == null || sceneGraphRelationshipGenerator instanceof NoRelationships) {
+			return Collections.emptyList();
+		} else {
+			return relatedContainers;
+		}
+	}
+
 	public String getName() {
 		return representedObject.getName();
 	}

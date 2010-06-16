@@ -204,32 +204,25 @@ public class SeeIT3DCoreHandler implements SeeIT3DCore, IEventListener {
 		float currentXPosition = 0.0f;
 		float currentZPosition = 0.0f;
 
-		float maxX = Float.MIN_VALUE;
+		float maxX = -1f;
 
 		int added = 0;
 		for (Container container : state.containersInView()) {
-
 			currentXPosition += container.getWidth();
-
 			Vector3f newPosition = new Vector3f(currentXPosition, 0.0f, currentZPosition);
 			added++;
-
 			container.setPosition(newPosition);
-
+			maxX = Math.max(maxX, currentXPosition);
 			if (added % preferences.getContainersPerRow() == 0) {
 				currentXPosition = 0.0f;
 				currentZPosition += container.getDepth() * 2 + ViewConstants.CONTAINERS_SPACING;
 			} else {
 				currentXPosition += container.getWidth() + ViewConstants.CONTAINERS_SPACING;
 			}
-
-			maxX = Math.max(maxX, currentXPosition);
-
 		}
 
 		sceneGraphHandler.setViewersPosition(maxX);
 		publishEvent(new ContainersLayoutDoneEvent());
-		// sceneGraphHandler.setViewersPosition(10);
 	}
 
 	/**************************************/
@@ -443,16 +436,6 @@ public class SeeIT3DCoreHandler implements SeeIT3DCore, IEventListener {
 		updateCurrentSelectionValues(lastSelectedPoly);
 	}
 
-	synchronized void addContainerToViewWithoutValidation(Container container) {
-		state.addContainerToViewWithoutValidation(container);
-	}
-
-	void addContainerToViewWithoutValidation(List<Container> containers) {
-		for (Container container : containers) {
-			addContainerToViewWithoutValidation(container);
-		}
-	}
-
 	Iterable<Container> containersInView() {
 		return state.containersInView();
 	}
@@ -463,6 +446,16 @@ public class SeeIT3DCoreHandler implements SeeIT3DCore, IEventListener {
 			selectedContainers.add(container);
 		}
 		return Collections.unmodifiableList(selectedContainers);
+	}
+
+	public void updateContainersInView(List<Container> containersToAdd, List<Container> containersToDelete) {
+		for (Container container : containersToAdd) {
+			state.addContainerToViewWithoutValidation(container);
+		}
+
+		for (Container container : containersToDelete) {
+			state.deleteContainerFromView(container);
+		}
 	}
 
 }

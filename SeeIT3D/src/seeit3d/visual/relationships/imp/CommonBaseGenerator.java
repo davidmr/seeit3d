@@ -34,11 +34,11 @@ public class CommonBaseGenerator implements ISceneGraphRelationshipGenerator {
 
 		addMarkToContainer(baseContainer, darkerColor);
 
-		for (Container related : baseContainer.getRelatedContainers()) {
+		for (Container related : baseContainer.getRelatedContainersToShow()) {
 			addMarkToContainer(related, baseColor);
 		}
 
-		return baseContainer.getRelatedContainers();
+		return baseContainer.getRelatedContainersToShow();
 
 	}
 

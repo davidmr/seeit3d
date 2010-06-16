@@ -74,7 +74,7 @@ public abstract class GeometryBasedGenerator implements ISceneGraphRelationshipG
 
 	@Override
 	public final List<Container> generateVisualRelationShips(Container baseContainer) {
-		List<Container> relatedContainers = baseContainer.getRelatedContainers();
+		List<Container> relatedContainers = baseContainer.getRelatedContainersToShow();
 
 		for (Container related : relatedContainers) {
 			initializeRelationBetweenContainers(baseContainer, related);

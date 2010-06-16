@@ -8,7 +8,7 @@ import seeit3d.visual.relationships.ISceneGraphRelationshipGenerator;
 
 public class NoRelationships implements ISceneGraphRelationshipGenerator {
 
-	private static final String NAME = "No Relationships";
+	private static final String NAME = "No Visual Relation";
 
 	@Override
 	public List<Container> generateVisualRelationShips(Container baseContainer) {

@@ -246,25 +246,38 @@ public class SceneGraphHandler {
 		containersTG.setCapability(BranchGroup.ALLOW_CHILDREN_EXTEND);
 		containersGroup.addChild(containersTG);
 
-		List<Container> newContainersToAdd = new ArrayList<Container>();
+		List<Container> containersToAdd = new ArrayList<Container>();
+		List<Container> containersToDelete = new ArrayList<Container>();
+
 		for (Container container : manager.containersInView()) {
-			if (!newContainersToAdd.contains(container)) {
+			if (showRelatedContainers) {
+				containersToAdd.addAll(container.getRelatedContainersToShow());
+				containersToDelete.addAll(container.getRelatedContainersToHide());
+			} else {
+				containersToDelete.addAll(container.getRelatedContainers());
+			}
+		}
+
+		manager.updateContainersInView(containersToAdd, containersToDelete);
+
+		List<Container> containersAddedToGraph = new ArrayList<Container>();
+		for (Container container : manager.containersInView()) {
+			if (!containersAddedToGraph.contains(container)) {
 				container.updateVisualRepresentation();
 				BranchGroup bgContainer = container.getContainerBG();
-				containersTG.addChild(bgContainer);
 				if (showRelatedContainers) {
 					List<Container> processedContainers = container.generateSceneGraphRelations();
 					for (Container related : processedContainers) {
 						related.setSelected(false);
 						BranchGroup relatedBG = related.getContainerBG();
 						containersTG.addChild(relatedBG);
+						containersAddedToGraph.add(related);
 					}
-					newContainersToAdd.addAll(processedContainers);
 				}
+				containersTG.addChild(bgContainer);
+				containersAddedToGraph.add(container);
 			}
 		}
-
-		manager.addContainerToViewWithoutValidation(newContainersToAdd);
 
 		rootObj.addChild(containersGroup);
 

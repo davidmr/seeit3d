@@ -21,7 +21,9 @@ import java.util.*;
 import seeit3d.core.handler.utils.ContainersSelectedIterator;
 import seeit3d.core.handler.utils.VisualizationStateChecker;
 import seeit3d.general.error.exception.IllegalVisualizationStateException;
-import seeit3d.general.model.*;
+import seeit3d.general.model.Container;
+import seeit3d.general.model.PolyCylinder;
+import seeit3d.general.model.VisualProperty;
 
 /**
  * This class keeps track of the visualization state, like the selected containers in the view, checks of visualization state and sorting property
@@ -94,6 +96,10 @@ public class VisualizationState {
 		if (!containersInView.contains(container)) {
 			containersInView.add(container);
 		}
+	}
+
+	public void deleteContainerFromView(Container container) {
+		containersInView.remove(container);
 	}
 
 	void clearContainers() {

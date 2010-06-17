@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2010  David Montaño
+ * Copyright (C) 2010  David Montaï¿½o
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,9 +26,7 @@ import javax.vecmath.*;
 import seeit3d.general.error.exception.SeeIT3DException;
 import seeit3d.general.model.Container;
 import seeit3d.general.model.Preferences;
-import seeit3d.ui.behavior.MouseClickedBehavior;
-import seeit3d.ui.behavior.PickRotate3DBehavior;
-import seeit3d.ui.behavior.PickTranslate3DBehavior;
+import seeit3d.ui.behavior.*;
 import seeit3d.utils.Utils;
 import seeit3d.utils.ViewConstants;
 import seeit3d.visual.relationships.ISceneGraphRelationshipGenerator;
@@ -41,7 +39,7 @@ import com.sun.j3d.utils.universe.ViewingPlatform;
 /**
  * Class that handles all the interactions with the scene graph in Java 3D. All the changes in general structure of the scene graph should be handle by this class.
  * 
- * @author David Montaño
+ * @author David Montaï¿½o
  * 
  */
 public class SceneGraphHandler {

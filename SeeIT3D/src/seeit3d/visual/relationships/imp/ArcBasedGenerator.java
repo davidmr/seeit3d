@@ -22,7 +22,6 @@ public class ArcBasedGenerator extends GeometryBasedGenerator {
 		int segments = 20;
 		float portionInDegrees = 90f;
 
-
 		LineArray line = new LineArray(segments * 2, LineArray.COORDINATES);
 
 		float angle = portionInDegrees / segments;
@@ -63,13 +62,18 @@ public class ArcBasedGenerator extends GeometryBasedGenerator {
 		Vector3f originVector = origin.getPosition();
 		Vector3f destinationVector = destination.getPosition();
 
-		Vector3f perpendicular = new Vector3f();
-		perpendicular.cross(originVector, destinationVector);
+		Vector3f diff = new Vector3f();
+		diff.sub(originVector, destinationVector);
 
-		float angle = destinationVector.angle(originVector);
+		Vector3f geometryVector = new Vector3f(1.0f, 0.0f, 0.0f);
+
+		Vector3f perpendicularToDiff = new Vector3f();
+		perpendicularToDiff.cross(geometryVector, diff);
+
+		float angle = geometryVector.angle(diff);
 
 		Matrix4f rotation = new Matrix4f();
-		AxisAngle4d axisAngle = new AxisAngle4d(perpendicular.x, perpendicular.y, perpendicular.z, angle);
+		AxisAngle4f axisAngle = new AxisAngle4f(perpendicularToDiff, angle);
 		rotation.set(axisAngle);
 
 		Vector3f midPoint = new Vector3f(originVector);
@@ -81,7 +85,6 @@ public class ArcBasedGenerator extends GeometryBasedGenerator {
 		resultMatrix.mul(rotation);
 
 		Transform3D result = new Transform3D(resultMatrix);
-
 		return result;
 	}
 

@@ -13,7 +13,6 @@ import seeit3d.general.bus.IEvent;
 import seeit3d.general.bus.IEventListener;
 import seeit3d.general.bus.events.ContainersLayoutDoneEvent;
 import seeit3d.general.model.Container;
-import seeit3d.utils.ViewConstants;
 import seeit3d.visual.relationships.ISceneGraphRelationshipGenerator;
 
 import com.sun.j3d.utils.picking.behaviors.PickingCallback;
@@ -29,12 +28,6 @@ public abstract class GeometryBasedGenerator implements ISceneGraphRelationshipG
 	private final List<Container> relatedContainers;
 
 	private Container relationshipSourceContainer;
-
-	private Shape3D shapePos1;
-
-	private Shape3D shapePos2;
-
-	private Shape3D perpendicularShape;
 
 	public GeometryBasedGenerator() {
 		registerListener(ContainersLayoutDoneEvent.class, this);
@@ -83,50 +76,7 @@ public abstract class GeometryBasedGenerator implements ISceneGraphRelationshipG
 		this.relationshipSourceContainer = baseContainer;
 		this.relatedContainers.addAll(relatedContainers);
 
-		BranchGroup utilBG = utilsBG(baseContainer);
-
-		baseContainer.getContainerBG().addChild(utilBG);
-
 		return relatedContainers;
-	}
-
-	private BranchGroup utilsBG(Container baseContainer) {
-
-		BranchGroup utilBG = new BranchGroup();
-
-		Appearance app1 = new Appearance();
-		app1.setLineAttributes(new LineAttributes(1f, LineAttributes.PATTERN_SOLID, true));
-		app1.setColoringAttributes(new ColoringAttributes(ViewConstants.BLACK, ColoringAttributes.ALLOW_COLOR_READ));
-
-		LineArray pos1Vector = createVectorForContainer(baseContainer);
-
-		shapePos1 = new Shape3D(pos1Vector, app1);
-		shapePos1.setCapability(Shape3D.ALLOW_GEOMETRY_WRITE);
-
-		utilBG.addChild(shapePos1);
-
-		Appearance app2 = new Appearance();
-		app2.setLineAttributes(new LineAttributes(1f, LineAttributes.PATTERN_SOLID, true));
-		app2.setColoringAttributes(new ColoringAttributes(ViewConstants.WHITE, ColoringAttributes.ALLOW_COLOR_READ));
-
-		LineArray pos2Vector = createVectorForContainer(baseContainer);
-
-		shapePos2 = new Shape3D(pos2Vector, app2);
-		shapePos2.setCapability(Shape3D.ALLOW_GEOMETRY_WRITE);
-
-		utilBG.addChild(shapePos2);
-
-		Appearance app3 = new Appearance();
-		app3.setLineAttributes(new LineAttributes(1f, LineAttributes.PATTERN_SOLID, true));
-		app3.setColoringAttributes(new ColoringAttributes(ViewConstants.YELLOW, ColoringAttributes.ALLOW_COLOR_READ));
-
-		LineArray pos3Vector = createVectorForContainer(baseContainer);
-
-		perpendicularShape = new Shape3D(pos3Vector, app3);
-		perpendicularShape.setCapability(Shape3D.ALLOW_GEOMETRY_WRITE);
-
-		utilBG.addChild(perpendicularShape);
-		return utilBG;
 	}
 
 	public LineArray createVectorForContainer(Container container) {
@@ -146,22 +96,6 @@ public abstract class GeometryBasedGenerator implements ISceneGraphRelationshipG
 				TransformGroup transformGroup = relatedTG.get(destination);
 				transformGroup.setTransform(transformation);
 			}
-			
-			LineArray vectorPos1 = createVectorForContainer(relationshipSourceContainer);
-			shapePos1.setGeometry(vectorPos1);
-
-			LineArray vectorPos2 = createVectorForContainer(destination);
-			shapePos2.setGeometry(vectorPos2);
-			
-			LineArray perpendicular = new LineArray(2, LineArray.COORDINATES);
-			Vector3f perVector = new Vector3f();
-			perVector.cross(relationshipSourceContainer.getPosition(), destination.getPosition());
-
-			perpendicular.setCoordinate(0, new Point3f());
-			perpendicular.setCoordinate(1, new Point3f(perVector));
-
-			perpendicularShape.setGeometry(perpendicular);
-
 		}
 	}
 

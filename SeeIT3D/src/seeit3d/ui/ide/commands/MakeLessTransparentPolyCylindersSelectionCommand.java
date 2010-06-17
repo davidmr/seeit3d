@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2010  David Montaño
+ * Copyright (C) 2010  David MontaÃ±o
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,7 +20,7 @@ package seeit3d.ui.ide.commands;
 /**
  * Command to make the selected polycylinders less transparent
  * 
- * @author David Montaño
+ * @author David MontaÃ±o
  * 
  */
 public class MakeLessTransparentPolyCylindersSelectionCommand extends ChangeTransparencyBaseCommand {

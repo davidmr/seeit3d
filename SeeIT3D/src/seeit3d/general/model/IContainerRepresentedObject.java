@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2010  David Montaño
+ * Copyright (C) 2010  David MontaÃ±o
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,7 +22,7 @@ import java.io.Serializable;
  * Definition of what a container represents. This means the element that the container in the view is showing/representing. It must have a name and must be able to tell what is the name of the
  * granularity levels down of it.
  * 
- * @author David Montaño
+ * @author David MontaÃ±o
  * 
  */
 public interface IContainerRepresentedObject extends Serializable {

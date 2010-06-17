@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2010  David Monta�o
+ * Copyright (C) 2010  David Montaño
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,7 +24,7 @@ import seeit3d.utils.Utils;
 /**
  * Creates the layout of the seeit3d perspective
  * 
- * @author David
+ * @author David Montaño
  * 
  */
 public class SeeIT3DPerspectiveFactory implements IPerspectiveFactory {

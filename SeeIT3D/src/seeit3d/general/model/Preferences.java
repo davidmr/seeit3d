@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2010  David Montaño
+ * Copyright (C) 2010  David MontaÃ±o
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,7 +32,7 @@ import com.google.common.base.Preconditions;
 /**
  * SeeIT3D preferences representation. It holds the values of each preference
  * 
- * @author David Montaño
+ * @author David MontaÃ±o
  * 
  */
 public class Preferences implements IPropertyChangeListener {

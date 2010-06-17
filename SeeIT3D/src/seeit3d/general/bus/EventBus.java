@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2010  David Montaño
+ * Copyright (C) 2010  David MontaÃ±o
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,14 +19,12 @@ package seeit3d.general.bus;
 import java.util.Collection;
 import java.util.concurrent.ArrayBlockingQueue;
 
-import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.Multimap;
-import com.google.common.collect.Multimaps;
+import com.google.common.collect.*;
 
 /**
- * Bus to handle interactions between components in application
+ * Bus to handle interactions between components in the plugin
  * 
- * @author David Montaño
+ * @author David MontaÃ±o
  * 
  */
 public class EventBus {

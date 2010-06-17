@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2010  David Montaño
+ * Copyright (C) 2010  David MontaÃ±o
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -40,7 +40,7 @@ import seeit3d.ui.ide.commands.jobs.VisualizeJob;
 /**
  * Command to read and visualize the information contained in a XML file which conforms to the specification at package <code>seeit3d.model.xml.xsd</code>
  * 
- * @author David Montaño
+ * @author David MontaÃ±o
  * 
  */
 public class VisualizeFromXMLFile extends AbstractHandler {

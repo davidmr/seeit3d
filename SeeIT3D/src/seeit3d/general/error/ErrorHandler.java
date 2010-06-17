@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2010  David Montaño
+ * Copyright (C) 2010  David MontaÃ±o
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,7 +24,7 @@ import seeit3d.general.error.exception.SeeIT3DException;
 /**
  * Error handler class. Presents the user and information dialog with the specific error on it
  * 
- * @author David Montaño
+ * @author David MontaÃ±o
  * 
  */
 public class ErrorHandler {

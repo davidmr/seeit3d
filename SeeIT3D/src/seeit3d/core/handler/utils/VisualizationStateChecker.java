@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2010  David Montaño
+ * Copyright (C) 2010  David MontaÃ±o
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,7 +29,7 @@ import seeit3d.general.model.Container;
 /**
  * This class is responsible for validating if the visualization state is valid and can be processed
  * 
- * @author David Montaño
+ * @author David MontaÃ±o
  * 
  */
 public class VisualizationStateChecker {

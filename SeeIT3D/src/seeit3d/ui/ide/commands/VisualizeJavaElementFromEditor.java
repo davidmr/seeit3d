@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2010  David Montaño
+ * Copyright (C) 2010  David MontaÃ±o
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,7 +34,7 @@ import com.google.common.collect.Lists;
 /**
  * Command to allow the user to visualize information when he/she is using the Java Editor
  * 
- * @author David Montaño
+ * @author David MontaÃ±o
  * 
  */
 public class VisualizeJavaElementFromEditor extends AbstractHandler {

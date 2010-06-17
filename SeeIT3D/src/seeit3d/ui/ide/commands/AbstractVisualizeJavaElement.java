@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2010  David Montaño
+ * Copyright (C) 2010  David MontaÃ±o
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,7 +31,7 @@ import seeit3d.ui.ide.commands.jobs.VisualizeJob;
 /**
  * Basic algorithm to visualize IJavaElements from different views in the IDE.
  * 
- * @author David Montaño
+ * @author David MontaÃ±o
  * 
  */
 public abstract class AbstractVisualizeJavaElement extends AbstractHandler {

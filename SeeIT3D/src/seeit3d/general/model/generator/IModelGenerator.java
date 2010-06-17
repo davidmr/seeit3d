@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2010  David Montaño
+ * Copyright (C) 2010  David MontaÃ±o
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,7 +21,7 @@ import seeit3d.general.model.Container;
 /**
  * This class represents an analyzer that can create Containers that will be shown in the visualization area.
  * 
- * @author David Montaño
+ * @author David MontaÃ±o
  * 
  */
 public interface IModelGenerator {

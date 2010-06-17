@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2010  David Montaño
+ * Copyright (C) 2010  David MontaÃ±o
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,7 +26,7 @@ import seeit3d.general.model.IEclipseResourceRepresentation;
 /**
  * Represents an object which has no Eclipse resource representation as in the case of XML read elements
  * 
- * @author David Montaño
+ * @author David MontaÃ±o
  * 
  */
 public class NoEclipseRepresentation implements IEclipseResourceRepresentation {

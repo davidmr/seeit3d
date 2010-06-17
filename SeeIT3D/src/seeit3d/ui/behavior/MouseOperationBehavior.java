@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2010  David Monta�o
+ * Copyright (C) 2010  David Montaño
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,7 +31,7 @@ import com.sun.j3d.utils.universe.ViewingPlatform;
 /**
  * Class to provide basic functionality for changing transformations on selected objects in the scene. This class is based on the PickMouseBehavior of Java 3D
  * 
- * @author David Monta�o
+ * @author David Montaño
  */
 public abstract class MouseOperationBehavior extends MouseBehavior {
 

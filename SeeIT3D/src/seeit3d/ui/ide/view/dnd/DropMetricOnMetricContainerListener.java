@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2010  David Montaño
+ * Copyright (C) 2010  David MontaÃ±o
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,7 +26,7 @@ import seeit3d.general.model.generator.metrics.MetricCalculator;
 /**
  * This class listens for metrics drop on the metrics group and removing them from the visualization
  * 
- * @author David Montaño
+ * @author David MontaÃ±o
  * 
  */
 public class DropMetricOnMetricContainerListener implements DropTargetListener {

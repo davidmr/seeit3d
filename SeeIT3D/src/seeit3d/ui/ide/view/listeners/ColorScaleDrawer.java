@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2010  David Montaño
+ * Copyright (C) 2010  David MontaÃ±o
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,7 +28,7 @@ import seeit3d.visual.colorscale.IColorScale;
 /**
  * This <code>PaintListener</code> is in charge of drawing a preview of a color scale as a bar that the user can easily understand
  * 
- * @author David Montaño
+ * @author David MontaÃ±o
  * 
  */
 public class ColorScaleDrawer implements PaintListener {

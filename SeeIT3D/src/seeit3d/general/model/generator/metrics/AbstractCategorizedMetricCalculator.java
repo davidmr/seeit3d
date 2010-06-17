@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2010  David Montaño
+ * Copyright (C) 2010  David MontaÃ±o
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,7 +21,7 @@ import java.util.List;
 /**
  * This class represents a metric calculator whose values are categories. For example a control structure metric with values for, if, while, etc.
  * 
- * @author David Montaño
+ * @author David MontaÃ±o
  * 
  */
 public abstract class AbstractCategorizedMetricCalculator extends MetricCalculator {

@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2010  David Montaño
+ * Copyright (C) 2010  David MontaÃ±o
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,7 +25,7 @@ import javax.media.j3d.J3DGraphics2D;
 /**
  * Canvas based on Canvas3D from Java3D. It allows to modify certain parts of the visualization algorithm like the rendering hints
  * 
- * @author David Montaño
+ * @author David MontaÃ±o
  * 
  */
 public class SeeIT3DCanvas extends Canvas3D {
@@ -38,7 +38,6 @@ public class SeeIT3DCanvas extends Canvas3D {
 		super(configuration);
 		render2D = getGraphics2D();
 		render2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-
 	}
 
 }

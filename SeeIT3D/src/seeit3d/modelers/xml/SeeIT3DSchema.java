@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2010  David Montaño
+ * Copyright (C) 2010  David MontaÃ±o
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,9 +30,9 @@ import org.xml.sax.SAXException;
 import seeit3d.general.error.ErrorHandler;
 
 /**
- * Represents the schema that describes the XML file. It is used to validate the structure of a read file
+ * Represents the schema that describes the XML file. It is used to validate the structure of XML file
  * 
- * @author David Montaño
+ * @author David MontaÃ±o
  * 
  */
 public class SeeIT3DSchema {

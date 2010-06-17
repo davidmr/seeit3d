@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2010  David Montaño
+ * Copyright (C) 2010  David MontaÃ±o
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,7 +19,7 @@ package seeit3d.ui.ide.view.listeners;
 /**
  * Enumeration to indicate the desired level of detail when choosing from the mapping view
  * 
- * @author David Montaño
+ * @author David MontaÃ±o
  * 
  */
 public enum ChangeLevelOption {

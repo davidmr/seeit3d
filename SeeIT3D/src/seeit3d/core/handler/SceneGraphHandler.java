@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2010  David Monta�o
+ * Copyright (C) 2010  David Montaño
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -39,7 +39,7 @@ import com.sun.j3d.utils.universe.ViewingPlatform;
 /**
  * Class that handles all the interactions with the scene graph in Java 3D. All the changes in general structure of the scene graph should be handle by this class.
  * 
- * @author David Monta�o
+ * @author David Montaño
  * 
  */
 public class SceneGraphHandler {

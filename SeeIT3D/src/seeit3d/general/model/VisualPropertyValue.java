@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2010  David Montaño
+ * Copyright (C) 2010  David MontaÃ±o
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,7 +31,7 @@ import seeit3d.visual.colorscale.IColorScale;
 /**
  * Wrapper class to assign values to visual properties. It is used by the PolyCylinders
  * 
- * @author David Montaño
+ * @author David MontaÃ±o
  * 
  */
 public class VisualPropertyValue implements Serializable {

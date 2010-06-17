@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2010  David Montaño
+ * Copyright (C) 2010  David MontaÃ±o
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,7 +21,7 @@ import javax.xml.bind.JAXBException;
 /**
  * Exception to indicate that an error occurred while reading from a XML file due to the file is not correctly formed
  * 
- * @author David Montaño
+ * @author David MontaÃ±o
  * 
  */
 public class SeeIT3DXMLParsingException extends SeeIT3DException {

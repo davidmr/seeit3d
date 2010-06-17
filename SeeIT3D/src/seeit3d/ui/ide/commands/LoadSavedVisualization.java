@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2010  David Montaño
+ * Copyright (C) 2010  David MontaÃ±o
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,7 +29,7 @@ import seeit3d.ui.ide.commands.jobs.LoadSavedVisualizationJob;
 /**
  * This command allow the user loading a saved visualization from the disk
  * 
- * @author David Montaño
+ * @author David MontaÃ±o
  * 
  */
 public class LoadSavedVisualization extends AbstractHandler {

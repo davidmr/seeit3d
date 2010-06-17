@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2010  David Montaño
+ * Copyright (C) 2010  David MontaÃ±o
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,7 +24,7 @@ import seeit3d.general.model.generator.metrics.AbstractContinuousMetricCalculato
 /**
  * Continuous metric calculator for XML based visualization. This metric can be instantiated multiple times, one for each time it appears on the XML file
  * 
- * @author David Montaño
+ * @author David MontaÃ±o
  * 
  */
 @SeeIT3DFactoryEnabled(singleton = false)

@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2010  David Montaño
+ * Copyright (C) 2010  David MontaÃ±o
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,7 +32,7 @@ import com.sun.j3d.utils.picking.behaviors.PickMouseBehavior;
 /**
  * This class is called when an object in the scene is selected, and handle the input correctly to open or not the text editor.
  * 
- * @author David Montaño
+ * @author David MontaÃ±o
  * 
  */
 public class MouseClickedBehavior extends PickMouseBehavior {

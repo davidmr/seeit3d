@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2010  David Montaño
+ * Copyright (C) 2010  David MontaÃ±o
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,9 +17,7 @@
 package seeit3d.modelers.java.generator.metrics;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 import org.eclipse.jdt.core.*;
 
@@ -29,9 +27,9 @@ import seeit3d.general.model.generator.metrics.AbstractContinuousMetricCalculato
 import seeit3d.modelers.java.LineOfCode;
 
 /**
- * Complexity calculator. It is based on the McCabe complexity metric. This metric must be manually registered
+ * Complexity calculator. It is based on the McCabe complexity metric.
  * 
- * @author David Montaño
+ * @author David MontaÃ±o
  * 
  */
 @SeeIT3DFactoryEnabled(singleton = true)

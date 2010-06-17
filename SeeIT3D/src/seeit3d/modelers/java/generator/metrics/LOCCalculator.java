@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2010  David Montaño
+ * Copyright (C) 2010  David MontaÃ±o
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,9 +16,7 @@
  */
 package seeit3d.modelers.java.generator.metrics;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 import org.eclipse.jdt.core.*;
 
@@ -27,9 +25,9 @@ import seeit3d.general.model.factory.annotations.SeeIT3DFactoryEnabled;
 import seeit3d.general.model.generator.metrics.AbstractContinuousMetricCalculator;
 
 /**
- * Lines of code calculator. Only takes into account the lines of actual code, not comments. This metric must be manually registered
+ * Lines of code calculator. Only takes into account the lines of actual code, not comments
  * 
- * @author David Montaño
+ * @author David MontaÃ±o
  * 
  */
 @SeeIT3DFactoryEnabled(singleton = true)

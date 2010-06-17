@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2010  David Montaño
+ * Copyright (C) 2010  David MontaÃ±o
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,7 +25,7 @@ import seeit3d.general.model.generator.metrics.MetricCalculator;
  * This class allows to transfer metrics instances from the metrics group to the visual property group. Based on the implementation at
  * http://dev.eclipse.org/viewcvs/index.cgi/org.eclipse.gef/plugins/org.eclipse.gef/src/org/eclipse/gef/dnd/SimpleObjectTransfer.java?root=Tools_Project&view=co
  * 
- * @author David Montaño
+ * @author David MontaÃ±o
  * 
  */
 public class TransferMetric extends ByteArrayTransfer {

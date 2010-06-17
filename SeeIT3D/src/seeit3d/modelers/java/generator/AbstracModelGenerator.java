@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2010  David Montaño
+ * Copyright (C) 2010  David MontaÃ±o
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,7 +37,7 @@ import seeit3d.modelers.java.JavaRepresentation;
 /**
  * This class is a template pattern to enable the creation of containers based on a <code>IJavaElement</code>.
  * 
- * @author David Montaño
+ * @author David MontaÃ±o
  * 
  * @param <ElementToAnalize>
  *            Indicates the type of the element that is going to be analyzed by the implementing class

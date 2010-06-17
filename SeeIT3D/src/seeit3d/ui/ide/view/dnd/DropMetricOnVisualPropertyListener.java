@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2010  David Montaño
+ * Copyright (C) 2010  David MontaÃ±o
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,7 +28,7 @@ import seeit3d.ui.ide.view.MappingViewComposite;
 /**
  * This class listens for metrics dropped on a visual property group, indicating that the mapping needs to be changed
  * 
- * @author David Montaño
+ * @author David MontaÃ±o
  * 
  */
 public class DropMetricOnVisualPropertyListener implements DropTargetListener {

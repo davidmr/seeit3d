@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2010  David Montaño
+ * Copyright (C) 2010  David MontaÃ±o
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,7 +24,7 @@ import org.eclipse.jdt.core.IJavaElement;
 /**
  * Indicates the representation associated with a polycylinder of a resource within the Eclipse IDE. It is used to navigate to the associated elements from the visualization.
  * 
- * @author David Montaño
+ * @author David MontaÃ±o
  * 
  */
 public interface IEclipseResourceRepresentation extends Serializable {

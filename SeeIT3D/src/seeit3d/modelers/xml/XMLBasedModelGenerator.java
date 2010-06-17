@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2010  David Montaño
+ * Copyright (C) 2010  David MontaÃ±o
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,7 +34,7 @@ import seeit3d.modelers.xml.internal.*;
 /**
  * Model generator for XML based visualization. It takes the model that was read by JAXB and translate it into the model of SeeIT3D
  * 
- * @author David Montaño
+ * @author David MontaÃ±o
  * 
  */
 public class XMLBasedModelGenerator implements IModelGenerator {

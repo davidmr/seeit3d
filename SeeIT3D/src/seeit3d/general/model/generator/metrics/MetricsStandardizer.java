@@ -6,7 +6,7 @@ import java.util.*;
  * This class standardizes the values from metrics (i.e. translate them to 0..1). It also maintains a cache of the metrics that were standardize before, in order to keep consistency between different
  * calculations of metric
  * 
- * @author David Montaño
+ * @author David MontaÃ±o
  * 
  */
 public class MetricsStandardizer {

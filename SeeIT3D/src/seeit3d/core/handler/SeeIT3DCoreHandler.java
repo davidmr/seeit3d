@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2010  David Montaño
+ * Copyright (C) 2010  David MontaÃ±o
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -38,9 +38,9 @@ import seeit3d.utils.Utils;
 import seeit3d.utils.ViewConstants;
 
 /**
- * Class that handles the interactions between the different parts of SeeIT3D. It tracks the general state of the visualization system.
+ * Class that handles the interactions with the model of SeeIT3D. It tracks the general state of the visualization system.
  * 
- * @author David Montaño
+ * @author David MontaÃ±o
  * 
  */
 public class SeeIT3DCoreHandler implements SeeIT3DCore, IEventListener {

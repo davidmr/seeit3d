@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2010  David Montaño
+ * Copyright (C) 2010  David MontaÃ±o
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,7 +27,7 @@ import com.sun.j3d.utils.universe.ViewingPlatform;
 /**
  * This class wraps the MouseRotate3D behavior to allow the user to pick objects and rotate them in the scene. It is based on the PickRotateBehavior from Java 3D
  * 
- * @author David Montaño
+ * @author David MontaÃ±o
  * 
  */
 public class PickRotate3DBehavior extends PickMouseBehavior {

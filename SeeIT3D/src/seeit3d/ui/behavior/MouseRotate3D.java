@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2010  David Montaño
+ * Copyright (C) 2010  David Montaï¿½o
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,7 +29,7 @@ import com.sun.j3d.utils.universe.ViewingPlatform;
 /**
  * This class handles the rotation of elements in the scene, taking into account the position of the user in the world
  * 
- * @author David Montaño
+ * @author David Montaï¿½o
  * 
  */
 public class MouseRotate3D extends MouseOperationBehavior {
@@ -46,7 +46,7 @@ public class MouseRotate3D extends MouseOperationBehavior {
 	}
 
 	@Override
-	protected int operationToNotifyType() {
+	protected int operationToNotifyOnCallbackType() {
 		return MouseBehaviorCallback.ROTATE;
 	}
 

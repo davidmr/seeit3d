@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2010  David Montaño
+ * Copyright (C) 2010  David Montaï¿½o
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,6 +22,7 @@ import java.util.Enumeration;
 
 import javax.media.j3d.*;
 import javax.vecmath.Matrix3d;
+import javax.vecmath.Vector3f;
 
 import com.sun.j3d.utils.behaviors.mouse.MouseBehavior;
 import com.sun.j3d.utils.behaviors.mouse.MouseBehaviorCallback;
@@ -30,7 +31,7 @@ import com.sun.j3d.utils.universe.ViewingPlatform;
 /**
  * Class to provide basic functionality for changing transformations on selected objects in the scene. This class is based on the PickMouseBehavior of Java 3D
  * 
- * @author David Montaño
+ * @author David Montaï¿½o
  */
 public abstract class MouseOperationBehavior extends MouseBehavior {
 
@@ -52,7 +53,7 @@ public abstract class MouseOperationBehavior extends MouseBehavior {
 
 	public abstract int getMouseButtonToWakeUp();
 
-	protected abstract int operationToNotifyType();
+	protected abstract int operationToNotifyOnCallbackType();
 
 	@SuppressWarnings("unchecked")
 	@Override
@@ -108,7 +109,7 @@ public abstract class MouseOperationBehavior extends MouseBehavior {
 
 	private void notifyCallback(Transform3D transform) {
 		if (callback != null) {
-			int type = operationToNotifyType();
+			int type = operationToNotifyOnCallbackType();
 			callback.transformChanged(type, transform);
 		}
 	}
@@ -120,6 +121,15 @@ public abstract class MouseOperationBehavior extends MouseBehavior {
 		Matrix3d viewRotMatrix = new Matrix3d();
 		viewersTranform.get(viewRotMatrix);
 		return viewRotMatrix;
+	}
+
+	protected Vector3f getViewersPosition() {
+		TransformGroup viewPlatformTransform = viewingPlatform.getViewPlatformTransform();
+		Transform3D viewersTranform = new Transform3D();
+		viewPlatformTransform.getTransform(viewersTranform);
+		Vector3f position = new Vector3f();
+		viewersTranform.get(position);
+		return position;
 	}
 
 	public abstract Transform3D buildTransformation(Transform3D transform, float dx, float dy);

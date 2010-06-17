@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2010  David Montaño
+ * Copyright (C) 2010  David MontaÃ±o
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,8 +19,7 @@ package seeit3d.ui.behavior;
 import java.awt.event.MouseEvent;
 
 import javax.media.j3d.Transform3D;
-import javax.vecmath.Matrix3d;
-import javax.vecmath.Matrix4d;
+import javax.vecmath.*;
 
 import com.sun.j3d.utils.behaviors.mouse.MouseBehaviorCallback;
 import com.sun.j3d.utils.universe.ViewingPlatform;
@@ -28,12 +27,10 @@ import com.sun.j3d.utils.universe.ViewingPlatform;
 /**
  * This class handles the translation of elements in the scene, taking into account the position of the user in the world
  * 
- * @author David Montaño
+ * @author David MontaÃ±o
  * 
  */
 public class MouseTranslate3D extends MouseOperationBehavior {
-
-	private static final float factor = 0.02f;
 
 	public MouseTranslate3D(int format, ViewingPlatform viewingPlatform) {
 		super(format, viewingPlatform);
@@ -45,21 +42,28 @@ public class MouseTranslate3D extends MouseOperationBehavior {
 	}
 
 	@Override
-	protected int operationToNotifyType() {
+	protected int operationToNotifyOnCallbackType() {
 		return MouseBehaviorCallback.TRANSLATE;
 	}
 
 	@Override
 	public Transform3D buildTransformation(Transform3D transform, float dx, float dy) {
 
-		float dyCorrected = -dy * factor;
-		float dxCorrected = dx * factor;
+		Vector3f viewersPosition = getViewersPosition();
+
+		float distanceToCenter = viewersPosition.length();
+
+		float movementFactor = distanceToCenter / 1000;
+
+		float dyCorrected = -dy * movementFactor;
+		float dxCorrected = dx * movementFactor;
 
 		Matrix4d newPosition = new Matrix4d(
 				1, 0, 0, dxCorrected,
 				0, 1, 0, dyCorrected,
 				0, 0, 1, 0,
 				0, 0, 0, 1);
+
 		Matrix3d viewRotMatrix = getRotationFromViewersPosition();
 
 		Matrix4d result = new Matrix4d();

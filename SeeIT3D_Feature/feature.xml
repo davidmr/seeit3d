@@ -2,7 +2,7 @@
 <feature
       id="seeit3d.feature.visualization"
       label="SeeIT3D Core"
-      version="0.2.7">
+      version="0.2.8">
 
    <description>
       SeeIT 3D provides a three-dimensional view of the code in order to detect possible errors, with ease of navigation.
@@ -201,7 +201,7 @@ END OF TERMS AND CONDITIONS
          id="seeit3d.visualization"
          download-size="0"
          install-size="0"
-         version="0.2.7"
+         version="0.2.8"
          unpack="false"/>
 
 </feature>

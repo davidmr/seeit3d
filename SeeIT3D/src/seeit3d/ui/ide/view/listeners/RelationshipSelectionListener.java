@@ -16,20 +16,17 @@
  */
 package seeit3d.ui.ide.view.listeners;
 
+import static seeit3d.general.bus.EventBus.*;
+
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.widgets.Combo;
 
-import static seeit3d.general.bus.EventBus.*;
 import seeit3d.general.bus.events.PerformOperationOnSelectedContainersEvent;
-import seeit3d.general.bus.events.RegisterPickingCallbackEvent;
 import seeit3d.general.bus.utils.FunctionToApplyOnContainer;
-import seeit3d.general.error.ErrorHandler;
-import seeit3d.general.model.Container;
+import seeit3d.ui.actions.ApplyChangeRelationShipGenerator;
 import seeit3d.visual.relationships.ISceneGraphRelationshipGenerator;
 import seeit3d.visual.relationships.RelationShipsRegistry;
-
-import com.sun.j3d.utils.picking.behaviors.PickingCallback;
 
 /**
  * Listener for relationships generator selection in the mapping view
@@ -68,33 +65,4 @@ public class RelationshipSelectionListener implements SelectionListener {
 		FunctionToApplyOnContainer function = new ApplyChangeRelationShipGenerator(generatorClass);
 		return new PerformOperationOnSelectedContainersEvent(function, true);
 	}
-
-	private final class ApplyChangeRelationShipGenerator extends FunctionToApplyOnContainer {
-
-		private final Class<? extends ISceneGraphRelationshipGenerator> generatorClass;
-
-		private ApplyChangeRelationShipGenerator(Class<? extends ISceneGraphRelationshipGenerator> generatorClass) {
-			this.generatorClass = generatorClass;
-		}
-
-		@Override
-		public Container apply(Container container) {
-			try {
-				ISceneGraphRelationshipGenerator generator = generatorClass.newInstance();
-				container.setSceneGraphRelationshipGenerator(generator);
-				if (generator instanceof PickingCallback) {
-					PickingCallback callback = (PickingCallback) generator;
-					publishEvent(new RegisterPickingCallbackEvent(callback));
-				}
-			} catch (InstantiationException e) {
-				ErrorHandler.error(e);
-				e.printStackTrace();
-			} catch (IllegalAccessException e) {
-				ErrorHandler.error(e);
-				e.printStackTrace();
-			}
-			return container;
-		}
-	}
-
 }

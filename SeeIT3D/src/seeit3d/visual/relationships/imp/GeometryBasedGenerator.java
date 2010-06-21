@@ -27,7 +27,7 @@ import javax.vecmath.Vector3f;
 import seeit3d.general.SeeIT3DAPILocator;
 import seeit3d.general.bus.IEvent;
 import seeit3d.general.bus.IEventListener;
-import seeit3d.general.bus.events.ContainersLayoutDoneEvent;
+import seeit3d.general.bus.events.*;
 import seeit3d.general.model.Container;
 import seeit3d.visual.relationships.ISceneGraphRelationshipGenerator;
 
@@ -43,16 +43,18 @@ public abstract class GeometryBasedGenerator implements ISceneGraphRelationshipG
 
 	private static final Transform3D EMPTY_TRANSFORMATION = new Transform3D();
 
-	private final Map<Container, Shape3D> relatedShapes;
+	private Map<Container, Shape3D> relatedShapes;
 
-	private final Map<Container, TransformGroup> relatedTG;
+	private Map<Container, TransformGroup> relatedTG;
 
-	private final List<Container> relatedContainers;
+	private List<Container> relatedContainers;
 
 	private Container relationshipSourceContainer;
 
-	public GeometryBasedGenerator() {
+	@Override
+	public void initialize() {
 		registerListener(ContainersLayoutDoneEvent.class, this);
+		publishEvent(new RegisterPickingCallbackEvent(this));
 		relatedShapes = new TreeMap<Container, Shape3D>();
 		relatedTG = new TreeMap<Container, TransformGroup>();
 		relatedContainers = new ArrayList<Container>();
@@ -84,6 +86,12 @@ public abstract class GeometryBasedGenerator implements ISceneGraphRelationshipG
 				updateConnectionBetweenContainers(container);
 			}
 		}
+	}
+
+	@Override
+	public void unused() {
+		unregisterListener(ContainersLayoutDoneEvent.class, this);
+		publishEvent(new UnregisterPickingCallbackEvent(this));
 	}
 
 	@Override

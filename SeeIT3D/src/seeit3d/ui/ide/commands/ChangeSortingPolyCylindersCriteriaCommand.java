@@ -16,6 +16,8 @@
  */
 package seeit3d.ui.ide.commands;
 
+import static seeit3d.general.bus.EventBus.*;
+
 import java.util.Map;
 
 import org.eclipse.core.commands.*;
@@ -24,11 +26,10 @@ import org.eclipse.ui.commands.IElementUpdater;
 import org.eclipse.ui.handlers.HandlerUtil;
 import org.eclipse.ui.menus.UIElement;
 
-import static seeit3d.general.bus.EventBus.*;
 import seeit3d.general.bus.events.PerformOperationOnSelectedContainersEvent;
 import seeit3d.general.bus.utils.FunctionToApplyOnContainer;
-import seeit3d.general.model.Container;
 import seeit3d.general.model.VisualProperty;
+import seeit3d.ui.actions.ApplyChangeSortingProperty;
 
 /**
  * Command to change the criteria to sort polycylinders when the sorting is executed
@@ -70,14 +71,7 @@ public class ChangeSortingPolyCylindersCriteriaCommand extends AbstractHandler i
 	}
 
 	private PerformOperationOnSelectedContainersEvent createEvent(final VisualProperty property) {
-		FunctionToApplyOnContainer function = new FunctionToApplyOnContainer() {
-			@Override
-			public Container apply(Container container) {
-				container.setSortingProperty(property);
-				return container;
-			}
-		};
-
+		FunctionToApplyOnContainer function = new ApplyChangeSortingProperty(property);
 		return new PerformOperationOnSelectedContainersEvent(function, false);
 
 	}

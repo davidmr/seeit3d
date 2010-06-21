@@ -19,7 +19,8 @@ package seeit3d.general.bus;
 import java.util.Collection;
 import java.util.concurrent.ArrayBlockingQueue;
 
-import com.google.common.collect.*;
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.Multimap;
 
 /**
  * Bus to handle interactions between components in the plugin
@@ -37,16 +38,25 @@ public class EventBus {
 	}
 
 	static {
-		eventQueue = new ArrayBlockingQueue<IEvent>(20);
-		ArrayListMultimap<Class<? extends IEvent>, IEventListener> temporalMultimap = ArrayListMultimap.create();
-		listeners = Multimaps.synchronizedMultimap(temporalMultimap);
+		eventQueue = new ArrayBlockingQueue<IEvent>(30);
+		listeners = ArrayListMultimap.create();
 		Thread eventDispatcherThread = new Thread(new EventDispatcher(), "SeeIT3DEventDispatcher");
 		eventDispatcherThread.start();
 	}
 
 	public static void registerListener(Class<? extends IEvent> eventClass, IEventListener listener) {
-		listeners.put(eventClass, listener);
-		System.out.println("Register listener for class: " + eventClass);
+		synchronized (listeners) {
+			listeners.put(eventClass, listener);
+			System.out.println("Register listener for class: " + eventClass);
+		}
+	}
+
+	public static void unregisterListener(Class<? extends IEvent> eventClass, IEventListener listener) {
+		synchronized (listeners) {
+			Collection<IEventListener> listenersByClass = listeners.get(eventClass);
+			listenersByClass.remove(listener);
+			System.out.println("UnRegister listener for class: " + eventClass);
+		}
 	}
 
 	public static void publishEvent(IEvent event) {
@@ -62,7 +72,6 @@ public class EventBus {
 
 		@Override
 		public void run() {
-			System.out.println("Starting event dispatcher");
 			while (true) {
 				try {
 					IEvent event = eventQueue.take();
@@ -75,14 +84,16 @@ public class EventBus {
 		}
 
 		private void dispatchEvent(IEvent event) {
-			System.out.println("Dispatching event: " + event);
-			Collection<IEventListener> listenersByClass = listeners.get(event.getClass());
+			synchronized (listeners) {
+				System.out.println("Dispatching event: " + event);
+				Collection<IEventListener> listenersByClass = listeners.get(event.getClass());
 
-			if (listenersByClass == null || listenersByClass.isEmpty()) {
-				System.err.println("No listeners for class: " + event.getClass());
-			} else {
-				for (IEventListener listener : listenersByClass) {
-					listener.processEvent(event);
+				if (listenersByClass == null || listenersByClass.isEmpty()) {
+					System.err.println("No listeners for class: " + event.getClass());
+				} else {
+					for (IEventListener listener : listenersByClass) {
+						listener.processEvent(event);
+					}
 				}
 			}
 		}

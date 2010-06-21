@@ -77,6 +77,7 @@ public class SeeIT3DCoreHandler implements SeeIT3DCore, IEventListener {
 		registerListener(ChangeShowRelatedEvent.class, this);
 		registerListener(PerformOperationOnSelectedPolycylindersEvent.class, this);
 		registerListener(RegisterPickingCallbackEvent.class, this);
+		registerListener(UnregisterPickingCallbackEvent.class, this);
 
 	}
 
@@ -180,6 +181,10 @@ public class SeeIT3DCoreHandler implements SeeIT3DCore, IEventListener {
 
 		if (event instanceof RegisterPickingCallbackEvent) {
 			sceneGraphHandler.setupTranslationCallback(((RegisterPickingCallbackEvent) event).getCallback());
+		}
+
+		if (event instanceof UnregisterPickingCallbackEvent) {
+			sceneGraphHandler.unregisterPickingCallback(((UnregisterPickingCallbackEvent) event).getCallback());
 		}
 
 	}

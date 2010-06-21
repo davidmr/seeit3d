@@ -42,4 +42,14 @@ public class NoRelationships implements ISceneGraphRelationshipGenerator {
 		return NAME;
 	}
 
+	@Override
+	public void initialize() {
+
+	}
+
+	@Override
+	public void unused() {
+
+	}
+
 }

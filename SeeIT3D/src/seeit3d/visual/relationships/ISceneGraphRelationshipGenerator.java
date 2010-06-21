@@ -28,7 +28,11 @@ import seeit3d.general.model.Container;
  */
 public interface ISceneGraphRelationshipGenerator {
 
+	public void initialize();
+
 	public List<Container> generateVisualRelationShips(Container baseContainer);
+
+	public void unused();
 
 	public String getName();
 

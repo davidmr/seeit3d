@@ -107,6 +107,12 @@ public class SceneGraphHandler {
 		}
 	}
 
+	public void unregisterPickingCallback(PickingCallback callback) {
+		if (translation != null) {
+			translation.unregisterCallback(callback);
+		}
+	}
+
 	SeeIT3DCanvas getCanvas() {
 		checkIfInitialize();
 		return canvas;
@@ -302,5 +308,6 @@ public class SceneGraphHandler {
 	boolean isShowRelatedContainers() {
 		return showRelatedContainers;
 	}
+
 
 }

@@ -49,6 +49,16 @@ public class CommonBaseGenerator implements ISceneGraphRelationshipGenerator {
 	}
 
 	@Override
+	public void initialize() {
+
+	}
+
+	@Override
+	public void unused() {
+
+	}
+
+	@Override
 	public List<Container> generateVisualRelationShips(Container baseContainer) {
 
 		Color3f baseColor = SeeIT3DAPILocator.findPreferences().getRelationMarkColor();

@@ -16,9 +16,7 @@
  */
 package seeit3d.general.model;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.Serializable;
+import java.io.*;
 import java.util.*;
 
 import javax.media.j3d.*;
@@ -511,7 +509,13 @@ public class Container implements Serializable, Comparable<Container> {
 	}
 
 	public void setSceneGraphRelationshipGenerator(ISceneGraphRelationshipGenerator sceneGraphRelationshipGenerator) {
-		this.sceneGraphRelationshipGenerator = sceneGraphRelationshipGenerator;
+		if (!relatedContainers.isEmpty()) {
+			if (this.sceneGraphRelationshipGenerator != null) {
+				this.sceneGraphRelationshipGenerator.unused();
+			}
+			this.sceneGraphRelationshipGenerator = sceneGraphRelationshipGenerator;
+			this.sceneGraphRelationshipGenerator.initialize();
+		}
 	}
 
 	public ISceneGraphRelationshipGenerator getSceneGraphRelationshipGenerator() {

@@ -48,29 +48,31 @@ public class LabelInformation implements IEventListener {
 			Iterable<Container> selectedContainers = information.getSelectedContainers();
 			Map<String, String> metricValues = information.getCurrentMetricsValuesFromSelection();
 
-			final StringBuilder formattedString = new StringBuilder();
+			String formattedString = "";
 			if (!selectedContainers.iterator().hasNext()) {
-				formattedString.append("Select a Container to show information");
+				formattedString += "Select a Container to show information";
 			} else {
-				formattedString.append("Current selected container: ");
+				formattedString += "Current selected container: ";
 			}
 			for (Container container : selectedContainers) {
-				formattedString.append(container.getName());
-				formattedString.append(",");
+				formattedString += container.getName();
+				formattedString += ",";
 			}
-			formattedString.deleteCharAt(formattedString.length() - 1).append("\n");
+			formattedString = formattedString.replaceAll(",$", "");
+			formattedString += "\n";
 			if (metricValues.isEmpty()) {
-				formattedString.append("Select a Polycylinder to show information");
+				formattedString += "Select a Polycylinder to show information";
 			} else {
-				formattedString.append("Metric Values: ");
+				formattedString += "Metric Values: ";
 				for (Map.Entry<String, String> entry : metricValues.entrySet()) {
-					formattedString.append(entry.getKey()).append(": ").append(entry.getValue()).append(" | ");
+					formattedString += entry.getKey() + ": " + entry.getValue() + " | ";
 				}
 			}
+			final String stringToShow = formattedString;
 			Display.getDefault().asyncExec(new Runnable() {
 				@Override
 				public void run() {
-					label.setText(formattedString.toString());
+					label.setText(stringToShow);
 				}
 			});
 		}

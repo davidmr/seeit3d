@@ -44,25 +44,27 @@ public class LOCMCalculator extends AbstractContinuousMetricCalculator {
 		try {
 			if (element instanceof ICompilationUnit) {
 				IType primaryType = ((ICompilationUnit) element).findPrimaryType();
-				float numberMethods = primaryType.getMethods().length;
-				float numberAttributes = primaryType.getFields().length;
+				if (primaryType != null) {
+					float numberMethods = primaryType.getMethods().length;
+					float numberAttributes = primaryType.getFields().length;
 
-				if(numberAttributes <= 1f || numberMethods <= 1f){
-					return DEFAULT_VALUE;
+					if (numberAttributes <= 1f || numberMethods <= 1f) {
+						return DEFAULT_VALUE;
+					}
+
+					float sumAttributesUsedInMethods = 0;
+					for (int i = 0; i < primaryType.getFields().length; i++) {
+						IField field = primaryType.getFields()[i];
+						int methodsThatUseTheField = calculateMethodsThatUseTheField(field, primaryType.getMethods());
+						sumAttributesUsedInMethods += methodsThatUseTheField;
+					}
+
+					float value = (numberMethods - (sumAttributesUsedInMethods / numberAttributes)) / (numberMethods - 1);
+
+					return String.valueOf(value);
+
 				}
-				
-				float sumAttributesUsedInMethods = 0;
-				for (int i = 0; i < primaryType.getFields().length; i++) {
-					IField field = primaryType.getFields()[i];
-					int methodsThatUseTheField = calculateMethodsThatUseTheField(field, primaryType.getMethods());
-					sumAttributesUsedInMethods += methodsThatUseTheField;
-				}
-
-				float value = (numberMethods - (sumAttributesUsedInMethods / numberAttributes)) / (numberMethods - 1);
-
-				return String.valueOf(value);
 			}
-
 		} catch (JavaModelException e) {
 			e.printStackTrace();
 		}

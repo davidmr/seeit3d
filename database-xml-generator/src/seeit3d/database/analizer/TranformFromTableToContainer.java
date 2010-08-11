@@ -24,7 +24,20 @@ public class TranformFromTableToContainer implements Function<Table, Container> 
 
 		addPolycylinders(table, container);
 
+		addRelated(table, container);
+
 		return container;
+	}
+
+	private void addRelated(Table table, Container container) {
+		List<Object> related = container.getRelated();
+		for (Table foering : table.getFoeringKeysTable()) {
+			if (foering != table) {
+				Container containerRelated = new Container();
+				containerRelated.setName(foering.getName());
+				related.add(containerRelated);
+			}
+		}
 	}
 
 	private void addPolycylinders(Table table, Container container) {

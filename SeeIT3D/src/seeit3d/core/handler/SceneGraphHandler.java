@@ -253,6 +253,7 @@ public class SceneGraphHandler {
 		List<Container> containersToAdd = new ArrayList<Container>();
 		List<Container> containersToDelete = new ArrayList<Container>();
 
+		//TODO check how to handle relationships and additions from related, it is working but must be reviewed
 		for (Container container : manager.containersInView()) {
 			if (showRelatedContainers) {
 				containersToAdd.addAll(container.getRelatedContainersToShow());
@@ -264,27 +265,39 @@ public class SceneGraphHandler {
 
 		manager.updateContainersInView(containersToAdd, containersToDelete);
 
-		List<Container> containersAddedToGraph = new ArrayList<Container>();
+		//List<Container> containersAddedToGraph = new ArrayList<Container>();
 		for (Container container : manager.containersInView()) {
-			if (!containersAddedToGraph.contains(container)) {
-				container.updateVisualRepresentation();
-				BranchGroup bgContainer = container.getContainerBG();
-				if (showRelatedContainers) {
-					List<Container> processedContainers = container.generateSceneGraphRelations();
-					for (Container related : processedContainers) {
-						related.setSelected(false);
-						BranchGroup relatedBG = related.getContainerBG();
-						containersTG.addChild(relatedBG);
-						containersAddedToGraph.add(related);
-					}
-				}
-				containersTG.addChild(bgContainer);
-				containersAddedToGraph.add(container);
-			}
+			container.updateVisualRepresentation();
+			addContainerToBranch(containersTG, container);
+
+			// BranchGroup bgContainer = container.getContainerBG();
+			// if (showRelatedContainers) {
+			// List<Container> processedContainers = container.generateSceneGraphRelations();
+			// for (Container related : processedContainers) {
+			// related.setSelected(false);
+			// BranchGroup relatedBG = related.getContainerBG();
+			// containersTG.addChild(relatedBG);
+			// containersAddedToGraph.add(related);
+			// }
+			// }
+			// containersTG.addChild(bgContainer);
+			// containersAddedToGraph.add(container);
+
 		}
 
 		rootObj.addChild(containersGroup);
 
+	}
+
+	private void addContainerToBranch(TransformGroup tg, Container container) {
+		BranchGroup containerBG = container.getContainerBG();
+		tg.addChild(containerBG);
+		if (showRelatedContainers) {
+			List<Container> processedContainers = container.generateSceneGraphRelations();
+			for (Container related : processedContainers) {
+				addContainerToBranch(tg, related);
+			}
+		}
 	}
 
 	void setViewersPosition(float max) {
@@ -308,6 +321,5 @@ public class SceneGraphHandler {
 	boolean isShowRelatedContainers() {
 		return showRelatedContainers;
 	}
-
 
 }

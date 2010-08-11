@@ -16,6 +16,8 @@
  */
 package seeit3d.general.bus.events;
 
+import java.util.List;
+
 import seeit3d.general.bus.IEvent;
 import seeit3d.general.model.Container;
 
@@ -27,13 +29,14 @@ import seeit3d.general.model.Container;
  */
 public class AddContainerEvent implements IEvent {
 
-	private final Container container;
+	private final List<Container> containers;
 
-	public AddContainerEvent(Container container) {
-		this.container = container;
+	public AddContainerEvent(List<Container> containers) {
+		this.containers = containers;
+	}
+	
+	public List<Container> getContainers() {
+		return containers;
 	}
 
-	public Container getContainer() {
-		return container;
-	}
 }

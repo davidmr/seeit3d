@@ -57,7 +57,7 @@ public abstract class AbstracModelGenerator<ElementToAnalize extends IJavaElemen
 	@Override
 	public final void analizeAndRegisterInView(boolean includeDependecies) {
 		Container container = analize(includeDependecies);
-		publishEvent(new AddContainerEvent(container));
+		publishEvent(new AddContainerEvent(Arrays.asList(container)));
 	}
 
 	protected abstract Children[] fetchChildren(ElementToAnalize element) throws JavaModelException;

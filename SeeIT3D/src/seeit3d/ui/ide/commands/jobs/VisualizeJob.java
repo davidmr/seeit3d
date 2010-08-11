@@ -16,6 +16,7 @@
  */
 package seeit3d.ui.ide.commands.jobs;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.runtime.*;
@@ -23,10 +24,12 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.swt.widgets.Shell;
 
 import static seeit3d.general.bus.EventBus.*;
+import seeit3d.general.bus.events.AddContainerEvent;
 import seeit3d.general.bus.events.OpenSeeIT3DViewEvent;
 import seeit3d.general.bus.events.RefreshVisualizationEvent;
 import seeit3d.general.error.ErrorHandler;
 import seeit3d.general.error.exception.SeeIT3DException;
+import seeit3d.general.model.Container;
 import seeit3d.general.model.generator.IModelGenerator;
 
 /**
@@ -47,13 +50,16 @@ public class VisualizeJob extends Job {
 	@Override
 	protected IStatus run(IProgressMonitor monitor) {
 		monitor.beginTask("Analizing", IProgressMonitor.UNKNOWN);
+		List<Container> containers = new ArrayList<Container>();
 		try {
 			for (IModelGenerator model : modelGenerators) {
-				model.analizeAndRegisterInView(true);
+				Container container = model.analize(true);
+				containers.add(container);
 			}
 		} catch (SeeIT3DException e) {
 			ErrorHandler.error(e);
 		}
+		publishEvent(new AddContainerEvent(containers));
 		publishEvent(new RefreshVisualizationEvent());
 		publishEvent(new OpenSeeIT3DViewEvent());
 		monitor.done();

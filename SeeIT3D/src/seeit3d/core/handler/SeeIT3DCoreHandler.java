@@ -90,8 +90,10 @@ public class SeeIT3DCoreHandler implements SeeIT3DCore, IEventListener {
 			triggerSyncronizationPackageExplorerVsViewEvent();
 		}
 		if (event instanceof AddContainerEvent) {
-			Container container = ((AddContainerEvent) event).getContainer();
-			state.addContainerToView(container);
+			List<Container> containers = ((AddContainerEvent) event).getContainers();
+			for (Container container : containers) {
+				state.addContainerToViewWithoutValidation(container);
+			}			
 		}
 
 		if (event instanceof MappingChangedEvent) {

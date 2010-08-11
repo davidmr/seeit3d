@@ -17,11 +17,17 @@
 package seeit3d.ui.ide.commands;
 
 import java.io.InputStream;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
-import javax.xml.bind.*;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Unmarshaller;
 
-import org.eclipse.core.commands.*;
+import org.eclipse.core.commands.AbstractHandler;
+import org.eclipse.core.commands.ExecutionEvent;
+import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -31,7 +37,6 @@ import org.eclipse.ui.handlers.HandlerUtil;
 import seeit3d.general.error.ErrorHandler;
 import seeit3d.general.error.exception.SeeIT3DXMLParsingException;
 import seeit3d.general.model.generator.IModelGenerator;
-import seeit3d.modelers.xml.SeeIT3DSchema;
 import seeit3d.modelers.xml.XMLBasedModelGenerator;
 import seeit3d.modelers.xml.internal.Container;
 import seeit3d.modelers.xml.internal.Containers;
@@ -54,9 +59,8 @@ public class VisualizeFromXMLFile extends AbstractHandler {
 		try {
 			InputStream contents = file.getContents();
 
-			JAXBContext context = JAXBContext.newInstance(Containers.class);
-			Unmarshaller unmarshaller = context.createUnmarshaller();
-			unmarshaller.setSchema(SeeIT3DSchema.getSchema());
+			JAXBContext context = JAXBContext.newInstance("seeit3d.modelers.xml.internal");
+			Unmarshaller unmarshaller = context.createUnmarshaller();			
 			Containers containers = (Containers) unmarshaller.unmarshal(contents);
 			List<IModelGenerator> modelGenerators = new ArrayList<IModelGenerator>();
 			for (Container containerXML : containers.getContainer()) {

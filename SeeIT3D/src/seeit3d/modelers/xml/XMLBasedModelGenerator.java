@@ -124,7 +124,7 @@ public class XMLBasedModelGenerator implements IModelGenerator {
 	public void analizeAndRegisterInView(boolean includeDependecies) {
 		if (containerXML.isVisible()) {
 			Container container = analize(includeDependecies);
-			publishEvent(new AddContainerEvent(container));
+			publishEvent(new AddContainerEvent(Arrays.asList(container)));
 		}
 	}
 

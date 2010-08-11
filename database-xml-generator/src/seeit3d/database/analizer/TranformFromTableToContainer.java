@@ -68,7 +68,7 @@ public class TranformFromTableToContainer implements Function<Table, Container> 
 		categories = categories.substring(0, categories.length() - 1);
 		metric1.setCategories(categories);
 		metric1.setMax(String.valueOf(sqlTypesAsString.size()));
-		metric1.setType("CATEGORIC");
+		metric1.setType("CATEGORIZED");
 		metric1.setValue("dataType");
 
 		MetricDescription metric2 = new MetricDescription();

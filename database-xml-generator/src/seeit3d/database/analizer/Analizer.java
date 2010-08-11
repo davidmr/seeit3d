@@ -1,6 +1,15 @@
 package seeit3d.database.analizer;
 
+import java.io.File;
 import java.sql.*;
+import java.util.*;
+
+import javax.xml.bind.*;
+
+import seeit3d.database.xml.model.Container;
+import seeit3d.database.xml.model.Containers;
+
+import com.google.common.collect.Collections2;
 
 public class Analizer {
 
@@ -13,40 +22,72 @@ public class Analizer {
 		try {
 			Class.forName(driverToUse);
 			Connection conn = DriverManager.getConnection(urlToConnect, user, passwd);
-			DatabaseMetaData meta = conn.getMetaData();
-			// The Oracle database stores its table names as Upper-Case,
-			// if you pass a table name in lowercase characters, it will not
-			// work.
-			// MySQL database does not care if table name is
-			// uppercase/lowercase.
-			//
-			// ResultSet rs = meta.getExportedKeys(conn.getCatalog(), null, "zipcode");
-			// while (rs.next()) {
-			// String fkTableName = rs.getString("FKTABLE_NAME");
-			// String fkColumnName = rs.getString("FKCOLUMN_NAME");
-			// int fkSequence = rs.getInt("KEY_SEQ");
-			// System.out.println("getExportedKeys(): fkTableName=" + fkTableName);
-			// System.out.println("getExportedKeys(): fkColumnName=" + fkColumnName);
-			// System.out.println("getExportedKeys(): fkSequence=" + fkSequence);
-			// }
 			DatabaseMetaData metaData = conn.getMetaData();
-			ResultSet tables = metaData.getTables(null, "public", "%", new String[] { "TABLE" });
-			// ResultSetMetaData data = tables.getMetaData();
-			// int columnCount = data.getColumnCount();
-			// for(int i = 1; i <= columnCount; i++){
-			// String columnName = data.getColumnName(i);
-			// System.out.println(columnName);
-			// }
-			System.out.println("*******TABLES********");
-			while (tables.next()) {
-				System.out.println(tables.getString("table_name"));
+
+			ResultSet tablesDB = metaData.getTables(null, null, "%", new String[] { "TABLE" });
+
+			List<Table> tables = new ArrayList<Table>();
+
+			while (tablesDB.next()) {
+				String tableName = tablesDB.getString("table_name");
+				tables.add(new Table(tableName));
 			}
+
+			for (Table table : tables) {
+				ResultSet foeringKeyTableRS = metaData.getExportedKeys(conn.getCatalog(), null, table.getName());
+				while (foeringKeyTableRS.next()) {
+					String fkTableName = foeringKeyTableRS.getString("fktable_name");
+					for (Table table2 : tables) {
+						if (table2.getName().equals(fkTableName)) {
+							table2.addFoeringTable(table);
+						}
+					}
+				}
+			}
+
+			for (Table table : tables) {
+				ResultSet columnsRS = metaData.getColumns(null, null, table.getName(), "%");
+				while (columnsRS.next()) {
+					String columnName = columnsRS.getString("column_name");
+					int type = columnsRS.getInt("data_type");
+					table.addColumn(new Column(columnName, type));
+				}
+			}
+
+			for (Table table : tables) {
+				Statement statement = conn.createStatement();
+				ResultSet rowNumRS = statement.executeQuery("select count(*) from " + table.getName());
+				while (rowNumRS.next()) {
+					int rowNum = rowNumRS.getInt(1);
+					table.setRowNum(rowNum);
+				}
+			}
+
+			System.out.println("*******TABLES ANALIZED********");
+			for (Table table : tables) {
+				System.out.println(table);
+			}
+
+			System.out.println("**********TRANSFORMING**********");
+			Collection<Container> containers = Collections2.transform(tables, new TranformFromTableToContainer());
+			Containers containersXML = new Containers();
+			List<Container> containerXMLList = containersXML.getContainer();
+			containerXMLList.addAll(containers);
+
+			System.out.println("***********WRITTING XML **********");
+			JAXBContext jc = JAXBContext.newInstance("seeit3d.database.xml.model");
+			Marshaller m = jc.createMarshaller();
+			m.marshal(containersXML, new File("output.xml"));
+
+			System.out.println("********END*******");
+
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		} catch (SQLException e) {
 			e.printStackTrace();
+		} catch (JAXBException e) {
+			e.printStackTrace();
 		}
 
 	}
-
 }

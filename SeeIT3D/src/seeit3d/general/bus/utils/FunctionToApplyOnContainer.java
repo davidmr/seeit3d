@@ -28,4 +28,5 @@ import com.google.common.base.Function;
  */
 public abstract class FunctionToApplyOnContainer implements Function<Container, Container> {
 
+	//TODO extract functions to a package
 }

@@ -16,13 +16,13 @@
  */
 package seeit3d.ui.ide.view.listeners;
 
+import static seeit3d.general.bus.EventBus.publishEvent;
+
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.widgets.Combo;
 
-import static seeit3d.general.bus.EventBus.*;
 import seeit3d.general.bus.events.ChangeColorScaleEvent;
-import seeit3d.general.bus.events.RefreshVisualizationEvent;
 import seeit3d.visual.colorscale.ColorScaleRegistry;
 import seeit3d.visual.colorscale.IColorScale;
 
@@ -49,7 +49,6 @@ public class ColorScaleSelectionListener implements SelectionListener {
 		for (IColorScale colorScale : allColorScales) {
 			if (colorScaleName.equals(colorScale.getName())) {
 				publishEvent(new ChangeColorScaleEvent(colorScale));
-				publishEvent(new RefreshVisualizationEvent());
 				break;
 			}
 		}

@@ -44,7 +44,7 @@ public class RelationShipsRegistry {
 		relationshipsGenerators.add(CommonBaseGenerator.class);
 		relationshipsGenerators.add(LineBaseGenerator.class);
 		relationshipsGenerators.add(ArcBasedGenerator.class);
-
+		relationshipsGenerators.add(MovementBasedGenerator.class);
 	}
 
 	public Iterable<Class<? extends ISceneGraphRelationshipGenerator>> allRelationshipsGenerator() {

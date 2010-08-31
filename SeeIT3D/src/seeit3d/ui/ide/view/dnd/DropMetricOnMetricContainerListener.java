@@ -16,11 +16,16 @@
  */
 package seeit3d.ui.ide.view.dnd;
 
-import org.eclipse.swt.dnd.*;
+import static seeit3d.general.bus.EventBus.publishEvent;
+
+import org.eclipse.swt.dnd.DND;
+import org.eclipse.swt.dnd.DropTargetEvent;
+import org.eclipse.swt.dnd.DropTargetListener;
 import org.eclipse.swt.widgets.Group;
 
-import static seeit3d.general.bus.EventBus.*;
-import seeit3d.general.bus.events.RemoveMetricEvent;
+import seeit3d.general.bus.events.PerformOperationOnSelectedContainersEvent;
+import seeit3d.general.bus.utils.FunctionToApplyOnContainer;
+import seeit3d.general.model.Container;
 import seeit3d.general.model.generator.metrics.MetricCalculator;
 
 /**
@@ -44,7 +49,7 @@ public class DropMetricOnMetricContainerListener implements DropTargetListener {
 	public void drop(DropTargetEvent event) {
 		if (TransferMetric.getInstance().isSupportedType(event.currentDataType)) {
 			MetricCalculator metric = (MetricCalculator) event.data;
-			publishEvent(new RemoveMetricEvent(metric));
+			publishEvent(createEvent(metric));
 			DragAndDropHelper.createMetricDraggableLabel(groupToAdd, metric);
 			groupToAdd.layout();
 		}
@@ -64,4 +69,15 @@ public class DropMetricOnMetricContainerListener implements DropTargetListener {
 	@Override
 	public void dragEnter(DropTargetEvent event) {}
 
+	public PerformOperationOnSelectedContainersEvent createEvent(final MetricCalculator metric){
+		FunctionToApplyOnContainer function = new FunctionToApplyOnContainer() {			
+			@Override
+			public Container apply(Container container) {
+				container.removeFromMapping(metric);
+				return container;
+			}
+		};
+		return new PerformOperationOnSelectedContainersEvent(function, true);
+	}
+	
 }

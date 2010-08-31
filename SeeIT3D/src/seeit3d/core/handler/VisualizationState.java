@@ -16,7 +16,10 @@
  */
 package seeit3d.core.handler;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
 
 import seeit3d.core.handler.utils.ContainersSelectedIterator;
 import seeit3d.core.handler.utils.VisualizationStateChecker;
@@ -39,19 +42,12 @@ public class VisualizationState {
 
 	private VisualProperty sortingProperty = VisualProperty.HEIGHT;
 
-	private final SeeIT3DCoreHandler manager;
-
 	private final VisualizationStateChecker stateChecker;
 
 	VisualizationState(SeeIT3DCoreHandler manager) {
-		this.manager = manager;
 		containersInView = new ArrayList<Container>();
 		currentSelectionPolyCylinder = new ArrayList<PolyCylinder>();
 		stateChecker = new VisualizationStateChecker();
-	}
-
-	private void viewNeedUpdate() {
-		manager.refreshVisualization();
 	}
 
 	private void validateState(List<Container> containers) throws IllegalVisualizationStateException {
@@ -68,30 +64,29 @@ public class VisualizationState {
 	/*************************/
 	/****** CONTAINERS *******/
 
-	void addContainerToView(Container container) {
-		if (container == null) {
-			throw new NullPointerException("Container can not be null");
-		}
-		try {
-			List<Container> newContainers = new ArrayList<Container>();
-			newContainers.add(container);
-			newContainers.addAll(containersInView);
+	// void addContainerToView(Container container) {
+	// if (container == null) {
+	// throw new NullPointerException("Container can not be null");
+	// }
+	// try {
+	// List<Container> newContainers = new ArrayList<Container>();
+	// newContainers.add(container);
+	// newContainers.addAll(containersInView);
+	//
+	// validateState(newContainers);
+	//
+	// if (containersInView.contains(container)) {
+	// container = container.createCopy();
+	// }
+	// containersInView.add(container);
+	// container.setSelected(true);
+	// viewNeedUpdate();
+	// } catch (IllegalVisualizationStateException ex) {
+	// handleIllegalVisualizationState(ex);
+	// }
+	// }
 
-			validateState(newContainers);
-
-			if (containersInView.contains(container)) {
-				container = container.createCopy();
-			}
-			containersInView.add(container);
-			container.setSelected(true);
-			container.updateVisualRepresentation();
-			manager.doContainerLayout();
-			viewNeedUpdate();
-		} catch (IllegalVisualizationStateException ex) {
-			handleIllegalVisualizationState(ex);
-		}
-	}
-
+	// TODO handle with validation
 	void addContainerToViewWithoutValidation(Container container) {
 		if (!containersInView.contains(container)) {
 			containersInView.add(container);
@@ -104,7 +99,6 @@ public class VisualizationState {
 
 	void clearContainers() {
 		containersInView.clear();
-		viewNeedUpdate();
 	}
 
 	boolean addContainerToSelection(Container newContainer, boolean toggleInSelection) {
@@ -176,7 +170,6 @@ public class VisualizationState {
 			iterator.next();
 			iterator.remove();
 		}
-		viewNeedUpdate();
 	}
 
 	Container getNextSelectableContainer() {
@@ -220,18 +213,16 @@ public class VisualizationState {
 		List<Container> newContainers = new ArrayList<Container>();
 		List<Container> oldContainers = new ArrayList<Container>();
 		for (Container container : selectedContainers()) {
-			container.setSelected(false);
-			oldContainers.add(container);
-
 			Container nextLevelContainer = container.buildContainerForNextLevel();
 			nextLevelContainer.setSelected(true);
 			newContainers.add(nextLevelContainer);
+			container.setSelected(false);
+			oldContainers.add(container);
 		}
 		try {
 			validateState(newContainers);
 			containersInView.removeAll(oldContainers);
 			containersInView.addAll(newContainers);
-			viewNeedUpdate();
 		} catch (IllegalVisualizationStateException ex) {
 			handleIllegalVisualizationState(ex);
 		}
@@ -239,17 +230,16 @@ public class VisualizationState {
 
 	void usePreviousLevelContainers() {
 		List<Container> newContainers = new ArrayList<Container>();
-		Iterator<Container> containers = new ContainersSelectedIterator(containersInView);
-		while (containers.hasNext()) {
-			Container container = containers.next();
-			Container previousLevelContainer = container.buildContainerForPreviousLevel();
+		List<Container> oldContainers = new ArrayList<Container>();
+		for (Container container : selectedContainers()) {
+			Container previousLevel = container.buildContainerForPreviousLevel();
+			previousLevel.setSelected(true);
+			newContainers.add(previousLevel);
 			container.setSelected(false);
-			previousLevelContainer.setSelected(true);
-			newContainers.add(previousLevelContainer);
-			containers.remove();
+			oldContainers.add(container);
 		}
+		containersInView.removeAll(oldContainers);
 		containersInView.addAll(newContainers);
-		viewNeedUpdate();
 	}
 
 	/***********************************/
@@ -326,7 +316,6 @@ public class VisualizationState {
 		for (Container container : containersInView) {
 			container.clearTransparencies();
 		}
-		viewNeedUpdate();
 	}
 
 	void setSortingProperty(VisualProperty sortingProperty) {

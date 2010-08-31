@@ -29,6 +29,4 @@ public interface SeeIT3DCore extends SeeIT3DAPI {
 
 	SeeIT3DCanvas getMainCanvas();
 
-	boolean isShowRelatedContainers();
-
 }

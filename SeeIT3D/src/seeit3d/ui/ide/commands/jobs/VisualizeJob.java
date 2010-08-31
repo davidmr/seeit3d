@@ -16,17 +16,19 @@
  */
 package seeit3d.ui.ide.commands.jobs;
 
+import static seeit3d.general.bus.EventBus.publishEvent;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.swt.widgets.Shell;
 
-import static seeit3d.general.bus.EventBus.*;
 import seeit3d.general.bus.events.AddContainerEvent;
 import seeit3d.general.bus.events.OpenSeeIT3DViewEvent;
-import seeit3d.general.bus.events.RefreshVisualizationEvent;
 import seeit3d.general.error.ErrorHandler;
 import seeit3d.general.error.exception.SeeIT3DException;
 import seeit3d.general.model.Container;
@@ -60,7 +62,6 @@ public class VisualizeJob extends Job {
 			ErrorHandler.error(e);
 		}
 		publishEvent(new AddContainerEvent(containers));
-		publishEvent(new RefreshVisualizationEvent());
 		publishEvent(new OpenSeeIT3DViewEvent());
 		monitor.done();
 		return Status.OK_STATUS;

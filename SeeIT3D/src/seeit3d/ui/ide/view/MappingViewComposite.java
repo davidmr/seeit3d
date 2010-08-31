@@ -37,6 +37,7 @@ import seeit3d.visual.colorscale.ColorScaleRegistry;
 import seeit3d.visual.colorscale.IColorScale;
 import seeit3d.visual.relationships.ISceneGraphRelationshipGenerator;
 import seeit3d.visual.relationships.RelationShipsRegistry;
+import seeit3d.visual.relationships.imp.NoRelationships;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
@@ -269,34 +270,21 @@ public class MappingViewComposite extends Composite implements IEventListener {
 		relationshipsGroup.setLayout(new GridLayout(1, true));
 		relationshipsGroup.setText("Relationship visual type");
 
-		Button checkAddToView = new Button(relationshipsGroup, SWT.CHECK | SWT.DRAW_DELIMITER);
-		checkAddToView.setText("Show related");
-		checkAddToView.setToolTipText("When checked adds the related containers automatically to the visualization area");
-
-		boolean isShowRelatedContainers = SeeIT3DAPILocator.findCore().isShowRelatedContainers();
-		checkAddToView.setSelection(isShowRelatedContainers);
-
-		checkAddToView.addSelectionListener(new ShowRelatedListener());
-
 		Combo combo = new Combo(relationshipsGroup, SWT.READ_ONLY);
 
 		Class<? extends ISceneGraphRelationshipGenerator> selectedGenerator = buildCurrentRelationShipGenerator(containers);
-		if (selectedGenerator == null || !isShowRelatedContainers) {
-			combo.setEnabled(false);
-		} else {
-			int index = 0;
+		int index = 0;
 
-			String selectedRelation = relationRegistry.getRelationName(selectedGenerator);
-			for (Class<? extends ISceneGraphRelationshipGenerator> generatorClass : allRelationshipsGenerator) {
-				String relationToAdd = relationRegistry.getRelationName(generatorClass);
-				combo.add(relationToAdd);
-				if (relationToAdd.equals(selectedRelation)) {
-					combo.select(index);
-				}
-				index++;
+		String selectedRelation = relationRegistry.getRelationName(selectedGenerator);
+		for (Class<? extends ISceneGraphRelationshipGenerator> generatorClass : allRelationshipsGenerator) {
+			String relationToAdd = relationRegistry.getRelationName(generatorClass);
+			combo.add(relationToAdd);
+			if (relationToAdd.equals(selectedRelation)) {
+				combo.select(index);
 			}
-			combo.addSelectionListener(new RelationshipSelectionListener());
+			index++;
 		}
+		combo.addSelectionListener(new RelationshipSelectionListener());
 
 	}
 
@@ -311,7 +299,7 @@ public class MappingViewComposite extends Composite implements IEventListener {
 			}
 			return relationClazz;
 		}
-		return null;
+		return NoRelationships.class;
 	}
 
 	@Override

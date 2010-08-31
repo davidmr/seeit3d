@@ -16,10 +16,20 @@
  */
 package seeit3d.general.model;
 
-import java.io.*;
-import java.util.*;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.BitSet;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
-import javax.media.j3d.*;
+import javax.media.j3d.BranchGroup;
+import javax.media.j3d.Shape3D;
+import javax.media.j3d.Switch;
+import javax.media.j3d.Transform3D;
+import javax.media.j3d.TransformGroup;
 import javax.vecmath.Vector3f;
 
 import seeit3d.general.SeeIT3DAPILocator;
@@ -177,6 +187,8 @@ public class Container implements Serializable, Comparable<Container> {
 	}
 
 	private void buildBranchGroup() {
+
+		System.err.println("Build branch group " + identifier);
 
 		if (propertiesMap.isEmpty()) {
 			throw new SeeIT3DException("In order to build the scene graph is necesary to determine the metric calculators that are going to be mapped");
@@ -361,21 +373,22 @@ public class Container implements Serializable, Comparable<Container> {
 	}
 
 	private void activateHighlight() {
-		validateForVisualState();
 		changeSwitchNodeState(highlighRootNode, true);
 	}
 
 	private void deactiveHighlight() {
-		validateForVisualState();
 		changeSwitchNodeState(highlighRootNode, false);
 	}
 
 	private void changeSwitchNodeState(Switch node, boolean newState) {
-		BitSet bitSet = new BitSet(node.numChildren());
-		for (int i = 0; i < bitSet.size(); i++) {
-			bitSet.set(i, newState);
+		// do nothing if null node
+		if (node != null) {
+			BitSet bitSet = new BitSet(node.numChildren());
+			for (int i = 0; i < bitSet.size(); i++) {
+				bitSet.set(i, newState);
+			}
+			node.setChildMask(bitSet);
 		}
-		node.setChildMask(bitSet);
 	}
 
 	public void deactivePolyCylindersHighlight() {
@@ -589,4 +602,5 @@ public class Container implements Serializable, Comparable<Container> {
 		preferences = SeeIT3DAPILocator.findPreferences();
 		sceneGraphRelationshipGenerator = new NoRelationships();
 	}
+
 }

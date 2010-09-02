@@ -2,9 +2,7 @@ package seeit3d.visual.relationships.imp;
 
 import java.util.List;
 
-import javax.media.j3d.Alpha;
-import javax.media.j3d.ScaleInterpolator;
-import javax.media.j3d.Transform3D;
+import javax.media.j3d.*;
 
 import seeit3d.core.handler.SceneGraphHandler;
 import seeit3d.general.model.Container;
@@ -39,7 +37,10 @@ public class MovementBasedGenerator implements ISceneGraphRelationshipGenerator 
 		alpha.setDecreasingAlphaRampDuration(0);
 		alpha.setAlphaAtZeroDuration(0);
 
-		ScaleInterpolator interpolator = new ScaleInterpolator(alpha, container.getTransformGroup(), new Transform3D(), 0.98f, 1.0f);
+		TransformGroup target = new TransformGroup();
+		target.setCapability(TransformGroup.ALLOW_TRANSFORM_WRITE);
+		target.addChild(container.getContainerBG());
+		ScaleInterpolator interpolator = new ScaleInterpolator(alpha, target, new Transform3D(), 0.8f, 1.0f);
 		interpolator.setSchedulingBounds(SceneGraphHandler.bounds);
 		container.getContainerBG().addChild(interpolator);
 

@@ -26,7 +26,9 @@ import javax.vecmath.*;
 import seeit3d.general.error.exception.SeeIT3DException;
 import seeit3d.general.model.Container;
 import seeit3d.general.model.Preferences;
-import seeit3d.ui.behavior.*;
+import seeit3d.ui.behavior.MouseClickedBehavior;
+import seeit3d.ui.behavior.PickRotate3DBehavior;
+import seeit3d.ui.behavior.PickTranslate3DBehavior;
 import seeit3d.utils.Utils;
 import seeit3d.utils.ViewConstants;
 import seeit3d.visual.relationships.ISceneGraphRelationshipGenerator;
@@ -258,25 +260,18 @@ public class SceneGraphHandler {
 
 		manager.updateContainersInView(containersToAdd, containersToDelete);
 
-		for (Container container : manager.containersInView()) {			
+		for (Container container : manager.containersInView()) {
 			container.updateVisualRepresentation();
+		}
+
+		for (Container container : manager.containersInView()) {
 			container.generateSceneGraphRelations();
-			// addContainerToBranch(containersTG, container);
 			BranchGroup containerBG = container.getContainerBG();
 			containersTG.addChild(containerBG);
 		}
 
 		rootObj.addChild(containersGroup);
 
-	}
-
-	private void addContainerToBranch(TransformGroup tg, Container container) {
-		BranchGroup containerBG = container.getContainerBG();
-		tg.addChild(containerBG);
-		List<Container> processedContainers = container.generateSceneGraphRelations();
-		for (Container related : processedContainers) {
-			addContainerToBranch(tg, related);
-		}
 	}
 
 	void setViewersPosition(float max) {

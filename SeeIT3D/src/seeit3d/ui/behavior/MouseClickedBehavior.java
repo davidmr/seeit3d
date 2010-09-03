@@ -16,9 +16,10 @@
  */
 package seeit3d.ui.behavior;
 
+import static seeit3d.general.bus.EventBus.*;
+
 import javax.media.j3d.*;
 
-import static seeit3d.general.bus.EventBus.*;
 import seeit3d.general.bus.events.ChangeSelectionEvent;
 import seeit3d.general.bus.events.OpenEditorEvent;
 import seeit3d.general.model.Container;
@@ -50,13 +51,13 @@ public class MouseClickedBehavior extends PickMouseBehavior {
 	@Override
 	public void updateScene(int xPos, int yPos) {
 
-		PickResult pickResult = null;
+		PickResult[] pickResult = null;
 
 		Container selectedContainer = null;
 		PolyCylinder selectedPolyCylinder = null;
 
 		pickCanvas.setShapeLocation(xPos, yPos);
-		pickResult = pickCanvas.pickClosest();
+		pickResult = pickCanvas.pickAll();
 		if (pickResult != null) {
 			selectedContainer = findContainerAssociated(pickResult);
 			selectedPolyCylinder = findPolyCylinderAssociated(pickResult);
@@ -74,21 +75,22 @@ public class MouseClickedBehavior extends PickMouseBehavior {
 		lastPressedTime = System.currentTimeMillis();
 	}
 
-	private Container findContainerAssociated(PickResult pickResult) {
-		TransformGroup containerTransformGroup = (TransformGroup) pickResult.getNode(PickResult.TRANSFORM_GROUP);
-		if (containerTransformGroup != null) {
-			Node branchGroupParent = containerTransformGroup.getParent();
-			return (Container) branchGroupParent.getUserData();
+	private Container findContainerAssociated(PickResult[] pickResults) {
+		TransformGroup transformGroup = PickUtils.chooseContainerMainTransformGroup(pickResults);
+		if (transformGroup != null) {
+			return (Container) transformGroup.getUserData();
 		}
 		return null;
 	}
 
-	private PolyCylinder findPolyCylinderAssociated(PickResult pickResult) {
-		SceneGraphPath sceneGraphPath = pickResult.getSceneGraphPath();
-		for (int i = 0; i < sceneGraphPath.nodeCount(); i++) {
-			Node node = sceneGraphPath.getNode(i);
-			if (node instanceof Box) {
-				return (PolyCylinder) node.getUserData();
+	private PolyCylinder findPolyCylinderAssociated(PickResult[] pickResults) {
+		for (PickResult pickResult : pickResults) {
+			SceneGraphPath sceneGraphPath = pickResult.getSceneGraphPath();
+			for (int i = 0; i < sceneGraphPath.nodeCount(); i++) {
+				Node node = sceneGraphPath.getNode(i);
+				if (node instanceof Box) {
+					return (PolyCylinder) node.getUserData();
+				}
 			}
 		}
 		return null;

@@ -46,6 +46,8 @@ public class Container implements Serializable, Comparable<Container> {
 
 	private static final long serialVersionUID = 1L;
 
+	public static final String CONTAINER_MAIN_TG = "containerMainTG";
+
 	private transient Preferences preferences;
 
 	private transient BranchGroup containerBG;
@@ -194,7 +196,6 @@ public class Container implements Serializable, Comparable<Container> {
 		containerBG.setCapability(BranchGroup.ALLOW_CHILDREN_WRITE);
 		containerBG.setCapability(BranchGroup.ALLOW_CHILDREN_EXTEND);
 		containerBG.setCapability(BranchGroup.ALLOW_CHILDREN_READ);
-		containerBG.setUserData(this);
 
 		TransformGroup containerTG = new TransformGroup();
 		containerTG.setCapability(TransformGroup.ALLOW_TRANSFORM_READ);
@@ -202,6 +203,7 @@ public class Container implements Serializable, Comparable<Container> {
 		containerTG.setCapability(TransformGroup.ALLOW_CHILDREN_WRITE);
 		containerTG.setCapability(TransformGroup.ALLOW_CHILDREN_EXTEND);
 		containerTG.setCapability(TransformGroup.ENABLE_PICK_REPORTING);
+		containerTG.setUserData(this);
 
 		resetDimensions();
 		sortPolyCylinders();
@@ -239,6 +241,7 @@ public class Container implements Serializable, Comparable<Container> {
 		if (isSelected) {
 			activateHighlight();
 		}
+
 		this.containerTG = containerTG;
 		containerBG.addChild(containerTG);
 		setPosition(oldPosition);

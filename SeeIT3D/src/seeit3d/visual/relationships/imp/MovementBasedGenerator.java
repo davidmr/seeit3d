@@ -37,10 +37,20 @@ public class MovementBasedGenerator implements ISceneGraphRelationshipGenerator 
 		alpha.setDecreasingAlphaRampDuration(0);
 		alpha.setAlphaAtZeroDuration(0);
 
+		// reparenting process
+		BranchGroup containerBG = container.getContainerBG();
+		TransformGroup transformGroup = container.getTransformGroup();
+
+		containerBG.removeChild(transformGroup);
+
 		TransformGroup target = new TransformGroup();
 		target.setCapability(TransformGroup.ALLOW_TRANSFORM_WRITE);
-		target.addChild(container.getContainerBG());
-		ScaleInterpolator interpolator = new ScaleInterpolator(alpha, target, new Transform3D(), 0.8f, 1.0f);
+		target.addChild(transformGroup);
+
+		containerBG.addChild(target);
+
+		ScaleInterpolator interpolator = new ScaleInterpolator(alpha, target, new Transform3D(), 0.98f, 1.0f);
+
 		interpolator.setSchedulingBounds(SceneGraphHandler.bounds);
 		container.getContainerBG().addChild(interpolator);
 

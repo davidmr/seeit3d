@@ -59,15 +59,24 @@ public class PickTranslate3DBehavior extends PickMouseBehavior implements MouseB
 	public void updateScene(int xpos, int ypos) {
 		pickCanvas.setShapeLocation(xpos, ypos);
 
-		PickResult pickResult = pickCanvas.pickAny();
-
-		if (pickResult != null) {
-			currentTG = (TransformGroup) pickResult.getNode(PickResult.TRANSFORM_GROUP);
-			if ((currentTG != null) && (currentTG.getCapability(TransformGroup.ALLOW_TRANSFORM_READ)) && (currentTG.getCapability(TransformGroup.ALLOW_TRANSFORM_WRITE))) {
-				translate.setTransformGroup(currentTG);
-				translate.wakeup();
-			}
+		PickResult[] pickResults = pickCanvas.pickAll();
+		TransformGroup mainTransformGroup = PickUtils.chooseContainerMainTransformGroup(pickResults);
+		if (mainTransformGroup != null) {
+			currentTG = mainTransformGroup;
+			translate.setTransformGroup(currentTG);
+			translate.wakeup();
 		}
+
+		// PickResult pickResult = pickCanvas.pickAny();
+		//
+		// if (pickResult != null) {
+		// pickResult.getNode(PickResult.)
+		// currentTG = (TransformGroup) pickResult.getNode(PickResult.TRANSFORM_GROUP);
+		// if ((currentTG != null) && (currentTG.getCapability(TransformGroup.ALLOW_TRANSFORM_READ)) && (currentTG.getCapability(TransformGroup.ALLOW_TRANSFORM_WRITE))) {
+		// translate.setTransformGroup(currentTG);
+		// translate.wakeup();
+		// }
+		// }
 	}
 
 	public void setupCallback(PickingCallback callback) {
@@ -88,6 +97,5 @@ public class PickTranslate3DBehavior extends PickMouseBehavior implements MouseB
 			callback.transformChanged(PickingCallback.TRANSLATE, currentTG);
 		}
 	}
-
 
 }

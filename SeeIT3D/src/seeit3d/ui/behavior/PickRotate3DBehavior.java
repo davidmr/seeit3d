@@ -52,15 +52,23 @@ public class PickRotate3DBehavior extends PickMouseBehavior {
 
 		pickCanvas.setShapeLocation(xpos, ypos);
 
-		PickResult pickResult = pickCanvas.pickAny();
-
-		if (pickResult != null) {
-			currentTG = (TransformGroup) pickResult.getNode(PickResult.TRANSFORM_GROUP);
-			if ((currentTG != null) && (currentTG.getCapability(TransformGroup.ALLOW_TRANSFORM_READ)) && (currentTG.getCapability(TransformGroup.ALLOW_TRANSFORM_WRITE))) {
-				rotate.setTransformGroup(currentTG);
-				rotate.wakeup();
-			}
+		PickResult[] pickResults = pickCanvas.pickAll();
+		TransformGroup mainTransformGroup = PickUtils.chooseContainerMainTransformGroup(pickResults);
+		if (mainTransformGroup != null) {
+			currentTG = mainTransformGroup;
+			rotate.setTransformGroup(currentTG);
+			rotate.wakeup();
 		}
+
+		// PickResult pickResult = pickCanvas.pickAny();
+		//
+		// if (pickResult != null) {
+		// currentTG = (TransformGroup) pickResult.getNode(PickResult.TRANSFORM_GROUP);
+		// if ((currentTG != null) && (currentTG.getCapability(TransformGroup.ALLOW_TRANSFORM_READ)) && (currentTG.getCapability(TransformGroup.ALLOW_TRANSFORM_WRITE))) {
+		// rotate.setTransformGroup(currentTG);
+		// rotate.wakeup();
+		// }
+		// }
 
 	}
 

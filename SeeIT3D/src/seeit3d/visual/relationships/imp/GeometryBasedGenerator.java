@@ -27,7 +27,9 @@ import javax.vecmath.Vector3f;
 import seeit3d.general.SeeIT3DAPILocator;
 import seeit3d.general.bus.IEvent;
 import seeit3d.general.bus.IEventListener;
-import seeit3d.general.bus.events.*;
+import seeit3d.general.bus.events.ContainersLayoutDoneEvent;
+import seeit3d.general.bus.events.RegisterPickingCallbackEvent;
+import seeit3d.general.bus.events.UnregisterPickingCallbackEvent;
 import seeit3d.general.model.Container;
 import seeit3d.visual.relationships.ISceneGraphRelationshipGenerator;
 
@@ -68,7 +70,7 @@ public abstract class GeometryBasedGenerator implements ISceneGraphRelationshipG
 
 	@Override
 	public final void transformChanged(int type, TransformGroup tg) {
-		Container movedContainer = (Container) tg.getParent().getUserData();
+		Container movedContainer = (Container) tg.getUserData();
 
 		if (movedContainer.equals(relationshipSourceContainer)) {
 			for (Container container : relatedContainers) {

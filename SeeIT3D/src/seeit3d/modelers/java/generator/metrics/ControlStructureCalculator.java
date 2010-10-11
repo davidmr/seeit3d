@@ -18,8 +18,6 @@ package seeit3d.modelers.java.generator.metrics;
 
 import java.util.List;
 
-import org.eclipse.jdt.core.IJavaElement;
-
 import seeit3d.general.model.factory.annotations.SeeIT3DFactoryEnabled;
 import seeit3d.general.model.generator.metrics.AbstractCategorizedMetricCalculator;
 import seeit3d.modelers.java.LineOfCode;
@@ -54,7 +52,7 @@ public class ControlStructureCalculator extends AbstractCategorizedMetricCalcula
 	}
 
 	@Override
-	public String calculateMetricValue(IJavaElement element) {
+	public String calculateMetricValue(Object element) {
 		String source = null;
 		if (element instanceof LineOfCode) {
 			LineOfCode line = (LineOfCode) element;

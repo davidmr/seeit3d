@@ -17,9 +17,15 @@
 package seeit3d.modelers.java.generator.metrics;
 
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
-import org.eclipse.jdt.core.*;
+import org.eclipse.jdt.core.ICompilationUnit;
+import org.eclipse.jdt.core.IMethod;
+import org.eclipse.jdt.core.IPackageFragment;
+import org.eclipse.jdt.core.IType;
+import org.eclipse.jdt.core.JavaModelException;
 
 import seeit3d.general.error.ErrorHandler;
 import seeit3d.general.model.factory.annotations.SeeIT3DFactoryEnabled;
@@ -46,7 +52,7 @@ public class ComplexityCalculator extends AbstractContinuousMetricCalculator {
 	}
 
 	@Override
-	public String calculateMetricValue(IJavaElement element) {
+	public String calculateMetricValue(Object element) {
 		try {
 			List<IMethod> methods = new ArrayList<IMethod>();
 			if (element instanceof IPackageFragment) {

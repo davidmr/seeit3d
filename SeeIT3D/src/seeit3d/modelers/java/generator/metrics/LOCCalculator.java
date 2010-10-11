@@ -16,9 +16,14 @@
  */
 package seeit3d.modelers.java.generator.metrics;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
-import org.eclipse.jdt.core.*;
+import org.eclipse.jdt.core.ICompilationUnit;
+import org.eclipse.jdt.core.IMethod;
+import org.eclipse.jdt.core.IPackageFragment;
+import org.eclipse.jdt.core.JavaModelException;
 
 import seeit3d.general.error.ErrorHandler;
 import seeit3d.general.model.factory.annotations.SeeIT3DFactoryEnabled;
@@ -44,7 +49,7 @@ public class LOCCalculator extends AbstractContinuousMetricCalculator {
 	}
 
 	@Override
-	public String calculateMetricValue(IJavaElement element) {
+	public String calculateMetricValue(Object element) {
 		try {
 			String source = "";
 			if (element instanceof IPackageFragment) {

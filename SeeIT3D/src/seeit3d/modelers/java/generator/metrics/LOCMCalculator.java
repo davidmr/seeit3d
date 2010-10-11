@@ -16,8 +16,15 @@
  */
 package seeit3d.modelers.java.generator.metrics;
 
-import org.eclipse.jdt.core.*;
-import org.eclipse.jdt.core.compiler.*;
+import org.eclipse.jdt.core.ICompilationUnit;
+import org.eclipse.jdt.core.IField;
+import org.eclipse.jdt.core.IMethod;
+import org.eclipse.jdt.core.IType;
+import org.eclipse.jdt.core.JavaModelException;
+import org.eclipse.jdt.core.ToolFactory;
+import org.eclipse.jdt.core.compiler.IScanner;
+import org.eclipse.jdt.core.compiler.ITerminalSymbols;
+import org.eclipse.jdt.core.compiler.InvalidInputException;
 
 import seeit3d.general.model.factory.annotations.SeeIT3DFactoryEnabled;
 import seeit3d.general.model.generator.metrics.AbstractContinuousMetricCalculator;
@@ -40,7 +47,7 @@ public class LOCMCalculator extends AbstractContinuousMetricCalculator {
 	}
 
 	@Override
-	public String calculateMetricValue(IJavaElement element) {
+	public String calculateMetricValue(Object element) {
 		try {
 			if (element instanceof ICompilationUnit) {
 				IType primaryType = ((ICompilationUnit) element).findPrimaryType();

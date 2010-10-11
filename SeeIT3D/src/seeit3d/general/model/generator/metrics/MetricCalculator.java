@@ -18,8 +18,6 @@ package seeit3d.general.model.generator.metrics;
 
 import java.io.Serializable;
 
-import org.eclipse.jdt.core.IJavaElement;
-
 /**
  * Parent class for all metric calculators.
  * 
@@ -59,6 +57,6 @@ public abstract class MetricCalculator implements Serializable {
 
 	public abstract boolean isReplaceable();
 
-	public abstract String calculateMetricValue(IJavaElement element);
+	public abstract String calculateMetricValue(Object element);
 
 }

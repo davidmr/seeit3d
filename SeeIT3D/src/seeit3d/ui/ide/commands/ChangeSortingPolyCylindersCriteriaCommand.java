@@ -16,11 +16,13 @@
  */
 package seeit3d.ui.ide.commands;
 
-import static seeit3d.general.bus.EventBus.*;
+import static seeit3d.general.bus.EventBus.publishEvent;
 
 import java.util.Map;
 
-import org.eclipse.core.commands.*;
+import org.eclipse.core.commands.AbstractHandler;
+import org.eclipse.core.commands.ExecutionEvent;
+import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.ui.commands.ICommandService;
 import org.eclipse.ui.commands.IElementUpdater;
 import org.eclipse.ui.handlers.HandlerUtil;
@@ -76,8 +78,7 @@ public class ChangeSortingPolyCylindersCriteriaCommand extends AbstractHandler i
 
 	}
 
-	@SuppressWarnings("unchecked")
-	public void updateElement(UIElement element, Map parameters) {
+	public void updateElement(UIElement element, @SuppressWarnings("rawtypes") Map parameters) {
 		String parm = (String) parameters.get(SORT_BY_PARAMETER);
 		if (parm != null) {
 			if (currentCriteria != null && currentCriteria.equals(parm)) {

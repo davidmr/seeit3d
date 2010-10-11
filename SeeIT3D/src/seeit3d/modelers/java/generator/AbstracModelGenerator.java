@@ -16,9 +16,13 @@
  */
 package seeit3d.modelers.java.generator;
 
-import static seeit3d.general.bus.EventBus.*;
+import static seeit3d.general.bus.EventBus.publishEvent;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.JavaModelException;

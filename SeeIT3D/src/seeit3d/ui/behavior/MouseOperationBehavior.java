@@ -20,7 +20,10 @@ import java.awt.AWTEvent;
 import java.awt.event.MouseEvent;
 import java.util.Enumeration;
 
-import javax.media.j3d.*;
+import javax.media.j3d.Transform3D;
+import javax.media.j3d.TransformGroup;
+import javax.media.j3d.WakeupCriterion;
+import javax.media.j3d.WakeupOnAWTEvent;
 import javax.vecmath.Matrix3d;
 import javax.vecmath.Vector3f;
 
@@ -55,9 +58,8 @@ public abstract class MouseOperationBehavior extends MouseBehavior {
 
 	protected abstract int operationToNotifyOnCallbackType();
 
-	@SuppressWarnings("unchecked")
 	@Override
-	public void processStimulus(Enumeration criteria) {
+	public void processStimulus(@SuppressWarnings("rawtypes") Enumeration criteria) {
 		while (criteria.hasMoreElements()) {
 			WakeupCriterion wakeup = (WakeupCriterion) criteria.nextElement();
 			if (wakeup instanceof WakeupOnAWTEvent) {

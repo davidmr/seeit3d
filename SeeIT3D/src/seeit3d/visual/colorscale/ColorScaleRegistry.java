@@ -42,6 +42,7 @@ public class ColorScaleRegistry {
 		colorScales = newArrayList(
 				new BlueTone(),
 				new BlueToYellow(),
+				new BlueGreenRed(),
 				new ColdToHotColorScale(),
 				new GrayColorScale(), 
 				new HeatedObject(),

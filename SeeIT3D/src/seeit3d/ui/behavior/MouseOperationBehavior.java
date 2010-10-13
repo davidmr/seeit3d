@@ -58,8 +58,9 @@ public abstract class MouseOperationBehavior extends MouseBehavior {
 
 	protected abstract int operationToNotifyOnCallbackType();
 
+	@SuppressWarnings("unchecked")
 	@Override
-	public void processStimulus(@SuppressWarnings("rawtypes") Enumeration criteria) {
+	public void processStimulus(Enumeration criteria) {
 		while (criteria.hasMoreElements()) {
 			WakeupCriterion wakeup = (WakeupCriterion) criteria.nextElement();
 			if (wakeup instanceof WakeupOnAWTEvent) {

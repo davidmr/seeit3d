@@ -148,8 +148,9 @@ public class LineOfCode implements IJavaElement, Serializable {
 		return parent.isStructureKnown();
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
-	public Object getAdapter(@SuppressWarnings("rawtypes") Class adapter) {
+	public Object getAdapter(Class adapter) {
 		return null;
 	}
 

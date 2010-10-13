@@ -20,8 +20,19 @@ import java.awt.GraphicsConfiguration;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.media.j3d.*;
-import javax.vecmath.*;
+import javax.media.j3d.AmbientLight;
+import javax.media.j3d.Background;
+import javax.media.j3d.BoundingSphere;
+import javax.media.j3d.Bounds;
+import javax.media.j3d.BranchGroup;
+import javax.media.j3d.DirectionalLight;
+import javax.media.j3d.Transform3D;
+import javax.media.j3d.TransformGroup;
+import javax.media.j3d.View;
+import javax.vecmath.Color3f;
+import javax.vecmath.Point3d;
+import javax.vecmath.Vector3d;
+import javax.vecmath.Vector3f;
 
 import seeit3d.general.error.exception.SeeIT3DException;
 import seeit3d.general.model.Container;
@@ -260,14 +271,19 @@ public class SceneGraphHandler {
 
 		manager.updateContainersInView(containersToAdd, containersToDelete);
 
-		for (Container container : manager.containersInView()) {
-			container.updateVisualRepresentation();
-		}
+		try {
+			for (Container container : manager.containersInView()) {
+				container.updateVisualRepresentation();
+			}
 
-		for (Container container : manager.containersInView()) {
-			container.generateSceneGraphRelations();
-			BranchGroup containerBG = container.getContainerBG();
-			containersTG.addChild(containerBG);
+			for (Container container : manager.containersInView()) {
+				container.generateSceneGraphRelations();
+				BranchGroup containerBG = container.getContainerBG();
+				containersTG.addChild(containerBG);
+			}
+		} catch (Exception e) {
+		//	ErrorHandler.error("An error has occurred while building the visualization");
+			e.printStackTrace();
 		}
 
 		rootObj.addChild(containersGroup);

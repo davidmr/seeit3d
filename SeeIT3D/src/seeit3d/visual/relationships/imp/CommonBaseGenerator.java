@@ -45,8 +45,7 @@ public class CommonBaseGenerator implements ISceneGraphRelationshipGenerator {
 
 	private static final String NAME = "Common Base";
 
-	public CommonBaseGenerator() {
-	}
+	public CommonBaseGenerator() {}
 
 	@Override
 	public void initialize() {

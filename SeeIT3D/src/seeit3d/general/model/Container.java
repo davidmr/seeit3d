@@ -120,7 +120,7 @@ public class Container implements Serializable, Comparable<Container> {
 	}
 
 	private void validateForVisualState() {
-		if (highlighRootNode == null || containerBG == null) {
+		if (highlighRootNode == null || containerBG == null || containerTG == null) {
 			buildBranchGroup();
 		}
 	}
@@ -265,20 +265,27 @@ public class Container implements Serializable, Comparable<Container> {
 	}
 
 	private void calculateDimensions() {
-		float widestPoly = findWidestPolycylinderValue();
-		int polySize = polycylinders.size();
-		int polyPerRow = preferences.getPolycylindersPerRow();
-		if (polySize > polyPerRow) {
-			width = widestPoly * polyPerRow + (ViewConstants.POLYCYLINDER_SPACING * (polyPerRow - 1));
-			int rows = (int) Math.ceil((float) polySize / (float) polyPerRow);
-			depth = widestPoly * rows + (ViewConstants.POLYCYLINDER_SPACING * (rows - 1));
-		} else {
-			width = widestPoly * polySize + (ViewConstants.POLYCYLINDER_SPACING * (polySize - 1));
-			depth = widestPoly;
-		}
-		for (PolyCylinder poly : polycylinders) {
-			float polyHeight = poly.getHeight();
-			height = Math.max(height, polyHeight);
+		if (isVisible()) {
+			float widestPoly = findWidestPolycylinderValue();
+			int polySize = polycylinders.size();
+			int polyPerRow = preferences.getPolycylindersPerRow();
+			if (polySize > polyPerRow) {
+				width = widestPoly * polyPerRow + (ViewConstants.POLYCYLINDER_SPACING * (polyPerRow - 1));
+				int rows = (int) Math.ceil((float) polySize / (float) polyPerRow);
+				depth = widestPoly * rows + (ViewConstants.POLYCYLINDER_SPACING * (rows - 1));
+			} else {
+				width = widestPoly * polySize + (ViewConstants.POLYCYLINDER_SPACING * (polySize - 1));
+				depth = widestPoly;
+			}
+
+			for (PolyCylinder poly : polycylinders) {
+				float polyHeight = poly.getHeight();
+				height = Math.max(height, polyHeight);
+			}
+		}else{
+			width = 0;
+			height = 0;
+			depth = 0;
 		}
 	}
 
@@ -511,6 +518,10 @@ public class Container implements Serializable, Comparable<Container> {
 
 	public String getGranularityLevelName() {
 		return representedObject.granularityLevelName(currentLevel);
+	}
+
+	private boolean isVisible() {
+		return !polycylinders.isEmpty();
 	}
 
 	public void setSortingProperty(VisualProperty visualProperty) {

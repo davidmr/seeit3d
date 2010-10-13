@@ -78,7 +78,8 @@ public class ChangeSortingPolyCylindersCriteriaCommand extends AbstractHandler i
 
 	}
 
-	public void updateElement(UIElement element, @SuppressWarnings("rawtypes") Map parameters) {
+	@SuppressWarnings("unchecked")
+	public void updateElement(UIElement element, Map parameters) {
 		String parm = (String) parameters.get(SORT_BY_PARAMETER);
 		if (parm != null) {
 			if (currentCriteria != null && currentCriteria.equals(parm)) {

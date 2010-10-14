@@ -94,14 +94,6 @@ public class SceneGraphHandler {
 		}
 	}
 
-	void enableOrbiting() {
-		changeOrbitState(true);
-	}
-
-	void disableOrbiting() {
-		changeOrbitState(false);
-	}
-
 	void removeScene(Container container) {
 		ISceneGraphRelationshipGenerator generator = container.getSceneGraphRelationshipGenerator();
 		if (generator instanceof PickingCallback) {
@@ -176,7 +168,11 @@ public class SceneGraphHandler {
 
 		GraphicsConfiguration configuration = SimpleUniverse.getPreferredConfiguration();
 
-		canvas = new SeeIT3DCanvas(configuration);
+		rootObj = new BranchGroup();
+		rootObj.setCapability(BranchGroup.ALLOW_CHILDREN_WRITE);
+		rootObj.setCapability(BranchGroup.ALLOW_CHILDREN_EXTEND);
+
+		canvas = new SeeIT3DCanvas(configuration, rootObj);
 
 		universe = new SimpleUniverse(canvas);
 
@@ -184,9 +180,6 @@ public class SceneGraphHandler {
 		canvas.getView().setBackClipDistance(1000.0f);
 		canvas.getView().setTransparencySortingPolicy(View.TRANSPARENCY_SORT_GEOMETRY);
 
-		rootObj = new BranchGroup();
-		rootObj.setCapability(BranchGroup.ALLOW_CHILDREN_WRITE);
-		rootObj.setCapability(BranchGroup.ALLOW_CHILDREN_EXTEND);
 	}
 
 	private void buildEnvironment() {
@@ -282,7 +275,7 @@ public class SceneGraphHandler {
 				containersTG.addChild(containerBG);
 			}
 		} catch (Exception e) {
-		//	ErrorHandler.error("An error has occurred while building the visualization");
+			// ErrorHandler.error("An error has occurred while building the visualization");
 			e.printStackTrace();
 		}
 
@@ -302,6 +295,10 @@ public class SceneGraphHandler {
 		// t3d.lookAt(new Point3d(30, 0, 0), new Point3d(0, 0, 0), new Vector3d(0, 1, 0));
 		t3d.invert();
 		tg.setTransform(t3d);
+	}
+
+	public void activateSelectionTool() {
+		canvas.activateSelectionTool();
 	}
 
 }

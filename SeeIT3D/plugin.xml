@@ -134,6 +134,11 @@
             defaultHandler="seeit3d.ui.ide.commands.VisualizePolycylinderAsContainerCommand"
             id="seeit3d.visualizePolycylinderAsContainer"
             name="Visualize Polycylinder as Container">
+      </command>
+      <command
+            defaultHandler="seeit3d.ui.ide.commands.ActivateSelectionToolCommand"
+            id="seeit3d.activateSelecionTool"
+            name="Activate Selection Tool">
       </command>d>ommand>
    </extension>
    <extension
@@ -145,7 +150,16 @@
                commandId="seeit3d.visualizePolycylinderAsContainer"
                label="Visualize Polycylinder as Container"
                style="push"
-               tooltip="Allows to visualize a Polycylinder as a Container">
+               tooltip="Expands the selected Polycylinder as a Container">
+         </command>
+      </menuContribution>
+      <menuContribution
+            locationURI="toolbar:seeit3d.seeit3dview">
+         <command
+               commandId="seeit3d.activateSelecionTool"
+               label="Selection Tool"
+               style="push"
+               tooltip="Select objects in the visualization">
          </command>
       </menuContribution>
       <menuContribution
@@ -394,6 +408,12 @@
             contextId="seeit3d.seeit3dviewContext"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
             sequence="Ctrl+E">
+      </key>
+      <key
+            commandId="seeit3d.activateSelecionTool"
+            contextId="seeit3d.seeit3dviewContext"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="S">
       </key>
    </extension>
    <extension

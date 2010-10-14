@@ -19,9 +19,17 @@ package seeit3d.general.model;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.Serializable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.BitSet;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
-import javax.media.j3d.*;
+import javax.media.j3d.BranchGroup;
+import javax.media.j3d.Shape3D;
+import javax.media.j3d.Switch;
+import javax.media.j3d.Transform3D;
+import javax.media.j3d.TransformGroup;
 import javax.vecmath.Vector3f;
 
 import seeit3d.general.SeeIT3DAPILocator;
@@ -542,6 +550,10 @@ public class Container implements Serializable, Comparable<Container> {
 		polycylinders.add(polyCylinder);
 	}
 
+	public List<PolyCylinder> getPolycylinders() {
+		return polycylinders;
+	}
+
 	public Container toContainer(PolyCylinder polycylinder) {
 		String name = polycylinder.getName();
 		for (Container container : children) {
@@ -593,5 +605,6 @@ public class Container implements Serializable, Comparable<Container> {
 		preferences = SeeIT3DAPILocator.findPreferences();
 		sceneGraphRelationshipGenerator = new NoRelationships();
 	}
+
 
 }

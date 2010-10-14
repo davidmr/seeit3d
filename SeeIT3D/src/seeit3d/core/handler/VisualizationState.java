@@ -16,9 +16,12 @@
  */
 package seeit3d.core.handler;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 import seeit3d.core.handler.utils.ContainersSelectedIterator;
+import seeit3d.core.handler.utils.PolycylindersSelectedIterator;
 import seeit3d.core.handler.utils.VisualizationStateChecker;
 import seeit3d.general.error.exception.IllegalVisualizationStateException;
 import seeit3d.general.model.Container;
@@ -35,15 +38,12 @@ public class VisualizationState {
 
 	private final List<Container> containersInView;
 
-	private final List<PolyCylinder> currentSelectionPolyCylinder;
-
 	private VisualProperty sortingProperty = VisualProperty.HEIGHT;
 
 	private final VisualizationStateChecker stateChecker;
 
 	VisualizationState(SeeIT3DCoreHandler manager) {
 		containersInView = new ArrayList<Container>();
-		currentSelectionPolyCylinder = new ArrayList<PolyCylinder>();
 		stateChecker = new VisualizationStateChecker();
 	}
 
@@ -245,57 +245,78 @@ public class VisualizationState {
 	boolean addPolyCylinderToSelection(PolyCylinder polycylinder, boolean toggleInSelection) {
 		boolean success = false;
 		if (polycylinder != null) {
-			if (currentSelectionPolyCylinder.contains(polycylinder)) {
+			if (polycylinder.isSelected()) {
 				if (toggleInSelection) {
-					currentSelectionPolyCylinder.remove(polycylinder);
 					polycylinder.setSelected(false);
 					success = true;
 				}
 			} else {
 				if (toggleInSelection) {
-					currentSelectionPolyCylinder.add(polycylinder);
+					polycylinder.setSelected(true);
 				} else {
 					clearSelectionOnPolycylinders();
-					currentSelectionPolyCylinder.add(polycylinder);
+					polycylinder.setSelected(true);
 				}
 				success = true;
 			}
 		} else {
-			if (!currentSelectionPolyCylinder.isEmpty()) {
+			if (!hasPolycylinderSelected()) {
 				clearSelectionOnPolycylinders();
 				success = true;
 			}
 		}
 		return success;
+
+	}
+
+	private Iterator<PolyCylinder> iteratorOnSelectedPolycylinders() {
+		List<PolyCylinder> polycylinders = new ArrayList<PolyCylinder>();
+		for (Container container : containersInView) {
+			polycylinders.addAll(container.getPolycylinders());
+		}
+		return new PolycylindersSelectedIterator(polycylinders);
+	}
+
+	private boolean hasPolycylinderSelected() {
+		Iterator<PolyCylinder> iterator = iteratorOnSelectedPolycylinders();
+		return iterator.hasNext();
 	}
 
 	void clearSelectionOnPolycylinders() {
-		Iterator<PolyCylinder> iterator = currentSelectionPolyCylinder.iterator();
+		Iterator<PolyCylinder> iterator = iteratorOnSelectedPolycylinders();
 		while (iterator.hasNext()) {
 			PolyCylinder polyCylinder = iterator.next();
 			polyCylinder.setSelected(false);
-			iterator.remove();
 		}
 	}
 
-	List<PolyCylinder> unmodifiableSelectedPolycylinders() {
-		return Collections.unmodifiableList(currentSelectionPolyCylinder);
+	Iterable<PolyCylinder> selectedPolycylinders() {
+		return new Iterable<PolyCylinder>() {
+			@Override
+			public Iterator<PolyCylinder> iterator() {
+				return iteratorOnSelectedPolycylinders();
+			}
+		};
 	}
 
 	boolean hasMultiplePolyCylindersSelected() {
-		return currentSelectionPolyCylinder.size() > 1;
+		Iterator<PolyCylinder> iterator = iteratorOnSelectedPolycylinders();
+		if (iterator.hasNext()) {
+			iterator.next();
+			return iterator.hasNext();
+		}
+		return false;
 	}
 
 	/*************************/
 	/**** OTHER OPERATIONS ****/
 
 	void validatePolycylindersSelection() {
-		Iterator<PolyCylinder> iteratorOnPolycylinders = currentSelectionPolyCylinder.iterator();
+		Iterator<PolyCylinder> iteratorOnPolycylinders = iteratorOnSelectedPolycylinders();
 		while (iteratorOnPolycylinders.hasNext()) {
 			PolyCylinder poly = iteratorOnPolycylinders.next();
 			if (!isPolyCylinderInSelection(poly)) {
 				poly.setSelected(false);
-				iteratorOnPolycylinders.remove();
 			}
 		}
 	}

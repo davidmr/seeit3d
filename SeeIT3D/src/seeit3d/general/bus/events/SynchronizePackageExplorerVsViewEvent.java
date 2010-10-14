@@ -16,8 +16,6 @@
  */
 package seeit3d.general.bus.events;
 
-import java.util.List;
-
 import seeit3d.general.bus.IEvent;
 import seeit3d.general.model.PolyCylinder;
 
@@ -29,14 +27,14 @@ import seeit3d.general.model.PolyCylinder;
  */
 public class SynchronizePackageExplorerVsViewEvent implements IEvent {
 
-	private final List<PolyCylinder> iteratorOnSelectedPolycylinders;
+	private final Iterable<PolyCylinder> selectedPolycylinders;
 
-	public SynchronizePackageExplorerVsViewEvent(List<PolyCylinder> iteratorOnSelectedPolycylinders) {
-		this.iteratorOnSelectedPolycylinders = iteratorOnSelectedPolycylinders;
+	public SynchronizePackageExplorerVsViewEvent(Iterable<PolyCylinder> selectedPolycylinders) {
+		this.selectedPolycylinders = selectedPolycylinders;
 	}
 
-	public List<PolyCylinder> getIteratorOnSelectedPolycylinders() {
-		return iteratorOnSelectedPolycylinders;
+	public Iterable<PolyCylinder> selectedPolycylinders() {
+		return selectedPolycylinders;
 	}
 
 }

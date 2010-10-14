@@ -16,16 +16,17 @@
  */
 package seeit3d.ui.behavior;
 
-import static seeit3d.general.bus.EventBus.*;
+import static seeit3d.general.bus.EventBus.publishEvent;
 
-import javax.media.j3d.*;
+import javax.media.j3d.Bounds;
+import javax.media.j3d.BranchGroup;
+import javax.media.j3d.Canvas3D;
 
 import seeit3d.general.bus.events.ChangeSelectionEvent;
 import seeit3d.general.bus.events.OpenEditorEvent;
 import seeit3d.general.model.Container;
 import seeit3d.general.model.PolyCylinder;
 
-import com.sun.j3d.utils.geometry.Box;
 import com.sun.j3d.utils.picking.PickResult;
 import com.sun.j3d.utils.picking.PickTool;
 import com.sun.j3d.utils.picking.behaviors.PickMouseBehavior;
@@ -58,10 +59,8 @@ public class MouseClickedBehavior extends PickMouseBehavior {
 
 		pickCanvas.setShapeLocation(xPos, yPos);
 		pickResult = pickCanvas.pickAll();
-		if (pickResult != null) {
-			selectedContainer = findContainerAssociated(pickResult);
-			selectedPolyCylinder = findPolyCylinderAssociated(pickResult);
-		}
+		selectedContainer = PickUtils.findContainerAssociated(pickResult);
+		selectedPolyCylinder = PickUtils.findPolyCylinderAssociated(pickResult);
 		if (doubleClick()) {
 			if (selectedPolyCylinder != null) {
 				publishEvent(new OpenEditorEvent(selectedPolyCylinder));
@@ -73,27 +72,6 @@ public class MouseClickedBehavior extends PickMouseBehavior {
 		}
 
 		lastPressedTime = System.currentTimeMillis();
-	}
-
-	private Container findContainerAssociated(PickResult[] pickResults) {
-		TransformGroup transformGroup = PickUtils.chooseContainerMainTransformGroup(pickResults);
-		if (transformGroup != null) {
-			return (Container) transformGroup.getUserData();
-		}
-		return null;
-	}
-
-	private PolyCylinder findPolyCylinderAssociated(PickResult[] pickResults) {
-		for (PickResult pickResult : pickResults) {
-			SceneGraphPath sceneGraphPath = pickResult.getSceneGraphPath();
-			for (int i = 0; i < sceneGraphPath.nodeCount(); i++) {
-				Node node = sceneGraphPath.getNode(i);
-				if (node instanceof Box) {
-					return (PolyCylinder) node.getUserData();
-				}
-			}
-		}
-		return null;
 	}
 
 	private boolean doubleClick() {

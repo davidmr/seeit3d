@@ -16,10 +16,22 @@
  */
 package seeit3d.utils;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
-import javax.media.j3d.*;
-import javax.vecmath.*;
+import javax.media.j3d.Appearance;
+import javax.media.j3d.BranchGroup;
+import javax.media.j3d.ColoringAttributes;
+import javax.media.j3d.LineArray;
+import javax.media.j3d.LineAttributes;
+import javax.media.j3d.Shape3D;
+import javax.media.j3d.Transform3D;
+import javax.media.j3d.TransformGroup;
+import javax.media.j3d.TriangleStripArray;
+import javax.vecmath.Color3f;
+import javax.vecmath.Point3d;
+import javax.vecmath.Point3f;
+import javax.vecmath.Vector3f;
 
 import org.eclipse.jdt.core.IMethod;
 import org.eclipse.jdt.core.JavaModelException;
@@ -268,7 +280,7 @@ public class Utils {
 		}
 	}
 
-	public static <T> void applyTransformation(Collection<T> collection, Function<T, T> function) {
+	public static <T> void applyTransformation(Iterable<T> collection, Function<T, T> function) {
 		for (T object : collection) {
 			function.apply(object);
 		}

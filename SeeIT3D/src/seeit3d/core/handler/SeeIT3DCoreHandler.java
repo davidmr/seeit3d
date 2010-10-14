@@ -16,10 +16,19 @@
  */
 package seeit3d.core.handler;
 
-import static seeit3d.general.bus.EventBus.*;
+import static seeit3d.general.bus.EventBus.publishEvent;
+import static seeit3d.general.bus.EventBus.registerListener;
 
-import java.io.*;
-import java.util.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import javax.media.j3d.Transform3D;
 import javax.media.j3d.TransformGroup;
@@ -28,11 +37,37 @@ import javax.vecmath.Vector3f;
 import seeit3d.core.api.SeeIT3DCore;
 import seeit3d.general.bus.IEvent;
 import seeit3d.general.bus.IEventListener;
-import seeit3d.general.bus.events.*;
+import seeit3d.general.bus.events.ActivateSelectionToolEvent;
+import seeit3d.general.bus.events.AddContainerEvent;
+import seeit3d.general.bus.events.ChangeGranularityLevelEvent;
+import seeit3d.general.bus.events.ChangeSelectionEvent;
+import seeit3d.general.bus.events.ChangeTransparencyEvent;
+import seeit3d.general.bus.events.ColorScaleChangedEvent;
+import seeit3d.general.bus.events.ContainersLayoutDoneEvent;
+import seeit3d.general.bus.events.DeleteContainersEvent;
+import seeit3d.general.bus.events.KeyBasedChangeSelectionEvent;
+import seeit3d.general.bus.events.LoadVisualizationEvent;
+import seeit3d.general.bus.events.MappingViewNeedsUpdateEvent;
+import seeit3d.general.bus.events.PerformOperationOnSelectedContainersEvent;
+import seeit3d.general.bus.events.PerformOperationOnSelectedPolycylindersEvent;
+import seeit3d.general.bus.events.RegisterPickingCallbackEvent;
+import seeit3d.general.bus.events.ResetVisualizationEvent;
+import seeit3d.general.bus.events.SaveVisualizationEvent;
+import seeit3d.general.bus.events.ScaleContainerEvent;
+import seeit3d.general.bus.events.SelectedInformationChangedEvent;
+import seeit3d.general.bus.events.SelectionToolEndedEvent;
+import seeit3d.general.bus.events.SynchronizePackageExplorerVsViewEvent;
+import seeit3d.general.bus.events.ToggleSynchronizationPackageExplorerVsViewEvent;
+import seeit3d.general.bus.events.UnregisterPickingCallbackEvent;
+import seeit3d.general.bus.events.VisualizePolycylinderAsContainerEvent;
 import seeit3d.general.bus.utils.FunctionToApplyOnContainer;
 import seeit3d.general.bus.utils.FunctionToApplyOnPolycylinders;
 import seeit3d.general.error.ErrorHandler;
-import seeit3d.general.model.*;
+import seeit3d.general.model.Container;
+import seeit3d.general.model.PolyCylinder;
+import seeit3d.general.model.Preferences;
+import seeit3d.general.model.VisualProperty;
+import seeit3d.general.model.VisualPropertyValue;
 import seeit3d.general.model.generator.metrics.MetricCalculator;
 import seeit3d.utils.Utils;
 import seeit3d.utils.ViewConstants;
@@ -50,6 +85,8 @@ public class SeeIT3DCoreHandler implements SeeIT3DCore, IEventListener {
 	private final SceneGraphHandler sceneGraphHandler;
 
 	private boolean isSynchronzationWithPackageExplorerSet = false;
+
+	private boolean isSelectionToolSet = false;
 
 	private final Preferences preferences;
 
@@ -75,6 +112,8 @@ public class SeeIT3DCoreHandler implements SeeIT3DCore, IEventListener {
 		registerListener(UnregisterPickingCallbackEvent.class, this);
 		registerListener(ColorScaleChangedEvent.class, this);
 		registerListener(VisualizePolycylinderAsContainerEvent.class, this);
+		registerListener(ActivateSelectionToolEvent.class, this);
+		registerListener(SelectionToolEndedEvent.class, this);
 
 	}
 
@@ -159,11 +198,28 @@ public class SeeIT3DCoreHandler implements SeeIT3DCore, IEventListener {
 			visualizePolycylinderAsContainer();
 		}
 
+		if (event instanceof ActivateSelectionToolEvent) {
+			sceneGraphHandler.activateSelectionTool();
+			isSelectionToolSet = true;
+			updateOrbitingState();
+		}
+
+		if (event instanceof SelectionToolEndedEvent) {
+			isSelectionToolSet = false;
+			updateOrbitingState();
+			// TODO update mapping view and feedback according to new selection
+		}
+
+	}
+
+	private void updateOrbitingState() {
+		boolean enabled = !isSelectionToolSet && !state.hasContainersSelected();
+		sceneGraphHandler.changeOrbitState(enabled);
 	}
 
 	private void visualizePolycylinderAsContainer() {
 		List<Container> containersToAdd = new ArrayList<Container>();
-		List<PolyCylinder> polycylinders = state.unmodifiableSelectedPolycylinders();
+		Iterable<PolyCylinder> polycylinders = state.selectedPolycylinders();
 
 		for (PolyCylinder polycylinder : polycylinders) {
 			Iterable<Container> containers = state.containersInView();
@@ -179,7 +235,7 @@ public class SeeIT3DCoreHandler implements SeeIT3DCore, IEventListener {
 
 	private void operationOnSelectedPolycylinders(PerformOperationOnSelectedPolycylindersEvent operation) {
 		FunctionToApplyOnPolycylinders function = operation.getFunction();
-		Utils.applyTransformation(state.unmodifiableSelectedPolycylinders(), function);
+		Utils.applyTransformation(state.selectedPolycylinders(), function);
 		if (operation.isVisualizationNeedsRefresh()) {
 			refreshVisualization();
 		}
@@ -256,7 +312,6 @@ public class SeeIT3DCoreHandler implements SeeIT3DCore, IEventListener {
 	private synchronized void changeSelectionAndUpdateMappingView(Container newContainer, PolyCylinder polycylinder, boolean toggleContainerSelection, boolean togglePolycylinderSelection) {
 		boolean mappingNeedsRefresh = false;
 		synchronized (SeeIT3DCoreHandler.class) {
-			sceneGraphHandler.disableOrbiting();
 
 			boolean selectionContainerChanged = state.addContainerToSelection(newContainer, toggleContainerSelection);
 			boolean selectionNeedsRefresh = false;
@@ -275,13 +330,11 @@ public class SeeIT3DCoreHandler implements SeeIT3DCore, IEventListener {
 				selectionNeedsRefresh |= true;
 			}
 
-			if (!state.hasContainersSelected()) {
-				sceneGraphHandler.enableOrbiting();
-			}
-
 			if (selectionNeedsRefresh) {
 				refreshSelection();
 			}
+
+			updateOrbitingState();
 		}
 		if (mappingNeedsRefresh) {
 			updateMappingView();
@@ -290,7 +343,7 @@ public class SeeIT3DCoreHandler implements SeeIT3DCore, IEventListener {
 
 	private void triggerSyncronizationPackageExplorerVsViewEvent() {
 		if (isSynchronzationWithPackageExplorerSet) {
-			publishEvent(new SynchronizePackageExplorerVsViewEvent(state.unmodifiableSelectedPolycylinders()));
+			publishEvent(new SynchronizePackageExplorerVsViewEvent(state.selectedPolycylinders()));
 		}
 	}
 
@@ -412,7 +465,7 @@ public class SeeIT3DCoreHandler implements SeeIT3DCore, IEventListener {
 		state.validatePolycylindersSelection();
 
 		PolyCylinder lastSelectedPoly = null;
-		List<PolyCylinder> iteratorOnPolycylinders = state.unmodifiableSelectedPolycylinders();
+		Iterable<PolyCylinder> iteratorOnPolycylinders = state.selectedPolycylinders();
 		for (PolyCylinder poly : iteratorOnPolycylinders) {
 			poly.setSelected(true);
 			lastSelectedPoly = poly;

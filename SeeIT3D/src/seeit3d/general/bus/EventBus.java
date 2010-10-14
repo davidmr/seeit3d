@@ -34,8 +34,7 @@ public class EventBus {
 
 	private static final Multimap<Class<? extends IEvent>, IEventListener> listeners;
 
-	private EventBus() {
-	}
+	private EventBus() {}
 
 	static {
 		eventQueue = new ArrayBlockingQueue<IEvent>(30);
@@ -85,15 +84,19 @@ public class EventBus {
 
 		private void dispatchEvent(IEvent event) {
 			synchronized (listeners) {
-				System.out.println("Dispatching event: " + event);
-				Collection<IEventListener> listenersByClass = listeners.get(event.getClass());
+				try {
+					System.out.println("Dispatching event: " + event);
+					Collection<IEventListener> listenersByClass = listeners.get(event.getClass());
 
-				if (listenersByClass == null || listenersByClass.isEmpty()) {
-					System.err.println("No listeners for class: " + event.getClass());
-				} else {
-					for (IEventListener listener : listenersByClass) {
-						listener.processEvent(event);
+					if (listenersByClass == null || listenersByClass.isEmpty()) {
+						System.err.println("No listeners for class: " + event.getClass());
+					} else {
+						for (IEventListener listener : listenersByClass) {
+							listener.processEvent(event);
+						}
 					}
+				} catch (Exception e) {
+					e.printStackTrace();
 				}
 			}
 		}

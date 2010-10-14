@@ -16,6 +16,8 @@
  */
 package seeit3d.utils;
 
+import java.awt.BasicStroke;
+
 import javax.vecmath.Color3f;
 
 import seeit3d.general.model.VisualProperty;
@@ -44,6 +46,8 @@ public class ViewConstants {
 
 	public static final float PICKING_TOLERANCE = 0.0f;
 
+	public static final int SELECTION_TOOL_STEP = 5;
+
 	public static final float POLYCYLINDER_SPACING = 0.15f;
 
 	public static final float CONTAINERS_SPACING = 2.0f;
@@ -51,6 +55,8 @@ public class ViewConstants {
 	public static final float HIGHLIGHT_PADDING = 0.1f;
 
 	public static final VisualProperty DEFAULT_SORTING_PROPERTY = VisualProperty.HEIGHT;
+	
+	public static final BasicStroke SELECTION_STROKE = new BasicStroke(1f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND, 1f, new float[]{3f}, 0.0f);
 
 
 }

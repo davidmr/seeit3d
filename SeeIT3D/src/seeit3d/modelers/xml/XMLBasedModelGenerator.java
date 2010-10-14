@@ -37,6 +37,7 @@ import seeit3d.modelers.xml.internal.*;
  * @author David Montaño
  * 
  */
+// TODO think of adding children
 public class XMLBasedModelGenerator implements IModelGenerator {
 
 	private final seeit3d.modelers.xml.internal.Container containerXML;
@@ -67,7 +68,7 @@ public class XMLBasedModelGenerator implements IModelGenerator {
 		for (Polycylinder polyXML : polycylindersXML) {
 			MetricsValue metricsValue = polyXML.getMetricsValue();
 			Map<MetricCalculator, String> metricsValues = buildMetricValues(metrics, metricsValue);
-			PolyCylinder poly = new PolyCylinder(metricsValues);
+			PolyCylinder poly = new PolyCylinder("XML Polycylinder", metricsValues);
 			analized.addPolyCylinder(poly);
 		}
 

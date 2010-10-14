@@ -16,13 +16,9 @@
  */
 package seeit3d.modelers.java.generator;
 
-import static seeit3d.general.bus.EventBus.publishEvent;
+import static seeit3d.general.bus.EventBus.*;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.JavaModelException;
@@ -93,13 +89,15 @@ public abstract class AbstracModelGenerator<ElementToAnalize extends IJavaElemen
 					metricsValues.put(metric, metric.calculateMetricValue(child));
 				}
 
-				PolyCylinder poly = new PolyCylinder(metricsValues, new EclipseJavaResource(child));
-				container.addPolyCylinder(poly);
-
+				String polycylinderName = "NO_NAME";
 				if (lowerLevelModelGenerator != null) {
 					Container lowerLevelContainer = lowerLevelModelGenerator.analize(false);
 					container.addChildrenContainer(lowerLevelContainer);
+					polycylinderName = lowerLevelContainer.getName();
 				}
+
+				PolyCylinder poly = new PolyCylinder(polycylinderName, metricsValues, new EclipseJavaResource(child));
+				container.addPolyCylinder(poly);
 			}
 
 			extraOperationsOnContainer(container, elementToAnalize);

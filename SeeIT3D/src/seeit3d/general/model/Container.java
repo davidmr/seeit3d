@@ -19,17 +19,9 @@ package seeit3d.general.model;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.BitSet;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
-import javax.media.j3d.BranchGroup;
-import javax.media.j3d.Shape3D;
-import javax.media.j3d.Switch;
-import javax.media.j3d.Transform3D;
-import javax.media.j3d.TransformGroup;
+import javax.media.j3d.*;
 import javax.vecmath.Vector3f;
 
 import seeit3d.general.SeeIT3DAPILocator;
@@ -282,7 +274,7 @@ public class Container implements Serializable, Comparable<Container> {
 				float polyHeight = poly.getHeight();
 				height = Math.max(height, polyHeight);
 			}
-		}else{
+		} else {
 			width = 0;
 			height = 0;
 			depth = 0;
@@ -550,26 +542,14 @@ public class Container implements Serializable, Comparable<Container> {
 		polycylinders.add(polyCylinder);
 	}
 
-	public Container createCopy() {
-
-		Container newContainer = new Container(representedObject, metrics);
-		newContainer.propertiesMap.clear();
-		newContainer.propertiesMap.putAll(propertiesMap);
-
-		for (Container container : relatedContainers) {
-			newContainer.addRelatedContainer(container.createCopy());
-		}
-
+	public Container toContainer(PolyCylinder polycylinder) {
+		String name = polycylinder.getName();
 		for (Container container : children) {
-			newContainer.addChildrenContainer(container.createCopy());
+			if (name.equals(container.getName())) {
+				return container;
+			}
 		}
-
-		for (PolyCylinder poly : polycylinders) {
-			newContainer.addPolyCylinder(poly.createCopy());
-		}
-
-		newContainer.containerBG = null;
-		return newContainer;
+		return null;
 	}
 
 	@Override

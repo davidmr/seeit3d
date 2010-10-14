@@ -16,10 +16,7 @@
  */
 package seeit3d.core.handler;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 import seeit3d.core.handler.utils.ContainersSelectedIterator;
 import seeit3d.core.handler.utils.VisualizationStateChecker;
@@ -88,7 +85,7 @@ public class VisualizationState {
 
 	// TODO handle with validation
 	void addContainerToViewWithoutValidation(Container container) {
-		if (!containersInView.contains(container)) {
+		if (container != null && !containersInView.contains(container)) {
 			containersInView.add(container);
 		}
 	}

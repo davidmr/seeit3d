@@ -128,6 +128,12 @@
             defaultHandler="seeit3d.ui.ide.commands.LoadSavedVisualization"
             id="seeit3d.loadSavedVisualization"
             name="Load Visualization">
+      </command>
+      <command
+            categoryId="seeit3d.commands"
+            defaultHandler="seeit3d.ui.ide.commands.VisualizePolycylinderAsContainerCommand"
+            id="seeit3d.visualizePolycylinderAsContainer"
+            name="Visualize Polycylinder as Container">
       </command>d>ommand>
    </extension>
    <extension
@@ -282,6 +288,15 @@
          <command
                commandId="seeit3d.loadSavedVisualization"
                style="push">
+         </command>
+      </menuContribution>
+      <menuContribution
+            locationURI="toolbar:seeit3d.seeit3dview">
+         <command
+               commandId="seeit3d.visualizePolycylinderAsContainer"
+               label="Visualize Polycylinder as Container"
+               style="push"
+               tooltip="Allows to visualize a Polycylinder as a Container">
          </command>
       </menuContribution>      
    </extension>

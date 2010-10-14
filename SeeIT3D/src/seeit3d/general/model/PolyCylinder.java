@@ -20,7 +20,9 @@ package seeit3d.general.model;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.Serializable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 import javax.media.j3d.*;
 import javax.vecmath.Color3f;
@@ -63,6 +65,8 @@ public class PolyCylinder implements Serializable {
 
 	private final long identifier;
 
+	private final String name;
+
 	private final List<VisualPropertyValue> visualPropertyValues;
 
 	private final Map<MetricCalculator, String> metricsValues;
@@ -73,7 +77,8 @@ public class PolyCylinder implements Serializable {
 
 	private boolean selected;
 
-	public PolyCylinder(Map<MetricCalculator, String> metricsValues, IEclipseResourceRepresentation representation) {
+	public PolyCylinder(String name, Map<MetricCalculator, String> metricsValues, IEclipseResourceRepresentation representation) {
+		this.name = name;
 		this.metricsValues = metricsValues;
 		this.representation = representation;
 		visualPropertyValues = new ArrayList<VisualPropertyValue>();
@@ -82,19 +87,13 @@ public class PolyCylinder implements Serializable {
 		preferences = SeeIT3DAPILocator.findPreferences();
 	}
 
-	public PolyCylinder(Map<MetricCalculator, String> metricsValues) {
-		this(metricsValues, new NoEclipseRepresentation());
+	public PolyCylinder(String name, Map<MetricCalculator, String> metricsValues) {
+		this(name, metricsValues, new NoEclipseRepresentation());
 	}
 
 	public void initializePolyCylinder(BiMap<MetricCalculator, VisualProperty> propertiesMap) {
 		updateMapping(propertiesMap);
 		updateState();
-	}
-
-	public PolyCylinder createCopy() {
-		Map<MetricCalculator, String> newMetricValues = new HashMap<MetricCalculator, String>(metricsValues);
-		PolyCylinder newPoly = new PolyCylinder(newMetricValues, representation);
-		return newPoly;
 	}
 
 	public void changeTransparency(boolean moreTransparent) {
@@ -106,11 +105,11 @@ public class PolyCylinder implements Serializable {
 			} else {
 				newTransparency = currentTransparency - preferences.getTransparencyStep();
 			}
-	
+
 			if (newTransparency >= 0.0f && newTransparency <= 1.0f) {
 				transparency.setTransparency(newTransparency);
 			}
-	
+
 		}
 	}
 
@@ -194,6 +193,10 @@ public class PolyCylinder implements Serializable {
 		} else {
 			deactivateHighlight();
 		}
+	}
+
+	public String getName() {
+		return name;
 	}
 
 	public boolean isSelected() {

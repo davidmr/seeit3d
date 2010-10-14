@@ -1,8 +1,8 @@
 package seeit3d.ui.behavior;
 
-import javax.media.j3d.Node;
-import javax.media.j3d.SceneGraphPath;
-import javax.media.j3d.TransformGroup;
+import java.util.*;
+
+import javax.media.j3d.*;
 
 import seeit3d.general.model.Container;
 import seeit3d.general.model.PolyCylinder;
@@ -31,7 +31,7 @@ public class PickUtils {
 
 	public static Container findContainerAssociated(PickResult[] pickResults) {
 		if (pickResults != null) {
-			TransformGroup transformGroup = PickUtils.chooseContainerMainTransformGroup(pickResults);
+			TransformGroup transformGroup = chooseContainerMainTransformGroup(pickResults);
 			if (transformGroup != null) {
 				return (Container) transformGroup.getUserData();
 			}
@@ -39,18 +39,28 @@ public class PickUtils {
 		return null;
 	}
 
-	public static PolyCylinder findPolyCylinderAssociated(PickResult[] pickResults) {
+	public static List<PolyCylinder> findPolyCylinderAssociated(PickResult[] pickResults) {
+		List<PolyCylinder> polycylinders = new ArrayList<PolyCylinder>();
 		if (pickResults != null) {
+			List<PickResult> list = Arrays.asList(pickResults);
+			Collections.reverse(list);
+			pickResults = list.toArray(new PickResult[list.size()]);
 			for (PickResult pickResult : pickResults) {
 				SceneGraphPath sceneGraphPath = pickResult.getSceneGraphPath();
 				for (int i = 0; i < sceneGraphPath.nodeCount(); i++) {
 					Node node = sceneGraphPath.getNode(i);
 					if (node instanceof Box) {
-						return (PolyCylinder) node.getUserData();
+						Object userData = node.getUserData();
+						if (userData != null && userData instanceof PolyCylinder) {
+							PolyCylinder polyFound = (PolyCylinder) userData;
+							if (!polycylinders.contains(polyFound)) {
+								polycylinders.add(polyFound);
+							}
+						}
 					}
 				}
 			}
 		}
-		return null;
+		return polycylinders;
 	}
 }

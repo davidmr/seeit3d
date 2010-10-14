@@ -16,37 +16,25 @@
  */
 package seeit3d.ui.handler;
 
-import static seeit3d.general.bus.EventBus.registerListener;
+import static seeit3d.general.bus.EventBus.*;
 
 import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.IWorkspaceRoot;
-import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.resources.*;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.ui.IEditorDescriptor;
-import org.eclipse.ui.IViewPart;
-import org.eclipse.ui.IWorkbenchPage;
-import org.eclipse.ui.PartInitException;
-import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.*;
 import org.eclipse.ui.part.FileEditorInput;
 
 import seeit3d.general.bus.IEvent;
 import seeit3d.general.bus.IEventListener;
-import seeit3d.general.bus.events.OpenEditorEvent;
-import seeit3d.general.bus.events.OpenSeeIT3DViewEvent;
-import seeit3d.general.bus.events.SelectionToolEndedEvent;
-import seeit3d.general.bus.events.SynchronizePackageExplorerVsViewEvent;
+import seeit3d.general.bus.events.*;
 import seeit3d.general.error.ErrorHandler;
-import seeit3d.general.model.Container;
-import seeit3d.general.model.IEclipseResourceRepresentation;
-import seeit3d.general.model.PolyCylinder;
+import seeit3d.general.model.*;
 import seeit3d.ui.behavior.PickUtils;
 import seeit3d.ui.ide.view.SeeIT3DView;
 import seeit3d.utils.Utils;
@@ -96,25 +84,36 @@ public class SeeIT3DUIHandler implements IEventListener {
 
 	private void pickObjects(Rectangle selection, PickCanvas pickCanvas) {
 		int step = ViewConstants.SELECTION_TOOL_STEP;
-		pickCanvas.setTolerance(step + 1);
+		pickCanvas.setTolerance(ViewConstants.SELECTION_TOOL_STEP + 1);
 		List<Container> containers = new ArrayList<Container>();
 		List<PolyCylinder> polycylinders = new ArrayList<PolyCylinder>();
 		for (int i = 0; i < selection.width; i += step) {
 			for (int j = 0; j < selection.height; j += step) {
-				pickCanvas.setShapeLocation(selection.x + i, selection.y + j);
-				PickResult[] pickResult = pickCanvas.pickAll();
+
+				int x = selection.x + i;
+				x = Math.min(x, selection.x + i - step);
+				x = Math.max(x, selection.x + step);
+
+				int y = selection.y + j;
+				y = Math.min(y, selection.y + j - step);
+				y = Math.max(y, selection.y + step);
+
+				pickCanvas.setShapeLocation(x, y);
+
+				PickResult[] pickResult = pickCanvas.pickAllSorted();
 				Container selectedContainer = PickUtils.findContainerAssociated(pickResult);
-				PolyCylinder selectedPolyCylinder = PickUtils.findPolyCylinderAssociated(pickResult);
+				List<PolyCylinder> selectedPolycylinder = PickUtils.findPolyCylinderAssociated(pickResult);
 				if (selectedContainer != null && !containers.contains(selectedContainer)) {
-					selectedContainer.setSelected(true);
 					containers.add(selectedContainer);
 				}
-				if (selectedPolyCylinder != null && !polycylinders.contains(selectedPolyCylinder)) {
-					selectedPolyCylinder.setSelected(true);
-					polycylinders.add(selectedPolyCylinder);
+				for (PolyCylinder polyCylinder : selectedPolycylinder) {
+					if (!polycylinders.contains(polyCylinder)) {
+						polycylinders.add(polyCylinder);
+					}
 				}
 			}
 		}
+		publishEvent(new ChangeSelectionEvent(containers, polycylinders, true, true));
 	}
 
 	private synchronized void activateSelection(final Iterable<PolyCylinder> polycylinders) {

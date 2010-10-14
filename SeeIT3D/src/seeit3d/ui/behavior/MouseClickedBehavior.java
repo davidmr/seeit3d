@@ -16,11 +16,12 @@
  */
 package seeit3d.ui.behavior;
 
-import static seeit3d.general.bus.EventBus.publishEvent;
+import static com.google.common.collect.Lists.*;
+import static seeit3d.general.bus.EventBus.*;
 
-import javax.media.j3d.Bounds;
-import javax.media.j3d.BranchGroup;
-import javax.media.j3d.Canvas3D;
+import java.util.List;
+
+import javax.media.j3d.*;
 
 import seeit3d.general.bus.events.ChangeSelectionEvent;
 import seeit3d.general.bus.events.OpenEditorEvent;
@@ -54,21 +55,20 @@ public class MouseClickedBehavior extends PickMouseBehavior {
 
 		PickResult[] pickResult = null;
 
-		Container selectedContainer = null;
-		PolyCylinder selectedPolyCylinder = null;
-
 		pickCanvas.setShapeLocation(xPos, yPos);
-		pickResult = pickCanvas.pickAll();
-		selectedContainer = PickUtils.findContainerAssociated(pickResult);
-		selectedPolyCylinder = PickUtils.findPolyCylinderAssociated(pickResult);
+		pickResult = pickCanvas.pickAllSorted();
+		Container selectedContainer = PickUtils.findContainerAssociated(pickResult);
+		List<PolyCylinder> selectedPolycylinder = PickUtils.findPolyCylinderAssociated(pickResult);
 		if (doubleClick()) {
-			if (selectedPolyCylinder != null) {
-				publishEvent(new OpenEditorEvent(selectedPolyCylinder));
+			if (!selectedPolycylinder.isEmpty()) {
+				PolyCylinder firstPoly = selectedPolycylinder.iterator().next();
+				publishEvent(new OpenEditorEvent(firstPoly));
 			}
 		} else {
 			boolean toggleContainerSelection = mevent.isControlDown();
 			boolean togglePolycylinderSelection = mevent.isShiftDown();
-			publishEvent(new ChangeSelectionEvent(selectedContainer, selectedPolyCylinder, toggleContainerSelection, togglePolycylinderSelection));
+			List<Container> containers = newArrayList(selectedContainer);
+			publishEvent(new ChangeSelectionEvent(containers, selectedPolycylinder, toggleContainerSelection, togglePolycylinderSelection));
 		}
 
 		lastPressedTime = System.currentTimeMillis();

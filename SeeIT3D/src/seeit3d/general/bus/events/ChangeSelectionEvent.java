@@ -16,6 +16,8 @@
  */
 package seeit3d.general.bus.events;
 
+import java.util.List;
+
 import seeit3d.general.bus.IEvent;
 import seeit3d.general.model.Container;
 import seeit3d.general.model.PolyCylinder;
@@ -28,27 +30,27 @@ import seeit3d.general.model.PolyCylinder;
  */
 public class ChangeSelectionEvent implements IEvent {
 
-	private final Container container;
+	private final List<Container> containers;
 
-	private final PolyCylinder polycylinder;
+	private final List<PolyCylinder> polycylinders;
 
 	private final boolean toggleContainerSelection;
 
 	private final boolean togglePolycylinderSelection;
 
-	public ChangeSelectionEvent(Container container, PolyCylinder polycylinder, boolean toggleContainerSelection, boolean togglePolycylinderSelection) {
-		this.container = container;
-		this.polycylinder = polycylinder;
+	public ChangeSelectionEvent(List<Container> containers, List<PolyCylinder> polycylinders, boolean toggleContainerSelection, boolean togglePolycylinderSelection) {
+		this.containers = containers;
+		this.polycylinders = polycylinders;
 		this.toggleContainerSelection = toggleContainerSelection;
 		this.togglePolycylinderSelection = togglePolycylinderSelection;
 	}
 
-	public Container getContainer() {
-		return container;
+	public List<Container> getContainers() {
+		return containers;
 	}
 
-	public PolyCylinder getPolycylinder() {
-		return polycylinder;
+	public List<PolyCylinder> getPolycylinders() {
+		return polycylinders;
 	}
 
 	public boolean isToggleContainerSelection() {

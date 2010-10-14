@@ -556,6 +556,10 @@
             commandId="seeit3d.visualizePolycylinderAsContainer"
             icon="icons/visualizeascontainer.gif">
       </image>
+      <image
+            commandId="seeit3d.activateSelecionTool"
+            icon="icons/selectiontool.gif">
+      </image>
    </extension>
    <extension
          point="org.eclipse.ui.preferencePages">

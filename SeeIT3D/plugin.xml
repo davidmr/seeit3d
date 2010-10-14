@@ -142,6 +142,15 @@
       <menuContribution
             locationURI="toolbar:seeit3d.seeit3dview">
          <command
+               commandId="seeit3d.visualizePolycylinderAsContainer"
+               label="Visualize Polycylinder as Container"
+               style="push"
+               tooltip="Allows to visualize a Polycylinder as a Container">
+         </command>
+      </menuContribution>
+      <menuContribution
+            locationURI="toolbar:seeit3d.seeit3dview">
+         <command
                commandId="seeit3d.deleteContainerInView"
                id="seeit3d.deleteContainerInViewInToolbar"
                label="Delete the current container"
@@ -176,21 +185,27 @@
          </command>
       </menuContribution>
       <menuContribution
-            locationURI="popup:org.eclipse.jdt.ui.PackageExplorer">
-         <command
-               commandId="seeit3d.visualizeInSeeit3d"
-               style="push">
-            <visibleWhen
-                  checkEnabled="true">
-            </visibleWhen>
-         </command>
-      </menuContribution>
-      <menuContribution
             locationURI="toolbar:seeit3d.seeit3dview">
          <command
                commandId="seeit3d.toggleSynchPackageAndView"
                label="Toggle Synchronization between View and Package Explorer"
                style="toggle">
+         </command>
+      </menuContribution>
+      <menuContribution
+            locationURI="toolbar:seeit3d.seeit3dview">
+         <command
+               commandId="seeit3d.sortPolyCylinders"
+               label="Sort PolyCylinders"
+               style="push">
+         </command>
+      </menuContribution>
+      <menuContribution
+            locationURI="toolbar:seeit3d.seeit3dview">
+         <command
+               commandId="seeit3d.resetCommand"
+               label="Reset View"
+               style="push">
          </command>
       </menuContribution>
       <menuContribution
@@ -218,11 +233,27 @@
          </menu>
       </menuContribution>
       <menuContribution
-            locationURI="toolbar:seeit3d.seeit3dview">
+            locationURI="menu:seeit3d.seeit3dview">
          <command
-               commandId="seeit3d.sortPolyCylinders"
-               label="Sort PolyCylinders"
+               commandId="seeit3d.saveCurrentVisualization"
                style="push">
+         </command>
+      </menuContribution>
+      <menuContribution
+            locationURI="menu:seeit3d.seeit3dview">
+         <command
+               commandId="seeit3d.loadSavedVisualization"
+               style="push">
+         </command>
+      </menuContribution>
+      <menuContribution
+            locationURI="popup:org.eclipse.jdt.ui.PackageExplorer">
+         <command
+               commandId="seeit3d.visualizeInSeeit3d"
+               style="push">
+            <visibleWhen
+                  checkEnabled="true">
+            </visibleWhen>
          </command>
       </menuContribution>
       <menuContribution
@@ -233,14 +264,6 @@
             <visibleWhen
                   checkEnabled="true">
             </visibleWhen>
-         </command>
-      </menuContribution>
-      <menuContribution
-            locationURI="toolbar:seeit3d.seeit3dview">
-         <command
-               commandId="seeit3d.resetCommand"
-               label="Reset View"
-               style="push">
          </command>
       </menuContribution>
       <menuContribution
@@ -276,29 +299,6 @@
             </command>
          </menu>
       </menuContribution>
-      <menuContribution
-            locationURI="menu:seeit3d.seeit3dview">
-         <command
-               commandId="seeit3d.saveCurrentVisualization"
-               style="push">
-         </command>
-      </menuContribution>
-      <menuContribution
-            locationURI="menu:seeit3d.seeit3dview">
-         <command
-               commandId="seeit3d.loadSavedVisualization"
-               style="push">
-         </command>
-      </menuContribution>
-      <menuContribution
-            locationURI="toolbar:seeit3d.seeit3dview">
-         <command
-               commandId="seeit3d.visualizePolycylinderAsContainer"
-               label="Visualize Polycylinder as Container"
-               style="push"
-               tooltip="Allows to visualize a Polycylinder as a Container">
-         </command>
-      </menuContribution>      
    </extension>
    <extension
          point="org.eclipse.ui.perspectives">
@@ -388,6 +388,12 @@
             contextId="seeit3d.seeit3dviewContext"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
             sequence="Ctrl+S">
+      </key>
+      <key
+            commandId="seeit3d.visualizePolycylinderAsContainer"
+            contextId="seeit3d.seeit3dviewContext"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="Ctrl+E">
       </key>
    </extension>
    <extension
@@ -525,6 +531,10 @@
       <image
             commandId="seeit3d.loadSavedVisualization"
             icon="icons/open_visualization.gif">
+      </image>
+      <image
+            commandId="seeit3d.visualizePolycylinderAsContainer"
+            icon="icons/visualizeascontainer.gif">
       </image>
    </extension>
    <extension

@@ -4,7 +4,7 @@ import java.util.List;
 
 import javax.media.j3d.*;
 
-import seeit3d.core.handler.SceneGraphHandler;
+import seeit3d.general.WorldSettings;
 import seeit3d.general.model.Container;
 import seeit3d.visual.relationships.ISceneGraphRelationshipGenerator;
 
@@ -51,7 +51,7 @@ public class MovementBasedGenerator implements ISceneGraphRelationshipGenerator 
 
 		ScaleInterpolator interpolator = new ScaleInterpolator(alpha, target, new Transform3D(), 0.98f, 1.0f);
 
-		interpolator.setSchedulingBounds(SceneGraphHandler.bounds);
+		interpolator.setSchedulingBounds(WorldSettings.bounds);
 		container.getContainerBG().addChild(interpolator);
 
 	}

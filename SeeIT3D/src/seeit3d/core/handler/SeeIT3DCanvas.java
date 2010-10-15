@@ -16,17 +16,12 @@
  */
 package seeit3d.core.handler;
 
-import static seeit3d.general.bus.EventBus.publishEvent;
+import static seeit3d.general.bus.EventBus.*;
 
-import java.awt.Color;
-import java.awt.GraphicsConfiguration;
-import java.awt.Rectangle;
-import java.awt.RenderingHints;
+import java.awt.*;
 import java.awt.event.MouseEvent;
 
-import javax.media.j3d.BranchGroup;
-import javax.media.j3d.Canvas3D;
-import javax.media.j3d.J3DGraphics2D;
+import javax.media.j3d.*;
 
 import seeit3d.general.bus.events.SelectionToolEndedEvent;
 import seeit3d.utils.ViewConstants;
@@ -58,8 +53,6 @@ public class SeeIT3DCanvas extends Canvas3D {
 	private int xCurrent = 0;
 
 	private int yCurrent = 0;
-
-	
 
 	SeeIT3DCanvas(GraphicsConfiguration configuration, BranchGroup rootBG) {
 		super(configuration);

@@ -20,30 +20,22 @@ import java.awt.GraphicsConfiguration;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.media.j3d.AmbientLight;
-import javax.media.j3d.Background;
-import javax.media.j3d.BoundingSphere;
-import javax.media.j3d.Bounds;
-import javax.media.j3d.BranchGroup;
-import javax.media.j3d.DirectionalLight;
-import javax.media.j3d.Transform3D;
-import javax.media.j3d.TransformGroup;
-import javax.media.j3d.View;
-import javax.vecmath.Color3f;
-import javax.vecmath.Point3d;
-import javax.vecmath.Vector3d;
-import javax.vecmath.Vector3f;
+import javax.media.j3d.*;
+import javax.vecmath.*;
 
+import seeit3d.core.api.ISceneGraphManipulator;
+import seeit3d.core.api.IVisualizationState;
+import seeit3d.general.WorldSettings;
 import seeit3d.general.error.exception.SeeIT3DException;
 import seeit3d.general.model.Container;
 import seeit3d.general.model.Preferences;
-import seeit3d.ui.behavior.MouseClickedBehavior;
-import seeit3d.ui.behavior.PickRotate3DBehavior;
-import seeit3d.ui.behavior.PickTranslate3DBehavior;
+import seeit3d.ui.behavior.*;
 import seeit3d.utils.Utils;
 import seeit3d.utils.ViewConstants;
 import seeit3d.visual.relationships.ISceneGraphRelationshipGenerator;
 
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import com.sun.j3d.utils.behaviors.vp.OrbitBehavior;
 import com.sun.j3d.utils.picking.behaviors.PickingCallback;
 import com.sun.j3d.utils.universe.SimpleUniverse;
@@ -55,17 +47,16 @@ import com.sun.j3d.utils.universe.ViewingPlatform;
  * @author David Montaño
  * 
  */
-public class SceneGraphHandler {
+@Singleton
+public class DefaultSceneGraphManipulator implements ISceneGraphManipulator {
 
-	private final SeeIT3DCoreHandler manager;
+	private final IVisualizationState state;
 
 	private SeeIT3DCanvas canvas = null;
 
 	private BranchGroup rootObj = null;
 
 	private SimpleUniverse universe = null;
-
-	public static Bounds bounds = null;
 
 	private BranchGroup containersGroup = null;
 
@@ -83,18 +74,21 @@ public class SceneGraphHandler {
 
 	private boolean initialized = false;
 
-	SceneGraphHandler(SeeIT3DCoreHandler manager) {
-		this.manager = manager;
+	@Inject
+	public DefaultSceneGraphManipulator(IVisualizationState state) {
+		this.state = state;
 		this.backgroundColor = Preferences.getInstance().getBackgroundColor();
 	}
 
-	void clearScene() {
-		for (Container container : manager.containersInView()) {
+	@Override
+	public void clearScene() {
+		for (Container container : state.containersInView()) {
 			removeScene(container);
 		}
 	}
 
-	void removeScene(Container container) {
+	@Override
+	public void removeScene(Container container) {
 		ISceneGraphRelationshipGenerator generator = container.getSceneGraphRelationshipGenerator();
 		if (generator instanceof PickingCallback) {
 			translation.unregisterCallback((PickingCallback) generator);
@@ -104,24 +98,28 @@ public class SceneGraphHandler {
 		containersGroup.removeChild(containerBG);
 	}
 
-	void setupTranslationCallback(PickingCallback callback) {
+	@Override
+	public void setupTranslationCallback(PickingCallback callback) {
 		if (translation != null) {
 			translation.setupCallback(callback);
 		}
 	}
 
+	@Override
 	public void unregisterPickingCallback(PickingCallback callback) {
 		if (translation != null) {
 			translation.unregisterCallback(callback);
 		}
 	}
 
-	SeeIT3DCanvas getCanvas() {
+	@Override
+	public SeeIT3DCanvas getCanvas() {
 		checkIfInitialize();
 		return canvas;
 	}
 
-	void rebuildSceneGraph() {
+	@Override
+	public void rebuildSceneGraph() {
 		checkIfInitialize();
 		if (containersGroup != null) {
 			containersGroup.detach();
@@ -130,7 +128,8 @@ public class SceneGraphHandler {
 		}
 	}
 
-	void changeOrbitState(boolean enabled) {
+	@Override
+	public void changeOrbitState(boolean enabled) {
 		if (orbit != null) {
 			orbit.setRotateEnable(enabled);
 			orbit.setTranslateEnable(enabled);
@@ -184,7 +183,7 @@ public class SceneGraphHandler {
 
 	private void buildEnvironment() {
 
-		bounds = new BoundingSphere(new Point3d(0.0, 0.0, 0.0), 2000.0f);
+		Bounds bounds = WorldSettings.bounds;
 		rootObj.setBounds(bounds);
 
 		AmbientLight ambientLightNode = new AmbientLight(ViewConstants.BLACK);
@@ -219,6 +218,7 @@ public class SceneGraphHandler {
 
 	private void addBehaviors() {
 
+		Bounds bounds = WorldSettings.bounds;
 		ViewingPlatform viewingPlatform = universe.getViewingPlatform();
 
 		rotate = new PickRotate3DBehavior(canvas, rootObj, bounds, viewingPlatform);
@@ -257,25 +257,24 @@ public class SceneGraphHandler {
 		List<Container> containersToAdd = new ArrayList<Container>();
 		List<Container> containersToDelete = new ArrayList<Container>();
 
-		for (Container container : manager.containersInView()) {
+		for (Container container : state.containersInView()) {
 			containersToAdd.addAll(container.getRelatedContainersToShow());
 			containersToDelete.addAll(container.getRelatedContainersToHide());
 		}
 
-		manager.updateContainersInView(containersToAdd, containersToDelete);
+		state.updateContainersInView(containersToAdd, containersToDelete);
 
 		try {
-			for (Container container : manager.containersInView()) {
+			for (Container container : state.containersInView()) {
 				container.updateVisualRepresentation();
 			}
 
-			for (Container container : manager.containersInView()) {
+			for (Container container : state.containersInView()) {
 				container.generateSceneGraphRelations();
 				BranchGroup containerBG = container.getContainerBG();
 				containersTG.addChild(containerBG);
 			}
 		} catch (Exception e) {
-			// ErrorHandler.error("An error has occurred while building the visualization");
 			e.printStackTrace();
 		}
 
@@ -283,7 +282,8 @@ public class SceneGraphHandler {
 
 	}
 
-	void setViewersPosition(float max) {
+	@Override
+	public void setViewersPosition(float max) {
 		float xMax = Math.max(max, 5);
 		ViewingPlatform vp = universe.getViewingPlatform();
 		TransformGroup tg = vp.getViewPlatformTransform();
@@ -297,6 +297,7 @@ public class SceneGraphHandler {
 		tg.setTransform(t3d);
 	}
 
+	@Override
 	public void activateSelectionTool() {
 		canvas.activateSelectionTool();
 	}

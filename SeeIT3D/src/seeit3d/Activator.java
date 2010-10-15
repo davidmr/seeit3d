@@ -19,9 +19,7 @@ package seeit3d;
 import org.eclipse.core.commands.Command;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.*;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
@@ -31,6 +29,7 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.eclipse.ui.progress.UIJob;
 import org.osgi.framework.BundleContext;
 
+import seeit3d.general.SeeIT3D;
 import seeit3d.general.error.ErrorHandler;
 import seeit3d.general.model.Preferences;
 import seeit3d.ui.ide.commands.ChangeSortingPolyCylindersCriteriaCommand;
@@ -62,6 +61,7 @@ public class Activator extends AbstractUIPlugin {
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
 		plugin = this;
+		SeeIT3D.initialize();
 		initializePreferences();
 		initializeSortRadio();
 		registerGlobalListener();

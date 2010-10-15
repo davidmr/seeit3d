@@ -25,7 +25,7 @@ import javax.media.j3d.Transform3D;
 import javax.media.j3d.TransformGroup;
 import javax.vecmath.Vector3f;
 
-import seeit3d.core.api.SeeIT3DCore;
+import seeit3d.core.api.*;
 import seeit3d.general.bus.IEvent;
 import seeit3d.general.bus.IEventListener;
 import seeit3d.general.bus.events.*;
@@ -38,6 +38,8 @@ import seeit3d.utils.Utils;
 import seeit3d.utils.ViewConstants;
 
 import com.google.common.collect.Lists;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
 /**
  * Class that handles the interactions with the model of SeeIT3D. It tracks the general state of the visualization system.
@@ -45,11 +47,12 @@ import com.google.common.collect.Lists;
  * @author David Montaño
  * 
  */
-public class SeeIT3DCoreHandler implements SeeIT3DCore, IEventListener {
+@Singleton
+public class DefaultSeeIT3DCore implements ISeeIT3DCore, IEventListener {
 
-	private final VisualizationState state;
+	private final IVisualizationState state;
 
-	private final SceneGraphHandler sceneGraphHandler;
+	private final ISceneGraphManipulator sceneGraphHandler;
 
 	private boolean isSynchronzationWithPackageExplorerSet = false;
 
@@ -57,9 +60,10 @@ public class SeeIT3DCoreHandler implements SeeIT3DCore, IEventListener {
 
 	private final Preferences preferences;
 
-	public SeeIT3DCoreHandler() {
-		state = new VisualizationState(this);
-		sceneGraphHandler = new SceneGraphHandler(this);
+	@Inject
+	public DefaultSeeIT3DCore(IVisualizationState state, ISceneGraphManipulator sceneGraphHandler) {
+		this.state = state;
+		this.sceneGraphHandler = sceneGraphHandler;
 		preferences = Preferences.getInstance();
 
 		registerListener(ToggleSynchronizationPackageExplorerVsViewEvent.class, this);
@@ -174,7 +178,6 @@ public class SeeIT3DCoreHandler implements SeeIT3DCore, IEventListener {
 		if (event instanceof SelectionToolEndedEvent) {
 			isSelectionToolSet = false;
 			updateOrbitingState();
-			// TODO update mapping view and feedback according to new selection
 		}
 
 	}
@@ -214,14 +217,6 @@ public class SeeIT3DCoreHandler implements SeeIT3DCore, IEventListener {
 		if (operation.isVisualizationNeedsRefresh()) {
 			refreshVisualization();
 		}
-	}
-
-	/******************************************/
-	/********** API ACCESSORS *******************/
-	@Override
-	public synchronized SeeIT3DCanvas getMainCanvas() {
-		return sceneGraphHandler.getCanvas();
-
 	}
 
 	/****************************************/
@@ -278,7 +273,7 @@ public class SeeIT3DCoreHandler implements SeeIT3DCore, IEventListener {
 
 	private synchronized void changeSelectionAndUpdateMappingView(List<Container> containers, List<PolyCylinder> polycylinders, boolean toggleContainerSelection, boolean togglePolycylinderSelection) {
 		boolean mappingNeedsRefresh = false;
-		synchronized (SeeIT3DCoreHandler.class) {
+		synchronized (DefaultSeeIT3DCore.class) {
 
 			boolean selectionContainerChanged = false;
 			for (Container container : containers) {
@@ -449,10 +444,6 @@ public class SeeIT3DCoreHandler implements SeeIT3DCore, IEventListener {
 		updateCurrentSelectionValues(lastSelectedPoly);
 	}
 
-	Iterable<Container> containersInView() {
-		return state.containersInView();
-	}
-
 	private synchronized List<Container> unmodifiableSelectedContainers() {
 		List<Container> selectedContainers = new ArrayList<Container>();
 		for (Container container : state.selectedContainers()) {
@@ -461,14 +452,6 @@ public class SeeIT3DCoreHandler implements SeeIT3DCore, IEventListener {
 		return Collections.unmodifiableList(selectedContainers);
 	}
 
-	public void updateContainersInView(List<Container> containersToAdd, List<Container> containersToDelete) {
-		for (Container container : containersToAdd) {
-			state.addContainerToViewWithoutValidation(container);
-		}
 
-		for (Container container : containersToDelete) {
-			state.deleteContainerFromView(container);
-		}
-	}
 
 }

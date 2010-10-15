@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package seeit3d.core.handler.utils;
+package seeit3d.core.handler;
 
 import java.util.List;
 
@@ -23,8 +23,11 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
+import seeit3d.core.api.IVisualizationStateChecker;
 import seeit3d.general.error.ErrorHandler;
 import seeit3d.general.model.Container;
+
+import com.google.inject.Singleton;
 
 /**
  * This class is responsible for validating if the visualization state is valid and can be processed
@@ -32,7 +35,8 @@ import seeit3d.general.model.Container;
  * @author David Montaño
  * 
  */
-public class VisualizationStateChecker {
+@Singleton
+public class DefaultVisualizationStateChecker implements IVisualizationStateChecker {
 
 	private static final int CONTAINERS_THRESHOLD = 20;
 
@@ -40,6 +44,7 @@ public class VisualizationStateChecker {
 	
 	private volatile Boolean answer;
 
+	@Override
 	public boolean checkState(List<Container> containers) {
 		boolean askNeeded = false;
 		if (containers.size() > CONTAINERS_THRESHOLD) {

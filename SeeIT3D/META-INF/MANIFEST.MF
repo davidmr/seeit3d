@@ -16,6 +16,11 @@ Bundle-ClassPath: .,
  lib/j3dcore.jar,
  lib/j3dutils.jar,
  lib/vecmath.jar,
- lib/google-collect-1.0.jar
+ lib/google-collect-1.0.jar,
+ lib/guice-2.0.jar,
+ lib/aopalliance.jar,
+ lib/guice-assistedinject-2.0.jar,
+ lib/guice-multibindings-2.0.jar,
+ lib/guice-throwingproviders-2.0.jar
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-NativeCode: native/libj3dcore-ogl.so; osname=linux; processor=x86, native/j3dcore-d3d.dll; native/j3dcore-ogl-cg.dll; native/j3dcore-ogl.dll; osname=win32; processor=x86

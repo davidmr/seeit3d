@@ -16,17 +16,17 @@
  */
 package seeit3d.core.handler;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
+import seeit3d.core.api.IVisualizationState;
+import seeit3d.core.api.IVisualizationStateChecker;
 import seeit3d.core.handler.utils.ContainersSelectedIterator;
 import seeit3d.core.handler.utils.PolycylindersSelectedIterator;
-import seeit3d.core.handler.utils.VisualizationStateChecker;
 import seeit3d.general.error.exception.IllegalVisualizationStateException;
-import seeit3d.general.model.Container;
-import seeit3d.general.model.PolyCylinder;
-import seeit3d.general.model.VisualProperty;
+import seeit3d.general.model.*;
+
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
 /**
  * This class keeps track of the visualization state, like the selected containers in the view, checks of visualization state and sorting property
@@ -34,17 +34,19 @@ import seeit3d.general.model.VisualProperty;
  * @author David Montaño
  * 
  */
-public class VisualizationState {
+@Singleton
+public class DefaultVisualizationState implements IVisualizationState {
 
 	private final List<Container> containersInView;
 
 	private VisualProperty sortingProperty = VisualProperty.HEIGHT;
 
-	private final VisualizationStateChecker stateChecker;
+	private final IVisualizationStateChecker stateChecker;
 
-	VisualizationState(SeeIT3DCoreHandler manager) {
+	@Inject
+	public DefaultVisualizationState(IVisualizationStateChecker stateChecker) {
 		containersInView = new ArrayList<Container>();
-		stateChecker = new VisualizationStateChecker();
+		this.stateChecker = stateChecker;
 	}
 
 	private void validateState(List<Container> containers) throws IllegalVisualizationStateException {
@@ -84,7 +86,8 @@ public class VisualizationState {
 	// }
 
 	// TODO handle with validation
-	void addContainerToViewWithoutValidation(Container container) {
+	@Override
+	public void addContainerToViewWithoutValidation(Container container) {
 		if (container != null && !containersInView.contains(container)) {
 			containersInView.add(container);
 		}
@@ -94,11 +97,13 @@ public class VisualizationState {
 		containersInView.remove(container);
 	}
 
-	void clearContainers() {
+	@Override
+	public void clearContainers() {
 		containersInView.clear();
 	}
 
-	boolean addContainerToSelection(Container newContainer, boolean toggleInSelection) {
+	@Override
+	public boolean addContainerToSelection(Container newContainer, boolean toggleInSelection) {
 		boolean succesful = false;
 		if (newContainer != null) {
 			if (newContainer.isSelected()) {
@@ -125,11 +130,13 @@ public class VisualizationState {
 		return succesful;
 	}
 
-	boolean hasContainersInView() {
+	@Override
+	public boolean hasContainersInView() {
 		return containersInView.iterator().hasNext();
 	}
 
-	boolean hasContainersSelected() {
+	@Override
+	public boolean hasContainersSelected() {
 		return new ContainersSelectedIterator(containersInView).hasNext();
 	}
 
@@ -139,7 +146,8 @@ public class VisualizationState {
 		}
 	}
 
-	Iterable<Container> selectedContainers() {
+	@Override
+	public Iterable<Container> selectedContainers() {
 		return new Iterable<Container>() {
 			@Override
 			public Iterator<Container> iterator() {
@@ -148,7 +156,8 @@ public class VisualizationState {
 		};
 	}
 
-	Iterable<Container> containersInView() {
+	@Override
+	public Iterable<Container> containersInView() {
 		return new Iterable<Container>() {
 			@Override
 			public Iterator<Container> iterator() {
@@ -157,11 +166,13 @@ public class VisualizationState {
 		};
 	}
 
-	Container firstContainer() {
+	@Override
+	public Container firstContainer() {
 		return new ContainersSelectedIterator(containersInView).next();
 	}
 
-	void deleteSelectedContainers() {
+	@Override
+	public void deleteSelectedContainers() {
 		ContainersSelectedIterator iterator = new ContainersSelectedIterator(containersInView);
 		while (iterator.hasNext()) {
 			iterator.next();
@@ -169,7 +180,8 @@ public class VisualizationState {
 		}
 	}
 
-	Container getNextSelectableContainer() {
+	@Override
+	public Container getNextSelectableContainer() {
 		int nextIndex = -1;
 		for (int i = 0; i < containersInView.size(); i++) {
 			Container container = containersInView.get(i);
@@ -188,7 +200,8 @@ public class VisualizationState {
 
 	}
 
-	Container getPreviousSelectableContainer() {
+	@Override
+	public Container getPreviousSelectableContainer() {
 		int prevIndex = -1;
 		for (int i = 0; i < containersInView.size(); i++) {
 			Container container = containersInView.get(i);
@@ -206,7 +219,8 @@ public class VisualizationState {
 		return containersInView.get(prevIndex);
 	}
 
-	void useNextLevelContainers() {
+	@Override
+	public void useNextLevelContainers() {
 		List<Container> newContainers = new ArrayList<Container>();
 		List<Container> oldContainers = new ArrayList<Container>();
 		for (Container container : selectedContainers()) {
@@ -225,7 +239,8 @@ public class VisualizationState {
 		}
 	}
 
-	void usePreviousLevelContainers() {
+	@Override
+	public void usePreviousLevelContainers() {
 		List<Container> newContainers = new ArrayList<Container>();
 		List<Container> oldContainers = new ArrayList<Container>();
 		for (Container container : selectedContainers()) {
@@ -239,10 +254,22 @@ public class VisualizationState {
 		containersInView.addAll(newContainers);
 	}
 
+	@Override
+	public void updateContainersInView(List<Container> containersToAdd, List<Container> containersToDelete) {
+		for (Container container : containersToAdd) {
+			addContainerToViewWithoutValidation(container);
+		}
+
+		for (Container container : containersToDelete) {
+			deleteContainerFromView(container);
+		}
+	}
+
 	/***********************************/
 	/*********** POLYCYLINDERS **********/
 
-	boolean addPolyCylinderToSelection(PolyCylinder polycylinder, boolean toggleInSelection) {
+	@Override
+	public boolean addPolyCylinderToSelection(PolyCylinder polycylinder, boolean toggleInSelection) {
 		boolean success = false;
 		if (polycylinder != null) {
 			if (polycylinder.isSelected()) {
@@ -282,7 +309,8 @@ public class VisualizationState {
 		return iterator.hasNext();
 	}
 
-	void clearSelectionOnPolycylinders() {
+	@Override
+	public void clearSelectionOnPolycylinders() {
 		Iterator<PolyCylinder> iterator = iteratorOnSelectedPolycylinders();
 		while (iterator.hasNext()) {
 			PolyCylinder polyCylinder = iterator.next();
@@ -290,7 +318,8 @@ public class VisualizationState {
 		}
 	}
 
-	Iterable<PolyCylinder> selectedPolycylinders() {
+	@Override
+	public Iterable<PolyCylinder> selectedPolycylinders() {
 		return new Iterable<PolyCylinder>() {
 			@Override
 			public Iterator<PolyCylinder> iterator() {
@@ -299,7 +328,8 @@ public class VisualizationState {
 		};
 	}
 
-	boolean hasMultiplePolyCylindersSelected() {
+	@Override
+	public boolean hasMultiplePolyCylindersSelected() {
 		Iterator<PolyCylinder> iterator = iteratorOnSelectedPolycylinders();
 		if (iterator.hasNext()) {
 			iterator.next();
@@ -311,7 +341,8 @@ public class VisualizationState {
 	/*************************/
 	/**** OTHER OPERATIONS ****/
 
-	void validatePolycylindersSelection() {
+	@Override
+	public void validatePolycylindersSelection() {
 		Iterator<PolyCylinder> iteratorOnPolycylinders = iteratorOnSelectedPolycylinders();
 		while (iteratorOnPolycylinders.hasNext()) {
 			PolyCylinder poly = iteratorOnPolycylinders.next();
@@ -330,7 +361,8 @@ public class VisualizationState {
 		return false;
 	}
 
-	void reset() {
+	@Override
+	public void reset() {
 		for (Container container : containersInView) {
 			container.clearTransparencies();
 		}

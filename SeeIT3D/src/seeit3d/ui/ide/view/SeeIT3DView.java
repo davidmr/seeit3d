@@ -16,6 +16,8 @@
  */
 package seeit3d.ui.ide.view;
 
+import static seeit3d.general.bus.EventBus.*;
+
 import java.awt.Frame;
 
 import org.eclipse.swt.SWT;
@@ -28,9 +30,7 @@ import org.eclipse.ui.contexts.IContextService;
 import org.eclipse.ui.internal.expressions.ActivePartExpression;
 import org.eclipse.ui.part.ViewPart;
 
-import seeit3d.core.api.SeeIT3DCore;
-import seeit3d.general.SeeIT3DAPILocator;
-import static seeit3d.general.bus.EventBus.*;
+import seeit3d.general.WorldSettings;
 import seeit3d.general.bus.events.MappingViewNeedsUpdateEvent;
 import seeit3d.general.bus.events.SelectedInformationChangedEvent;
 import seeit3d.ui.ide.view.listeners.LabelInformation;
@@ -46,11 +46,7 @@ public class SeeIT3DView extends ViewPart {
 
 	public static final String ID = "seeit3d.seeit3dview";
 
-	private final SeeIT3DCore core;
-
-	public SeeIT3DView() {
-		core = SeeIT3DAPILocator.findCore();
-	}
+	public SeeIT3DView() {}
 
 	@Override
 	public void createPartControl(Composite parent) {
@@ -75,7 +71,7 @@ public class SeeIT3DView extends ViewPart {
 		visualizationComposite.setLayoutData(data);
 
 		Frame glFrame = SWT_AWT.new_Frame(visualizationComposite);
-		glFrame.add(core.getMainCanvas());
+		glFrame.add(WorldSettings.canvas());
 
 		MappingViewComposite mappingComposite = new MappingViewComposite(parent);
 		GridData mappingCompositeData = new GridData(GridData.FILL_HORIZONTAL);

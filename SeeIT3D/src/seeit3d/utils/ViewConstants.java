@@ -20,7 +20,7 @@ import java.awt.BasicStroke;
 
 import javax.vecmath.Color3f;
 
-import seeit3d.general.model.VisualProperty;
+import seeit3d.base.model.VisualProperty;
 
 /**
  * Constants in the view (Colors, and sizes)

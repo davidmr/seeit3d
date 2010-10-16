@@ -36,10 +36,10 @@ import javax.vecmath.Vector3f;
 import org.eclipse.jdt.core.IMethod;
 import org.eclipse.jdt.core.JavaModelException;
 
-import seeit3d.general.model.Container;
-import seeit3d.general.model.IContainerRepresentedObject;
-import seeit3d.general.model.generator.metrics.MetricCalculator;
-import seeit3d.modelers.java.LineOfCode;
+import seeit3d.base.model.Container;
+import seeit3d.base.model.IContainerRepresentedObject;
+import seeit3d.base.model.generator.metrics.MetricCalculator;
+import seeit3d.java.modeler.LineOfCode;
 
 import com.google.common.base.Function;
 import com.sun.j3d.utils.geometry.Box;

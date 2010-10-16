@@ -16,24 +16,12 @@
  */
 package seeit3d;
 
-import org.eclipse.core.commands.Command;
-import org.eclipse.core.resources.IWorkspace;
-import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.*;
-import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.commands.ICommandService;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
-import org.eclipse.ui.progress.UIJob;
 import org.osgi.framework.BundleContext;
 
-import seeit3d.general.SeeIT3D;
-import seeit3d.general.error.ErrorHandler;
-import seeit3d.general.model.Preferences;
-import seeit3d.ui.ide.commands.ChangeSortingPolyCylindersCriteriaCommand;
-import seeit3d.ui.ide.observers.WorkspaceClosedObserver;
+import seeit3d.base.SeeIT3D;
+import seeit3d.java.JavaContribution;
+import seeit3d.xml.XMLContribution;
 
 /**
  * The activator class controls the plug-in life cycle
@@ -62,40 +50,10 @@ public class Activator extends AbstractUIPlugin {
 		super.start(context);
 		plugin = this;
 		SeeIT3D.initialize();
-		initializePreferences();
-		initializeSortRadio();
-		registerGlobalListener();
-		ErrorHandler.setShell(new Shell(Display.getDefault()));
+		SeeIT3D.contribute(new JavaContribution());
+		SeeIT3D.contribute(new XMLContribution());
 	}
 
-	private void initializePreferences() {
-		IPreferenceStore preferenceStore = getPreferenceStore();
-		Preferences preferences = Preferences.getInstance();
-		preferences.setPreferencesDefaults(preferenceStore);
-		preferences.loadStoredPreferences(preferenceStore);
-		preferenceStore.addPropertyChangeListener(preferences);
-	}
-
-	private void registerGlobalListener() {
-		IWorkspace workspace = ResourcesPlugin.getWorkspace();
-		workspace.addResourceChangeListener(new WorkspaceClosedObserver());
-	}
-
-	private void initializeSortRadio() {
-		UIJob job = new UIJob("InitSortRadioState") {
-
-			@Override
-			public IStatus runInUIThread(IProgressMonitor monitor) {
-
-				ICommandService commandService = (ICommandService) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getService(ICommandService.class);
-				Command command = commandService.getCommand(ChangeSortingPolyCylindersCriteriaCommand.CHANGE_SORT_COMMAND_ID);
-				command.isEnabled();
-				return new Status(IStatus.OK, PLUGIN_ID, "Init commands workaround performed succesfully");
-			}
-
-		};
-		job.schedule();
-	}
 
 	/*
 	 * (non-Javadoc)

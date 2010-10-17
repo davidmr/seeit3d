@@ -19,7 +19,9 @@ package seeit3d.java.ui.ide;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.core.commands.*;
+import org.eclipse.core.commands.AbstractHandler;
+import org.eclipse.core.commands.ExecutionEvent;
+import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.ui.JavaUI;
@@ -42,6 +44,7 @@ import com.google.inject.name.Named;
  * @author David Montaño
  * 
  */
+// TODO check if can be better written
 public class VisualizeJavaElementFromEditor extends AbstractHandler {
 
 	private static final String ELEMENT_TO_VISUALIZE = "seeit3d.visualizeFromEditorParameter";

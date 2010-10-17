@@ -1,8 +1,7 @@
 package seeit3d.java;
 
-import static com.google.common.collect.Lists.*;
-
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.eclipse.jdt.core.*;
 
@@ -13,7 +12,9 @@ import seeit3d.java.modeler.generator.annotation.*;
 import seeit3d.java.modeler.generator.metrics.*;
 import seeit3d.java.modeler.generator.metrics.annotation.*;
 
-import com.google.inject.*;
+import com.google.inject.AbstractModule;
+import com.google.inject.Provider;
+import com.google.inject.TypeLiteral;
 import com.google.inject.name.Names;
 
 public class JavaModule extends AbstractModule {
@@ -25,6 +26,7 @@ public class JavaModule extends AbstractModule {
 		bind(new TypeLiteral<IModelGenerator<ICompilationUnit>>() {}).annotatedWith(CompilationUnitModeler.class).to(CompilationUnitModelGenerator.class);
 		bind(new TypeLiteral<IModelGenerator<IPackageFragment>>() {}).annotatedWith(PackageModeler.class).to(PackageModelGenerator.class);
 		bind(new TypeLiteral<IModelGenerator<IJavaProject>>() {}).annotatedWith(ProjectModeler.class).to(ProjectModelGenerator.class);
+		bind(new TypeLiteral<IModelGenerator<IType>>() {}).annotatedWith(TypeModeler.class).to(TypeClassModelGenerator.class);
 
 		Map<String, Provider<? extends IModelGenerator<? extends IJavaElement>>> modelMap = new HashMap<String, Provider<? extends IModelGenerator<? extends IJavaElement>>>();
 		modelMap.put(JavaContribution.JAVA_FILE, getProvider(CompilationUnitModelGenerator.class));
@@ -37,29 +39,6 @@ public class JavaModule extends AbstractModule {
 		bind(MetricCalculator.class).annotatedWith(LCOM.class).to(LCOMCalculator.class);
 		bind(MetricCalculator.class).annotatedWith(McCabeComplexity.class).to(McCabeComplexityCalculator.class);
 		bind(MetricCalculator.class).annotatedWith(ControlStructure.class).to(ControlStructureCalculator.class);
-
-		Key<MetricCalculator> mccabe = Key.get(MetricCalculator.class, McCabeComplexity.class);
-		Provider<MetricCalculator> mccabeProvider = getProvider(mccabe);
-
-		Key<MetricCalculator> loc = Key.get(MetricCalculator.class, LOC.class);
-		Provider<MetricCalculator> locProvider = getProvider(loc);
-
-		Key<MetricCalculator> lcom = Key.get(MetricCalculator.class, LCOM.class);
-		Provider<MetricCalculator> lcomProvider = getProvider(lcom);
-
-		Key<MetricCalculator> controlStructure = Key.get(MetricCalculator.class, ControlStructure.class);
-		Provider<MetricCalculator> controlStructureProvider = getProvider(controlStructure);
-
-		List<MetricCalculator> metricsForTypes = newArrayList(locProvider.get(), mccabeProvider.get(), lcomProvider.get());
-		List<MetricCalculator> metricsForPackagesAndMethods = newArrayList(locProvider.get(), mccabeProvider.get());
-		List<MetricCalculator> metricsForLines = newArrayList(locProvider.get(), controlStructureProvider.get());
-
-		bind(new TypeLiteral<List<MetricCalculator>>() {}).annotatedWith(Names.named("metricsForTypes")).toInstance(metricsForTypes);
-		bind(new TypeLiteral<List<MetricCalculator>>() {}).annotatedWith(Names.named("metricsForPackagesAndMethods")).toInstance(metricsForPackagesAndMethods);
-		bind(new TypeLiteral<List<MetricCalculator>>() {}).annotatedWith(Names.named("metricsForLines")).toInstance(metricsForLines);
-
-
-
 
 	}
 

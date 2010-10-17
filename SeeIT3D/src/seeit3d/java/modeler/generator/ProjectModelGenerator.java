@@ -16,18 +16,23 @@
  */
 package seeit3d.java.modeler.generator;
 
+import static com.google.common.collect.Lists.*;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.jdt.core.*;
+import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.jdt.core.IPackageFragment;
+import org.eclipse.jdt.core.JavaModelException;
 
 import seeit3d.base.model.generator.IModelGenerator;
 import seeit3d.base.model.generator.metrics.MetricCalculator;
 import seeit3d.java.modeler.generator.annotation.PackageModeler;
+import seeit3d.java.modeler.generator.metrics.annotation.LOC;
+import seeit3d.java.modeler.generator.metrics.annotation.McCabeComplexity;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import com.google.inject.name.Named;
 
 /**
  * Project analyzer @see AbstracModelGenerator
@@ -41,9 +46,12 @@ public class ProjectModelGenerator extends AbstracModelGenerator<IJavaProject, I
 	private final List<MetricCalculator> metrics;
 
 	@Inject
-	public ProjectModelGenerator(@PackageModeler IModelGenerator<IPackageFragment> lowerLevelModelGenerator, @Named(value = "metricsForPackagesAndMethods") List<MetricCalculator> metrics) {
+	public ProjectModelGenerator(
+			@PackageModeler IModelGenerator<IPackageFragment> lowerLevelModelGenerator,
+			@LOC MetricCalculator loc,
+			@McCabeComplexity MetricCalculator mccabe) {
 		super(lowerLevelModelGenerator);
-		this.metrics = metrics;
+		this.metrics = newArrayList(loc, mccabe);
 	}
 
 	@Override

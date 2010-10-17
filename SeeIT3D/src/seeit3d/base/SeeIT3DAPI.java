@@ -24,8 +24,7 @@ package seeit3d.base;
  */
 public interface SeeIT3DAPI {
 
-	// TODO check the use of new, try to use the SeeIT3DFactory or Guice
+	// TODO handle preferences, and other apis in APILocator with guice
 	// TODO reduce the queue event size, it should be smaller. It is getting blocked (bad use of synchronized?)
-	// TODO use factory instead of apilocator
 	// TODO create a ListPolycylinder that handles null and repeated polycylinders. There are several places that use this functionality
 }

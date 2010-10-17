@@ -5,7 +5,7 @@ import java.lang.annotation.*;
 import com.google.inject.BindingAnnotation;
 
 @BindingAnnotation
-@Target(value = { ElementType.LOCAL_VARIABLE })
+@Target(value = { ElementType.PARAMETER })
 @Retention(RetentionPolicy.RUNTIME)
 public @interface LCOM {
 

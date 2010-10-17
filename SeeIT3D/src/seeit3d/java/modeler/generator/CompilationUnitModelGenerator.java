@@ -36,10 +36,10 @@ import com.google.inject.Singleton;
 @Singleton
 public class CompilationUnitModelGenerator implements IModelGenerator<ICompilationUnit> {
 
-	private final TypeClassModelGenerator generator;
+	private final IModelGenerator<IType> generator;
 
 	@Inject
-	public CompilationUnitModelGenerator(@TypeModeler TypeClassModelGenerator generator) {
+	public CompilationUnitModelGenerator(@TypeModeler IModelGenerator<IType> generator) {
 		this.generator = generator;
 	}
 

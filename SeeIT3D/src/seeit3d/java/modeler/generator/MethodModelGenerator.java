@@ -16,6 +16,8 @@
  */
 package seeit3d.java.modeler.generator;
 
+import static com.google.common.collect.Lists.*;
+
 import java.util.List;
 
 import org.eclipse.jdt.core.IMethod;
@@ -23,10 +25,12 @@ import org.eclipse.jdt.core.JavaModelException;
 
 import seeit3d.base.model.generator.metrics.MetricCalculator;
 import seeit3d.java.modeler.LineOfCode;
+import seeit3d.java.modeler.generator.metrics.annotation.ControlStructure;
+import seeit3d.java.modeler.generator.metrics.annotation.LOC;
 import seeit3d.utils.Utils;
 
+import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import com.google.inject.name.Named;
 
 /**
  * Method analyzer @see AbstracModelGenerator
@@ -39,9 +43,12 @@ public class MethodModelGenerator extends AbstracModelGenerator<IMethod, LineOfC
 
 	private final List<MetricCalculator> metrics;
 
-	public MethodModelGenerator(@Named("metricsForLines") List<MetricCalculator> metrics) {
+	@Inject
+	public MethodModelGenerator(			
+			@LOC MetricCalculator loc,
+			@ControlStructure MetricCalculator mccabe) {
 		super(null);
-		this.metrics = metrics;
+		this.metrics = newArrayList(loc, mccabe);
 	}
 
 	@Override

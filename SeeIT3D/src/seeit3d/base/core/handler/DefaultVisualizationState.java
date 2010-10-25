@@ -66,29 +66,6 @@ public class DefaultVisualizationState implements IVisualizationState {
 	/*************************/
 	/****** CONTAINERS *******/
 
-	// void addContainerToView(Container container) {
-	// if (container == null) {
-	// throw new NullPointerException("Container can not be null");
-	// }
-	// try {
-	// List<Container> newContainers = new ArrayList<Container>();
-	// newContainers.add(container);
-	// newContainers.addAll(containersInView);
-	//
-	// validateState(newContainers);
-	//
-	// if (containersInView.contains(container)) {
-	// container = container.createCopy();
-	// }
-	// containersInView.add(container);
-	// container.setSelected(true);
-	// viewNeedUpdate();
-	// } catch (IllegalVisualizationStateException ex) {
-	// handleIllegalVisualizationState(ex);
-	// }
-	// }
-
-	// TODO handle with validation
 	@Override
 	public void addContainerToViewWithoutValidation(Container container) {
 		if (container != null && !containersInView.contains(container)) {

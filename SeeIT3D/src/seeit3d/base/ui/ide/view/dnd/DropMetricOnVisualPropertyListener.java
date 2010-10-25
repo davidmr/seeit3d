@@ -18,16 +18,14 @@ package seeit3d.base.ui.ide.view.dnd;
 
 import static seeit3d.base.bus.EventBus.*;
 
-import org.eclipse.swt.dnd.DND;
-import org.eclipse.swt.dnd.DropTargetEvent;
-import org.eclipse.swt.dnd.DropTargetListener;
+import org.eclipse.swt.dnd.*;
 import org.eclipse.swt.widgets.Group;
 
 import seeit3d.base.bus.events.PerformOperationOnSelectedContainersEvent;
 import seeit3d.base.bus.utils.FunctionToApplyOnContainer;
-import seeit3d.base.model.Container;
 import seeit3d.base.model.VisualProperty;
 import seeit3d.base.model.generator.metrics.MetricCalculator;
+import seeit3d.base.ui.actions.UpdateMappingFunction;
 import seeit3d.base.ui.ide.view.MappingViewComposite;
 
 /**
@@ -73,14 +71,7 @@ public class DropMetricOnVisualPropertyListener implements DropTargetListener {
 	public void dragEnter(DropTargetEvent event) {}
 
 	public PerformOperationOnSelectedContainersEvent createEvent(final MetricCalculator metric, final VisualProperty visualProp) {
-		FunctionToApplyOnContainer function = new FunctionToApplyOnContainer() {
-
-			@Override
-			public Container apply(Container container) {
-				container.updateMapping(metric, visualProp);
-				return container;
-			}
-		};
+		FunctionToApplyOnContainer function = new UpdateMappingFunction(visualProp, metric);
 		return new PerformOperationOnSelectedContainersEvent(function, true);
 	}
 }

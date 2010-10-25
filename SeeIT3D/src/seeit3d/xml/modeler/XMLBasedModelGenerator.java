@@ -35,7 +35,6 @@ import com.google.inject.Singleton;
  * @author David Montaño
  * 
  */
-// TODO think of adding children
 @Singleton
 public class XMLBasedModelGenerator implements IModelGenerator<seeit3d.xml.modeler.internal.Container> {
 

@@ -18,13 +18,11 @@ package seeit3d.base.ui.ide.commands;
 
 import static seeit3d.base.bus.EventBus.*;
 
-import org.eclipse.core.commands.AbstractHandler;
-import org.eclipse.core.commands.ExecutionEvent;
-import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.core.commands.*;
 
 import seeit3d.base.bus.events.PerformOperationOnSelectedContainersEvent;
 import seeit3d.base.bus.utils.FunctionToApplyOnContainer;
-import seeit3d.base.model.Container;
+import seeit3d.base.ui.actions.SetSortingFunction;
 
 /**
  * Command to sort the polycylinders within the selected containers
@@ -41,14 +39,7 @@ public class SortPolyCylindersCommand extends AbstractHandler {
 	}
 
 	public PerformOperationOnSelectedContainersEvent createEvent() {
-		FunctionToApplyOnContainer function = new FunctionToApplyOnContainer() {
-			@Override
-			public Container apply(Container container) {
-				container.setSorted(true);
-				container.updateVisualRepresentation();
-				return container;
-			}
-		};
+		FunctionToApplyOnContainer function = new SetSortingFunction();
 		return new PerformOperationOnSelectedContainersEvent(function, true);
 	}
 

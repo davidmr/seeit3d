@@ -18,15 +18,13 @@ package seeit3d.base.ui.ide.view.dnd;
 
 import static seeit3d.base.bus.EventBus.*;
 
-import org.eclipse.swt.dnd.DND;
-import org.eclipse.swt.dnd.DropTargetEvent;
-import org.eclipse.swt.dnd.DropTargetListener;
+import org.eclipse.swt.dnd.*;
 import org.eclipse.swt.widgets.Group;
 
 import seeit3d.base.bus.events.PerformOperationOnSelectedContainersEvent;
 import seeit3d.base.bus.utils.FunctionToApplyOnContainer;
-import seeit3d.base.model.Container;
 import seeit3d.base.model.generator.metrics.MetricCalculator;
+import seeit3d.base.ui.actions.RemoveMetricFromContainerFunction;
 
 /**
  * This class listens for metrics drop on the metrics group and removing them from the visualization
@@ -70,13 +68,7 @@ public class DropMetricOnMetricContainerListener implements DropTargetListener {
 	public void dragEnter(DropTargetEvent event) {}
 
 	public PerformOperationOnSelectedContainersEvent createEvent(final MetricCalculator metric){
-		FunctionToApplyOnContainer function = new FunctionToApplyOnContainer() {			
-			@Override
-			public Container apply(Container container) {
-				container.removeFromMapping(metric);
-				return container;
-			}
-		};
+		FunctionToApplyOnContainer function = new RemoveMetricFromContainerFunction(metric);
 		return new PerformOperationOnSelectedContainersEvent(function, true);
 	}
 	

@@ -19,13 +19,15 @@ import seeit3d.base.core.api.ISeeIT3DPreferences;
 import seeit3d.base.error.ErrorHandler;
 import seeit3d.base.ui.ide.commands.ChangeSortingPolyCylindersCriteriaCommand;
 import seeit3d.base.ui.ide.observers.WorkspaceClosedObserver;
+import seeit3d.base.visual.api.IColorScaleRegistry;
+import seeit3d.base.visual.api.IRelationshipsRegistry;
+import seeit3d.base.visual.colorscale.imp.*;
+import seeit3d.base.visual.relationships.imp.*;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 
 public class SeeIT3D {
-
-	// TODO better used of registers
 
 	private static final List<ISeeIT3DContributor> contributions = new ArrayList<ISeeIT3DContributor>();
 
@@ -34,6 +36,8 @@ public class SeeIT3D {
 	public static void initialize() {
 		try {
 			injector = Guice.createInjector(new SeeIT3DModule());
+			initializeColorScales();
+			initializeRelationshipsGenerator();
 			initializePreferences();
 			initializeSortRadio();
 			registerGlobalListener();
@@ -41,6 +45,21 @@ public class SeeIT3D {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+
+	private static void initializeColorScales() {
+		IColorScaleRegistry registry = injector.getInstance(IColorScaleRegistry.class);
+		registry.registerColorScale(new BlueTone(), new BlueToYellow(), new BlueGreenRed(), new ColdToHotColorScale(), new GrayColorScale(), new HeatedObject(), new LinearOptimal(),
+				new MagentaTone(), new Rainbow());
+	}
+
+	private static void initializeRelationshipsGenerator() {
+		IRelationshipsRegistry registry = injector.getInstance(IRelationshipsRegistry.class);
+		registry.registerRelationshipGenerator(NoRelationships.class);
+		registry.registerRelationshipGenerator(CommonBaseGenerator.class);
+		registry.registerRelationshipGenerator(LineBaseGenerator.class);
+		registry.registerRelationshipGenerator(ArcBasedGenerator.class);
+		registry.registerRelationshipGenerator(MovementBasedGenerator.class);
 	}
 
 	private static void initializePreferences() {

@@ -22,11 +22,14 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.widgets.Combo;
 
+import seeit3d.base.SeeIT3D;
 import seeit3d.base.bus.events.PerformOperationOnSelectedContainersEvent;
 import seeit3d.base.bus.utils.FunctionToApplyOnContainer;
 import seeit3d.base.ui.actions.ApplyChangeRelationShipGenerator;
+import seeit3d.base.visual.api.IRelationshipsRegistry;
 import seeit3d.base.visual.relationships.ISceneGraphRelationshipGenerator;
-import seeit3d.base.visual.relationships.RelationShipsRegistry;
+
+import com.google.inject.Inject;
 
 /**
  * Listener for relationships generator selection in the mapping view
@@ -36,6 +39,12 @@ import seeit3d.base.visual.relationships.RelationShipsRegistry;
  */
 public class RelationshipSelectionListener implements SelectionListener {
 
+	private IRelationshipsRegistry relationshipsRegistry;
+
+	public RelationshipSelectionListener() {
+		SeeIT3D.injector().injectMembers(this);
+	}
+
 	@Override
 	public void widgetDefaultSelected(SelectionEvent e) {
 
@@ -44,14 +53,12 @@ public class RelationshipSelectionListener implements SelectionListener {
 	@Override
 	public void widgetSelected(SelectionEvent event) {
 
-		RelationShipsRegistry registry = RelationShipsRegistry.getInstance();
-
 		Combo combo = (Combo) event.widget;
 
 		String selectedGeneratorName = combo.getItem(combo.getSelectionIndex());
-		Iterable<Class<? extends ISceneGraphRelationshipGenerator>> allRelationshipsGenerator = registry.allRelationshipsGenerator();
+		Iterable<Class<? extends ISceneGraphRelationshipGenerator>> allRelationshipsGenerator = relationshipsRegistry.allRelationshipsGenerator();
 		for (Class<? extends ISceneGraphRelationshipGenerator> generator : allRelationshipsGenerator) {
-			String relationName = registry.getRelationName(generator);
+			String relationName = relationshipsRegistry.getRelationName(generator);
 			if (relationName.equals(selectedGeneratorName)) {
 				PerformOperationOnSelectedContainersEvent operation = createEvent(generator);
 				publishEvent(operation);
@@ -64,5 +71,10 @@ public class RelationshipSelectionListener implements SelectionListener {
 	private PerformOperationOnSelectedContainersEvent createEvent(final Class<? extends ISceneGraphRelationshipGenerator> generatorClass) {
 		FunctionToApplyOnContainer function = new ApplyChangeRelationShipGenerator(generatorClass);
 		return new PerformOperationOnSelectedContainersEvent(function, true);
+	}
+
+	@Inject
+	public void setRelationshipsRegistry(IRelationshipsRegistry relationshipsRegistry) {
+		this.relationshipsRegistry = relationshipsRegistry;
 	}
 }

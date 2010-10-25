@@ -4,8 +4,10 @@ import seeit3d.base.core.api.*;
 import seeit3d.base.core.handler.*;
 import seeit3d.base.ui.api.ISeeIT3DUI;
 import seeit3d.base.ui.handler.DefaultSeeIT3DUI;
-import seeit3d.base.visual.api.ISeeIT3DVisualProperties;
+import seeit3d.base.visual.api.*;
+import seeit3d.base.visual.colorscale.DefaultColorScaleRegistry;
 import seeit3d.base.visual.handler.DefaultSeeIT3DVisualProperties;
+import seeit3d.base.visual.relationships.DefaultRelationshipsRegistry;
 
 import com.google.inject.AbstractModule;
 
@@ -23,6 +25,8 @@ public class SeeIT3DModule extends AbstractModule {
 		bind(ISeeIT3DUI.class).to(DefaultSeeIT3DUI.class).asEagerSingleton();
 
 		bind(ISeeIT3DVisualProperties.class).to(DefaultSeeIT3DVisualProperties.class);
+		bind(IColorScaleRegistry.class).to(DefaultColorScaleRegistry.class);
+		bind(IRelationshipsRegistry.class).to(DefaultRelationshipsRegistry.class);
 
 
 

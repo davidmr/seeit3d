@@ -24,9 +24,12 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 
 import seeit3d.Activator;
+import seeit3d.base.SeeIT3D;
 import seeit3d.base.core.api.ISeeIT3DPreferences;
-import seeit3d.base.visual.colorscale.ColorScaleRegistry;
+import seeit3d.base.visual.api.IColorScaleRegistry;
 import seeit3d.base.visual.colorscale.IColorScale;
+
+import com.google.inject.Inject;
 
 /**
  * This class is in charge of showing the preferences page of SeeIT3D in Eclipse global preferences
@@ -36,8 +39,11 @@ import seeit3d.base.visual.colorscale.IColorScale;
  */
 public class SeeIT3DPreferencesPage extends FieldEditorPreferencePage implements IWorkbenchPreferencePage {
 
+	private IColorScaleRegistry colorScaleRegistry;
+
 	public SeeIT3DPreferencesPage() {
 		super(GRID);
+		SeeIT3D.injector().injectMembers(this);
 	}
 
 	@Override
@@ -56,7 +62,7 @@ public class SeeIT3DPreferencesPage extends FieldEditorPreferencePage implements
 		addField(new IntegerFieldEditor(ISeeIT3DPreferences.SCALE_STEP, "Scale Step (%)", getFieldEditorParent(), 2));
 		addField(new IntegerFieldEditor(ISeeIT3DPreferences.TRANSPARENCY_STEP, "Transparency Step (%)", getFieldEditorParent(), 2));
 
-		Iterable<IColorScale> allColorScales = ColorScaleRegistry.getInstance().allColorScales();
+		Iterable<IColorScale> allColorScales = colorScaleRegistry.allColorScales();
 
 		List<String> colorScaleNames = new ArrayList<String>();
 
@@ -72,6 +78,11 @@ public class SeeIT3DPreferencesPage extends FieldEditorPreferencePage implements
 
 		addField(new ComboFieldEditor(ISeeIT3DPreferences.COLOR_SCALE, "Color scale by default", colorScalesNames, getFieldEditorParent()));
 
+	}
+
+	@Inject
+	public void setColorScaleRegistry(IColorScaleRegistry colorScaleRegistry) {
+		this.colorScaleRegistry = colorScaleRegistry;
 	}
 
 }

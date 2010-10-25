@@ -7,15 +7,18 @@ import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.swt.graphics.RGB;
 
 import seeit3d.base.core.api.ISeeIT3DPreferences;
-import seeit3d.base.visual.colorscale.ColorScaleRegistry;
+import seeit3d.base.visual.api.IColorScaleRegistry;
 import seeit3d.base.visual.colorscale.IColorScale;
 import seeit3d.base.visual.colorscale.imp.ColdToHotColorScale;
 
 import com.google.common.base.Preconditions;
+import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 @Singleton
 public class DefaultSeeIT3DPreferences implements ISeeIT3DPreferences {
+
+	private final IColorScaleRegistry colorScaleRegistry;
 
 	private Color3f backgroundColor = null;
 
@@ -32,6 +35,11 @@ public class DefaultSeeIT3DPreferences implements ISeeIT3DPreferences {
 	private float transparencyStep = -1;
 
 	private IColorScale colorScale = null;
+
+	@Inject
+	public DefaultSeeIT3DPreferences(IColorScaleRegistry colorScaleRegistry) {
+		this.colorScaleRegistry = colorScaleRegistry;
+	}
 
 
 	@Override
@@ -210,7 +218,7 @@ public class DefaultSeeIT3DPreferences implements ISeeIT3DPreferences {
 	}
 
 	private void updateColorScale(String colorScale) {
-		IColorScale scale = ColorScaleRegistry.getInstance().findByName(colorScale);
+		IColorScale scale = colorScaleRegistry.findByName(colorScale);
 		this.colorScale = scale;
 	}
 

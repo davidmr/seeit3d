@@ -33,11 +33,9 @@ import seeit3d.base.model.VisualProperty;
 import seeit3d.base.model.generator.metrics.MetricCalculator;
 import seeit3d.base.ui.ide.view.dnd.*;
 import seeit3d.base.ui.ide.view.listeners.*;
-import seeit3d.base.visual.api.ISeeIT3DVisualProperties;
-import seeit3d.base.visual.colorscale.ColorScaleRegistry;
+import seeit3d.base.visual.api.*;
 import seeit3d.base.visual.colorscale.IColorScale;
 import seeit3d.base.visual.relationships.ISceneGraphRelationshipGenerator;
-import seeit3d.base.visual.relationships.RelationShipsRegistry;
 import seeit3d.base.visual.relationships.imp.NoRelationships;
 
 import com.google.common.collect.BiMap;
@@ -55,6 +53,10 @@ public class MappingViewComposite extends Composite implements IEventListener {
 	public static final String VISUAL_PROPERTY = "visualProperty";
 
 	private ISeeIT3DVisualProperties seeIT3DVisualProperties;
+
+	private IColorScaleRegistry colorScaleRegistry;
+
+	private IRelationshipsRegistry relationshipsRegistry;
 
 	private Composite rootComposite;
 
@@ -224,7 +226,7 @@ public class MappingViewComposite extends Composite implements IEventListener {
 	}
 
 	private void updateColorScales() {
-		Iterable<IColorScale> allColorScales = ColorScaleRegistry.getInstance().allColorScales();
+		Iterable<IColorScale> allColorScales = colorScaleRegistry.allColorScales();
 
 		Group colorScalesGroup = new Group(rootComposite, SWT.SHADOW_OUT);
 		GridData colorScalesLayoutData = new GridData(GridData.FILL_VERTICAL);
@@ -266,8 +268,7 @@ public class MappingViewComposite extends Composite implements IEventListener {
 	}
 
 	private void updateRelationshipsGenerator(List<Container> containers) {
-		RelationShipsRegistry relationRegistry = RelationShipsRegistry.getInstance();
-		Iterable<Class<? extends ISceneGraphRelationshipGenerator>> allRelationshipsGenerator = relationRegistry.allRelationshipsGenerator();
+		Iterable<Class<? extends ISceneGraphRelationshipGenerator>> allRelationshipsGenerator = relationshipsRegistry.allRelationshipsGenerator();
 
 		Group relationshipsGroup = new Group(rootComposite, SWT.SHADOW_OUT);
 		GridData relationshipsLayoutData = new GridData(GridData.FILL_BOTH);
@@ -280,9 +281,9 @@ public class MappingViewComposite extends Composite implements IEventListener {
 		Class<? extends ISceneGraphRelationshipGenerator> selectedGenerator = buildCurrentRelationShipGenerator(containers);
 		int index = 0;
 
-		String selectedRelation = relationRegistry.getRelationName(selectedGenerator);
+		String selectedRelation = relationshipsRegistry.getRelationName(selectedGenerator);
 		for (Class<? extends ISceneGraphRelationshipGenerator> generatorClass : allRelationshipsGenerator) {
-			String relationToAdd = relationRegistry.getRelationName(generatorClass);
+			String relationToAdd = relationshipsRegistry.getRelationName(generatorClass);
 			combo.add(relationToAdd);
 			if (relationToAdd.equals(selectedRelation)) {
 				combo.select(index);
@@ -323,5 +324,15 @@ public class MappingViewComposite extends Composite implements IEventListener {
 	@Inject
 	public void setSeeIT3DVisualProperties(ISeeIT3DVisualProperties seeIT3DVisualProperties) {
 		this.seeIT3DVisualProperties = seeIT3DVisualProperties;
+	}
+
+	@Inject
+	public void setColorScaleRegistry(IColorScaleRegistry colorScaleRegistry) {
+		this.colorScaleRegistry = colorScaleRegistry;
+	}
+
+	@Inject
+	public void setRelationshipsRegistry(IRelationshipsRegistry relationshipsRegistry) {
+		this.relationshipsRegistry = relationshipsRegistry;
 	}
 }

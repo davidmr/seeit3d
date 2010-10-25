@@ -16,11 +16,11 @@
  */
 package seeit3d.base.visual.colorscale;
 
-import static com.google.common.collect.Lists.*;
+import java.util.*;
 
-import java.util.List;
+import seeit3d.base.visual.api.IColorScaleRegistry;
 
-import seeit3d.base.visual.colorscale.imp.*;
+import com.google.inject.Singleton;
 
 /**
  * Factory class to provide access to the set of all color scales in the application.
@@ -28,32 +28,20 @@ import seeit3d.base.visual.colorscale.imp.*;
  * @author David Montaño
  * 
  */
-public class ColorScaleRegistry {
-
-	private static final ColorScaleRegistry instance = new ColorScaleRegistry();
-
-	public static ColorScaleRegistry getInstance() {
-		return instance;
-	}
+@Singleton
+public class DefaultColorScaleRegistry implements IColorScaleRegistry {
 
 	private final List<IColorScale> colorScales;
 
-	private ColorScaleRegistry() {
-		colorScales = newArrayList(
-				new BlueTone(),
-				new BlueToYellow(),
-				new BlueGreenRed(),
-				new ColdToHotColorScale(),
-				new GrayColorScale(), 
-				new HeatedObject(),
-				new LinearOptimal(), 
-				new MagentaTone(),
-				new Rainbow());
+	public DefaultColorScaleRegistry() {
+		colorScales = new ArrayList<IColorScale>();
 	}
 
-	public void registerColorScale(IColorScale colorScale) {
-		colorScales.add(colorScale);
+	@Override
+	public void registerColorScale(IColorScale... colorScale) {
+		colorScales.addAll(Arrays.asList(colorScale));
 	}
+
 
 	public Iterable<IColorScale> allColorScales() {
 		return colorScales;

@@ -20,7 +20,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import seeit3d.base.error.ErrorHandler;
-import seeit3d.base.visual.relationships.imp.*;
+import seeit3d.base.visual.api.IRelationshipsRegistry;
+
+import com.google.inject.Singleton;
 
 /**
  * General registry of all relationships visualization generators
@@ -28,29 +30,26 @@ import seeit3d.base.visual.relationships.imp.*;
  * @author David Montaño
  * 
  */
-public class RelationShipsRegistry {
-
-	private static final RelationShipsRegistry instance = new RelationShipsRegistry();
-
-	public static RelationShipsRegistry getInstance() {
-		return instance;
-	}
+@Singleton
+public class DefaultRelationshipsRegistry implements IRelationshipsRegistry {
 
 	private final List<Class<? extends ISceneGraphRelationshipGenerator>> relationshipsGenerators;
 
-	private RelationShipsRegistry() {
+	public DefaultRelationshipsRegistry() {
 		relationshipsGenerators = new ArrayList<Class<? extends ISceneGraphRelationshipGenerator>>();
-		relationshipsGenerators.add(NoRelationships.class);
-		relationshipsGenerators.add(CommonBaseGenerator.class);
-		relationshipsGenerators.add(LineBaseGenerator.class);
-		relationshipsGenerators.add(ArcBasedGenerator.class);
-		relationshipsGenerators.add(MovementBasedGenerator.class);
 	}
 
+	@Override
+	public void registerRelationshipGenerator(Class<? extends ISceneGraphRelationshipGenerator> generator) {
+		relationshipsGenerators.add(generator);
+	}
+
+	@Override
 	public Iterable<Class<? extends ISceneGraphRelationshipGenerator>> allRelationshipsGenerator() {
 		return relationshipsGenerators;
 	}
 
+	@Override
 	public String getRelationName(Class<? extends ISceneGraphRelationshipGenerator> selectedGenerator) {
 		try {
 			return selectedGenerator.newInstance().getName();
@@ -64,6 +63,7 @@ public class RelationShipsRegistry {
 		return null;
 	}
 
+	@Override
 	public ISceneGraphRelationshipGenerator createNewInstance(Class<? extends ISceneGraphRelationshipGenerator> generator) {
 		try {
 			return generator.newInstance();

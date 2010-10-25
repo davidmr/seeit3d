@@ -22,9 +22,12 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.widgets.Combo;
 
+import seeit3d.base.SeeIT3D;
 import seeit3d.base.bus.events.ChangeColorScaleEvent;
-import seeit3d.base.visual.colorscale.ColorScaleRegistry;
+import seeit3d.base.visual.api.IColorScaleRegistry;
 import seeit3d.base.visual.colorscale.IColorScale;
+
+import com.google.inject.Inject;
 
 /**
  * This class listen for changes in color scale selection from mapping view
@@ -33,6 +36,12 @@ import seeit3d.base.visual.colorscale.IColorScale;
  * 
  */
 public class ColorScaleSelectionListener implements SelectionListener {
+
+	private IColorScaleRegistry colorScaleRegistry;
+
+	public ColorScaleSelectionListener() {
+		SeeIT3D.injector().injectMembers(this);
+	}
 
 	@Override
 	public void widgetDefaultSelected(SelectionEvent e) {
@@ -44,7 +53,7 @@ public class ColorScaleSelectionListener implements SelectionListener {
 		Combo combo = (Combo) event.widget;
 		String colorScaleName = combo.getItem(combo.getSelectionIndex());
 
-		Iterable<IColorScale> allColorScales = ColorScaleRegistry.getInstance().allColorScales();
+		Iterable<IColorScale> allColorScales = colorScaleRegistry.allColorScales();
 
 		for (IColorScale colorScale : allColorScales) {
 			if (colorScaleName.equals(colorScale.getName())) {
@@ -52,6 +61,11 @@ public class ColorScaleSelectionListener implements SelectionListener {
 				break;
 			}
 		}
+	}
+
+	@Inject
+	public void setColorScaleRegistry(IColorScaleRegistry colorScaleRegistry) {
+		this.colorScaleRegistry = colorScaleRegistry;
 	}
 
 }

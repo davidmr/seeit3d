@@ -37,7 +37,7 @@ public class EventBus {
 	private EventBus() {}
 
 	static {
-		eventQueue = new ArrayBlockingQueue<IEvent>(30);
+		eventQueue = new ArrayBlockingQueue<IEvent>(10);
 		listeners = ArrayListMultimap.create();
 		Thread eventDispatcherThread = new Thread(new EventDispatcher(), "SeeIT3DEventDispatcher");
 		eventDispatcherThread.start();
@@ -59,12 +59,28 @@ public class EventBus {
 	}
 
 	public static void publishEvent(IEvent event) {
-		try {
-			eventQueue.put(event);
-		} catch (InterruptedException e) {
-			System.err.println("Event " + event.getClass() + " couldn't be registered");
-			e.printStackTrace();
+		Thread publisher = new Thread(new EventPublisher(event), "Event publisher");
+		publisher.start();
+	}
+
+	private static final class EventPublisher implements Runnable {
+
+		private final IEvent event;
+
+		public EventPublisher(IEvent event) {
+			this.event = event;
 		}
+
+		@Override
+		public void run() {
+			try {
+				System.out.println("Publishing event: " + event);
+				eventQueue.put(event);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+
 	}
 
 	private static final class EventDispatcher implements Runnable {

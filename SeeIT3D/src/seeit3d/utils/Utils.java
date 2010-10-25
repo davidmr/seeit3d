@@ -280,7 +280,7 @@ public class Utils {
 		}
 	}
 
-	public static <T> void applyTransformation(Iterable<T> collection, Function<T, T> function) {
+	public static <T> void applyFunction(Iterable<T> collection, Function<T, T> function) {
 		for (T object : collection) {
 			function.apply(object);
 		}

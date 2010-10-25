@@ -25,6 +25,9 @@ import com.google.inject.Injector;
 
 public class SeeIT3D {
 
+	// TODO reduce the queue event size, it should be smaller. It is getting blocked (bad use of synchronized?)
+	// TODO better used of registers
+
 	private static final List<ISeeIT3DContributor> contributions = new ArrayList<ISeeIT3DContributor>();
 
 	private static Injector injector;

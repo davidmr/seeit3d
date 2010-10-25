@@ -16,7 +16,6 @@
  */
 package seeit3d.base.core.api;
 
-import seeit3d.base.SeeIT3DAPI;
 import seeit3d.base.core.handler.SeeIT3DCanvas;
 
 /**
@@ -25,7 +24,7 @@ import seeit3d.base.core.handler.SeeIT3DCanvas;
  * @author David Montaño
  * 
  */
-public interface ISeeIT3DCore extends SeeIT3DAPI {
+public interface ISeeIT3DCore {
 
 	void initialize();
 

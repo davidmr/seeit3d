@@ -211,7 +211,7 @@ public class DefaultSeeIT3DCore implements ISeeIT3DCore, IEventListener {
 
 	private void operationOnSelectedPolycylinders(PerformOperationOnSelectedPolycylindersEvent operation) {
 		FunctionToApplyOnPolycylinders function = operation.getFunction();
-		Utils.applyTransformation(state.selectedPolycylinders(), function);
+		Utils.applyFunction(state.selectedPolycylinders(), function);
 		if (operation.isVisualizationNeedsRefresh()) {
 			refreshVisualization();
 		}
@@ -219,7 +219,7 @@ public class DefaultSeeIT3DCore implements ISeeIT3DCore, IEventListener {
 
 	private void operationOnSelectedContainers(PerformOperationOnSelectedContainersEvent operation) {
 		FunctionToApplyOnContainer function = operation.getFunction();
-		Utils.applyTransformation(unmodifiableSelectedContainers(), function);
+		Utils.applyFunction(unmodifiableSelectedContainers(), function);
 		if (operation.isVisualizationNeedsRefresh()) {
 			refreshVisualization();
 		}

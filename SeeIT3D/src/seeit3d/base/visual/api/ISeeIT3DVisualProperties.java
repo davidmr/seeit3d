@@ -16,7 +16,6 @@
  */
 package seeit3d.base.visual.api;
 
-import seeit3d.base.SeeIT3DAPI;
 import seeit3d.base.visual.colorscale.IColorScale;
 
 /**
@@ -25,7 +24,7 @@ import seeit3d.base.visual.colorscale.IColorScale;
  * @author David Montaño
  * 
  */
-public interface ISeeIT3DVisualProperties extends SeeIT3DAPI {
+public interface ISeeIT3DVisualProperties {
 
 	IColorScale getCurrentColorScale();
 

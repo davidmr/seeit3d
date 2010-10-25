@@ -12,9 +12,7 @@ import seeit3d.java.modeler.generator.annotation.*;
 import seeit3d.java.modeler.generator.metrics.*;
 import seeit3d.java.modeler.generator.metrics.annotation.*;
 
-import com.google.inject.AbstractModule;
-import com.google.inject.Provider;
-import com.google.inject.TypeLiteral;
+import com.google.inject.*;
 import com.google.inject.name.Names;
 
 public class JavaModule extends AbstractModule {

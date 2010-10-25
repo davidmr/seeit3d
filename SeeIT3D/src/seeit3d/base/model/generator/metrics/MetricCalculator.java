@@ -28,10 +28,9 @@ public abstract class MetricCalculator implements Serializable {
 
 	private static final long serialVersionUID = -5439857159491897341L;
 
-	// TODO update XML schema
-	public static final String NUMERIC = "CONTINUOUS";
+	public static final String NUMERIC = "NUMERIC";
 
-	public static final String NOMINAL = "CATEGORIZED";
+	public static final String NOMINAL = "NOMINAL";
 
 	private final String name;
 

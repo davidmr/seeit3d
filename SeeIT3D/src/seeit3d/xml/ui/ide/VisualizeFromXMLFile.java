@@ -60,7 +60,7 @@ public class VisualizeFromXMLFile extends AbstractHandler {
 		try {
 			InputStream contents = file.getContents();
 
-			JAXBContext context = JAXBContext.newInstance("seeit3d.modelers.xml.internal");
+			JAXBContext context = JAXBContext.newInstance("seeit3d.xml.modeler.internal");
 			Unmarshaller unmarshaller = context.createUnmarshaller();
 			Containers containers = (Containers) unmarshaller.unmarshal(contents);
 			Shell shell = HandlerUtil.getActiveShell(event);

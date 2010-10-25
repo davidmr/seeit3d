@@ -77,8 +77,8 @@
                     <xs:attribute name="type" use="required">
                         <xs:simpleType>
                             <xs:restriction base="xs:string">
-                                <xs:enumeration value="CONTINUOUS"></xs:enumeration>
-                                <xs:enumeration value="CATEGORIZED"></xs:enumeration>
+                                <xs:enumeration value="NUMERIC"></xs:enumeration>
+                                <xs:enumeration value="NOMINAL"></xs:enumeration>
                             </xs:restriction>
                         </xs:simpleType>
                     </xs:attribute>

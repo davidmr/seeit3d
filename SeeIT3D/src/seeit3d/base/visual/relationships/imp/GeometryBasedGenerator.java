@@ -21,10 +21,9 @@ import static seeit3d.base.bus.EventBus.*;
 import java.util.*;
 
 import javax.media.j3d.*;
-import javax.vecmath.Point3f;
-import javax.vecmath.Vector3f;
+import javax.vecmath.*;
 
-import seeit3d.base.SeeIT3DAPILocator;
+import seeit3d.base.SeeIT3D;
 import seeit3d.base.bus.IEvent;
 import seeit3d.base.bus.IEventListener;
 import seeit3d.base.bus.events.*;
@@ -58,6 +57,7 @@ public abstract class GeometryBasedGenerator implements ISceneGraphRelationshipG
 		relatedShapes = new TreeMap<Container, Shape3D>();
 		relatedTG = new TreeMap<Container, TransformGroup>();
 		relatedContainers = new ArrayList<Container>();
+		SeeIT3D.injector().injectMembers(this);
 	}
 
 	public abstract Geometry createGeometryBetweenContainers(Container origin, Container destination);
@@ -95,11 +95,11 @@ public abstract class GeometryBasedGenerator implements ISceneGraphRelationshipG
 	}
 
 	@Override
-	public final List<Container> generateVisualRelationShips(Container baseContainer) {
+	public final List<Container> generateVisualRelationShips(Container baseContainer, Color3f relationshipColor) {
 		List<Container> relatedContainers = baseContainer.getRelatedContainersToShow();
 
 		for (Container related : relatedContainers) {
-			initializeRelationBetweenContainers(baseContainer, related);
+			initializeRelationBetweenContainers(baseContainer, related, relationshipColor);
 		}
 
 		this.relationshipSourceContainer = baseContainer;
@@ -128,14 +128,14 @@ public abstract class GeometryBasedGenerator implements ISceneGraphRelationshipG
 		}
 	}
 
-	private void initializeRelationBetweenContainers(Container baseContainer, Container relatedContainer) {
+	private void initializeRelationBetweenContainers(Container baseContainer, Container relatedContainer, Color3f relationshipColor) {
 		Geometry geometry = createGeometryBetweenContainers(baseContainer, relatedContainer);
 
 		Appearance appearance = new Appearance();
 		LineAttributes lineAttributes = new LineAttributes(2.0f, LineAttributes.PATTERN_SOLID, true);
 		appearance.setLineAttributes(lineAttributes);
 
-		ColoringAttributes coloringAttributes = new ColoringAttributes(SeeIT3DAPILocator.findPreferences().getRelationMarkColor(), ColoringAttributes.NICEST);
+		ColoringAttributes coloringAttributes = new ColoringAttributes(relationshipColor, ColoringAttributes.NICEST);
 		appearance.setColoringAttributes(coloringAttributes);
 
 		Shape3D relationMark = new Shape3D(geometry, appearance);

@@ -24,7 +24,7 @@ import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.layout.*;
 import org.eclipse.swt.widgets.*;
 
-import seeit3d.base.SeeIT3DAPILocator;
+import seeit3d.base.SeeIT3D;
 import seeit3d.base.bus.IEvent;
 import seeit3d.base.bus.IEventListener;
 import seeit3d.base.bus.events.MappingViewNeedsUpdateEvent;
@@ -33,6 +33,7 @@ import seeit3d.base.model.VisualProperty;
 import seeit3d.base.model.generator.metrics.MetricCalculator;
 import seeit3d.base.ui.ide.view.dnd.*;
 import seeit3d.base.ui.ide.view.listeners.*;
+import seeit3d.base.visual.api.ISeeIT3DVisualProperties;
 import seeit3d.base.visual.colorscale.ColorScaleRegistry;
 import seeit3d.base.visual.colorscale.IColorScale;
 import seeit3d.base.visual.relationships.ISceneGraphRelationshipGenerator;
@@ -41,6 +42,7 @@ import seeit3d.base.visual.relationships.imp.NoRelationships;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
+import com.google.inject.Inject;
 
 /**
  * This class represents the mapping view.
@@ -52,12 +54,15 @@ public class MappingViewComposite extends Composite implements IEventListener {
 
 	public static final String VISUAL_PROPERTY = "visualProperty";
 
+	private ISeeIT3DVisualProperties seeIT3DVisualProperties;
+
 	private Composite rootComposite;
 
 	private ScrolledComposite scrollerComposite;
 
 	public MappingViewComposite(Composite parent) {
 		super(parent, SWT.DOUBLE_BUFFERED);
+		SeeIT3D.injector().injectMembers(this);
 		this.setLayout(new FillLayout());
 		updateComponents(new ArrayList<Container>());
 	}
@@ -114,7 +119,7 @@ public class MappingViewComposite extends Composite implements IEventListener {
 		GridData componetLayoutData = new GridData(GridData.CENTER);
 		componetLayoutData.widthHint = 150;
 		componentSelectionGroup.setLayoutData(componetLayoutData);
-		componentSelectionGroup.setText("Component Level");
+		componentSelectionGroup.setText("Granularity Level");
 		GridLayout groupLayout = new GridLayout(3, false);
 		componentSelectionGroup.setLayout(groupLayout);
 		Button previousLevelButton = new Button(componentSelectionGroup, SWT.ARROW | SWT.LEFT);
@@ -232,7 +237,7 @@ public class MappingViewComposite extends Composite implements IEventListener {
 
 		Combo combo = new Combo(colorScalesGroup, SWT.READ_ONLY);
 
-		IColorScale currentColorScale = SeeIT3DAPILocator.findVisualProperties().getColorScale();
+		IColorScale currentColorScale = seeIT3DVisualProperties.getCurrentColorScale();
 		int index = 0;
 		for (IColorScale colorScale : allColorScales) {
 			combo.add(colorScale.getName());
@@ -313,5 +318,10 @@ public class MappingViewComposite extends Composite implements IEventListener {
 				}
 			});
 		}
+	}
+
+	@Inject
+	public void setSeeIT3DVisualProperties(ISeeIT3DVisualProperties seeIT3DVisualProperties) {
+		this.seeIT3DVisualProperties = seeIT3DVisualProperties;
 	}
 }

@@ -24,11 +24,9 @@ import javax.media.j3d.*;
 import javax.vecmath.*;
 
 import seeit3d.base.World;
-import seeit3d.base.core.api.ISceneGraphManipulator;
-import seeit3d.base.core.api.IVisualizationState;
+import seeit3d.base.core.api.*;
 import seeit3d.base.error.exception.SeeIT3DException;
 import seeit3d.base.model.Container;
-import seeit3d.base.model.Preferences;
 import seeit3d.base.ui.behavior.*;
 import seeit3d.base.visual.relationships.ISceneGraphRelationshipGenerator;
 import seeit3d.utils.Utils;
@@ -75,9 +73,9 @@ public class DefaultSceneGraphManipulator implements ISceneGraphManipulator {
 	private boolean initialized = false;
 
 	@Inject
-	public DefaultSceneGraphManipulator(IVisualizationState state) {
+	public DefaultSceneGraphManipulator(IVisualizationState state, ISeeIT3DPreferences preferences) {
 		this.state = state;
-		this.backgroundColor = Preferences.getInstance().getBackgroundColor();
+		this.backgroundColor = preferences.getBackgroundColor();
 	}
 
 	@Override

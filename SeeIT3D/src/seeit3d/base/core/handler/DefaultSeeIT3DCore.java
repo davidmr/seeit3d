@@ -54,17 +54,17 @@ public class DefaultSeeIT3DCore implements ISeeIT3DCore, IEventListener {
 
 	private final ISceneGraphManipulator sceneGraphHandler;
 
+	private final ISeeIT3DPreferences preferences;
+
 	private boolean isSynchronzationWithPackageExplorerSet = false;
 
 	private boolean isSelectionToolSet = false;
 
-	private final Preferences preferences;
-
 	@Inject
-	public DefaultSeeIT3DCore(IVisualizationState state, ISceneGraphManipulator sceneGraphHandler) {
+	public DefaultSeeIT3DCore(IVisualizationState state, ISceneGraphManipulator sceneGraphHandler, ISeeIT3DPreferences preferences) {
 		this.state = state;
 		this.sceneGraphHandler = sceneGraphHandler;
-		preferences = Preferences.getInstance();
+		this.preferences = preferences;
 
 		registerListener(ToggleSynchronizationPackageExplorerVsViewEvent.class, this);
 		registerListener(AddContainerEvent.class, this);

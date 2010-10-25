@@ -27,6 +27,7 @@ import seeit3d.base.visual.colorscale.IColorScale;
  * 
  */
 public class MagentaTone implements IColorScale {
+
 	private static Color3f[] colors;
 
 	public MagentaTone() {

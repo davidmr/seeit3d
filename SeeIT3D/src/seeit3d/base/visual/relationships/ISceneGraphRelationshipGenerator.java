@@ -18,6 +18,8 @@ package seeit3d.base.visual.relationships;
 
 import java.util.List;
 
+import javax.vecmath.Color3f;
+
 import seeit3d.base.model.Container;
 
 /**
@@ -30,7 +32,7 @@ public interface ISceneGraphRelationshipGenerator {
 
 	public void initialize();
 
-	public List<Container> generateVisualRelationShips(Container baseContainer);
+	public List<Container> generateVisualRelationShips(Container baseContainer, Color3f relationColor);
 
 	public void unused();
 

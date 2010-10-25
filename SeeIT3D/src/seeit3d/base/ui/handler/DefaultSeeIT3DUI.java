@@ -35,11 +35,13 @@ import seeit3d.base.bus.IEventListener;
 import seeit3d.base.bus.events.*;
 import seeit3d.base.error.ErrorHandler;
 import seeit3d.base.model.*;
+import seeit3d.base.ui.api.ISeeIT3DUI;
 import seeit3d.base.ui.behavior.PickUtils;
 import seeit3d.base.ui.ide.view.SeeIT3DView;
 import seeit3d.utils.Utils;
 import seeit3d.utils.ViewConstants;
 
+import com.google.inject.Singleton;
 import com.sun.j3d.utils.picking.PickCanvas;
 import com.sun.j3d.utils.picking.PickResult;
 
@@ -49,9 +51,10 @@ import com.sun.j3d.utils.picking.PickResult;
  * @author David Montaño
  * 
  */
-public class SeeIT3DUIHandler implements IEventListener {
+@Singleton
+public class DefaultSeeIT3DUI implements ISeeIT3DUI, IEventListener {
 
-	public SeeIT3DUIHandler() {
+	public DefaultSeeIT3DUI() {
 		registerListener(SynchronizePackageExplorerVsViewEvent.class, this);
 		registerListener(OpenEditorEvent.class, this);
 		registerListener(OpenSeeIT3DViewEvent.class, this);

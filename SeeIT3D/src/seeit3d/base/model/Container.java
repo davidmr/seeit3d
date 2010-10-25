@@ -16,23 +16,14 @@
  */
 package seeit3d.base.model;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.BitSet;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.io.*;
+import java.util.*;
 
-import javax.media.j3d.BranchGroup;
-import javax.media.j3d.Shape3D;
-import javax.media.j3d.Switch;
-import javax.media.j3d.Transform3D;
-import javax.media.j3d.TransformGroup;
+import javax.media.j3d.*;
 import javax.vecmath.Vector3f;
 
-import seeit3d.base.SeeIT3DAPILocator;
+import seeit3d.base.SeeIT3D;
+import seeit3d.base.core.api.ISeeIT3DPreferences;
 import seeit3d.base.error.exception.SeeIT3DException;
 import seeit3d.base.model.generator.metrics.MetricCalculator;
 import seeit3d.base.visual.relationships.ISceneGraphRelationshipGenerator;
@@ -42,6 +33,7 @@ import seeit3d.utils.ViewConstants;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
+import com.google.inject.Inject;
 import com.sun.j3d.utils.geometry.Box;
 
 /**
@@ -56,7 +48,7 @@ public class Container implements Serializable, Comparable<Container> {
 
 	public static final String CONTAINER_MAIN_TG = "containerMainTG";
 
-	private transient Preferences preferences;
+	private transient ISeeIT3DPreferences preferences;
 
 	private transient BranchGroup containerBG;
 
@@ -98,7 +90,6 @@ public class Container implements Serializable, Comparable<Container> {
 
 	private Container(IContainerRepresentedObject representedObject, List<MetricCalculator> metrics, int currentLevel) {
 		this.identifier = Utils.generateContainerIdentifier();
-		this.preferences = SeeIT3DAPILocator.findPreferences();
 		this.polycylinders = new ArrayList<PolyCylinder>();
 		this.relatedContainers = new ArrayList<Container>();
 		this.children = new ArrayList<Container>();
@@ -113,6 +104,7 @@ public class Container implements Serializable, Comparable<Container> {
 		this.sorted = false;
 		this.currentLevel = currentLevel;
 		this.sceneGraphRelationshipGenerator = new NoRelationships();
+		SeeIT3D.injector().injectMembers(this);
 	}
 
 	public Container(IContainerRepresentedObject representedObject, List<MetricCalculator> metrics) {
@@ -411,7 +403,7 @@ public class Container implements Serializable, Comparable<Container> {
 	}
 
 	public List<Container> generateSceneGraphRelations() {
-		return sceneGraphRelationshipGenerator.generateVisualRelationShips(this);
+		return sceneGraphRelationshipGenerator.generateVisualRelationShips(this, preferences.getRelationMarkColor());
 	}
 
 	public void setPosition(Vector3f position) {
@@ -602,8 +594,13 @@ public class Container implements Serializable, Comparable<Container> {
 
 	private void readObject(ObjectInputStream ois) throws IOException, ClassNotFoundException {
 		ois.defaultReadObject();
-		preferences = SeeIT3DAPILocator.findPreferences();
+		SeeIT3D.injector().injectMembers(this);
 		sceneGraphRelationshipGenerator = new NoRelationships();
+	}
+
+	@Inject
+	public void setPreferences(ISeeIT3DPreferences preferences) {
+		this.preferences = preferences;
 	}
 
 

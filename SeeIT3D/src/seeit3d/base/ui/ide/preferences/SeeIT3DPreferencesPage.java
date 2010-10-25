@@ -24,7 +24,7 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 
 import seeit3d.Activator;
-import seeit3d.base.model.Preferences;
+import seeit3d.base.core.api.ISeeIT3DPreferences;
 import seeit3d.base.visual.colorscale.ColorScaleRegistry;
 import seeit3d.base.visual.colorscale.IColorScale;
 
@@ -46,16 +46,15 @@ public class SeeIT3DPreferencesPage extends FieldEditorPreferencePage implements
 		setDescription("Note: Background Color and Color Scale by Default requires restart. Other colors need visualization refresh to take effect.");
 	}
 
-
 	@Override
 	protected void createFieldEditors() {
-		addField(new IntegerFieldEditor(Preferences.CONTAINERS_PER_ROW, "Containers per row", getFieldEditorParent()));
-		addField(new IntegerFieldEditor(Preferences.POLYCYLINDERS_PER_ROW, "Polycylinders per row", getFieldEditorParent()));
-		addField(new ColorFieldEditor(Preferences.BACKGROUND_COLOR, "Background Color (*)", getFieldEditorParent()));
-		addField(new ColorFieldEditor(Preferences.HIGHLIGHT_COLOR, "Highlight Color", getFieldEditorParent()));
-		addField(new ColorFieldEditor(Preferences.RELATION_COLOR, "Relation Mark Color", getFieldEditorParent()));
-		addField(new IntegerFieldEditor(Preferences.SCALE_STEP, "Scale Step (%)", getFieldEditorParent(), 2));
-		addField(new IntegerFieldEditor(Preferences.TRANSPARENCY_STEP, "Transparency Step (%)", getFieldEditorParent(), 2));
+		addField(new IntegerFieldEditor(ISeeIT3DPreferences.CONTAINERS_PER_ROW, "Containers per row", getFieldEditorParent()));
+		addField(new IntegerFieldEditor(ISeeIT3DPreferences.POLYCYLINDERS_PER_ROW, "Polycylinders per row", getFieldEditorParent()));
+		addField(new ColorFieldEditor(ISeeIT3DPreferences.BACKGROUND_COLOR, "Background Color (*)", getFieldEditorParent()));
+		addField(new ColorFieldEditor(ISeeIT3DPreferences.HIGHLIGHT_COLOR, "Highlight Color", getFieldEditorParent()));
+		addField(new ColorFieldEditor(ISeeIT3DPreferences.RELATION_COLOR, "Relation Mark Color", getFieldEditorParent()));
+		addField(new IntegerFieldEditor(ISeeIT3DPreferences.SCALE_STEP, "Scale Step (%)", getFieldEditorParent(), 2));
+		addField(new IntegerFieldEditor(ISeeIT3DPreferences.TRANSPARENCY_STEP, "Transparency Step (%)", getFieldEditorParent(), 2));
 
 		Iterable<IColorScale> allColorScales = ColorScaleRegistry.getInstance().allColorScales();
 
@@ -71,7 +70,7 @@ public class SeeIT3DPreferencesPage extends FieldEditorPreferencePage implements
 			colorScalesNames[i][1] = colorScaleNames.get(i);
 		}
 
-		addField(new ComboFieldEditor(Preferences.COLOR_SCALE, "Color scale by default", colorScalesNames, getFieldEditorParent()));
+		addField(new ComboFieldEditor(ISeeIT3DPreferences.COLOR_SCALE, "Color scale by default", colorScalesNames, getFieldEditorParent()));
 
 	}
 

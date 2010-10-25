@@ -3,6 +3,7 @@ package seeit3d.base.visual.relationships.imp;
 import java.util.List;
 
 import javax.media.j3d.*;
+import javax.vecmath.Color3f;
 
 import seeit3d.base.World;
 import seeit3d.base.model.Container;
@@ -16,7 +17,7 @@ public class MovementBasedGenerator implements ISceneGraphRelationshipGenerator 
 	public void initialize() {}
 
 	@Override
-	public List<Container> generateVisualRelationShips(Container baseContainer) {
+	public List<Container> generateVisualRelationShips(Container baseContainer, Color3f relationshipColor) {
 		List<Container> relatedContainers = baseContainer.getRelatedContainers();
 		addMovementBehavior(baseContainer);
 		for (Container container : relatedContainers) {

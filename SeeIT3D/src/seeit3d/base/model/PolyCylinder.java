@@ -24,15 +24,18 @@ import javax.media.j3d.*;
 import javax.vecmath.Color3f;
 
 import seeit3d.base.SeeIT3D;
-import seeit3d.base.SeeIT3DAPILocator;
+import seeit3d.base.core.api.ISeeIT3DPreferences;
 import seeit3d.base.model.generator.metrics.MetricCalculator;
 import seeit3d.base.model.utils.NoEclipseRepresentation;
 import seeit3d.base.model.utils.NoOpMetricCalculator;
+import seeit3d.base.visual.api.ISeeIT3DVisualProperties;
+import seeit3d.base.visual.colorscale.IColorScale;
 import seeit3d.utils.Utils;
 import seeit3d.utils.ViewConstants;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
+import com.google.inject.Inject;
 import com.sun.j3d.utils.geometry.Box;
 
 /**
@@ -49,9 +52,11 @@ public class PolyCylinder implements Serializable {
 
 	private static final float HEIGHT_SCALING_FACTOR = 0.3f;
 
-	private transient TransformGroup polyCylinderTG;
+	private transient ISeeIT3DVisualProperties seeIT3DVisualProperties;
 
-	private transient Preferences preferences;
+	private transient ISeeIT3DPreferences preferences;
+
+	private transient TransformGroup polyCylinderTG;
 
 	private transient Material boxColor;
 
@@ -80,7 +85,7 @@ public class PolyCylinder implements Serializable {
 		visualPropertyValues = new ArrayList<VisualPropertyValue>();
 		identifier = Utils.generatePolyCylinderIdentifier();
 		propertiesMap = HashBiMap.create();
-		preferences = SeeIT3DAPILocator.findPreferences();
+		SeeIT3D.injector().injectMembers(this);
 	}
 
 	public PolyCylinder(String name, Map<MetricCalculator, String> metricsValues) {
@@ -166,7 +171,8 @@ public class PolyCylinder implements Serializable {
 		for (VisualProperty visualProperty : VisualProperty.values()) {
 			MetricCalculator metric = propertiesMap.inverse().get(visualProperty);
 			String value = metricsValues.get(metric) != null ? metricsValues.get(metric) : Float.toString(visualProperty.getDefaultValue());
-			visualPropertyValues.add(new VisualPropertyValue(visualProperty, value, metric));
+			IColorScale currentColorScale = seeIT3DVisualProperties.getCurrentColorScale();
+			visualPropertyValues.add(new VisualPropertyValue(visualProperty, value, metric, currentColorScale));
 		}
 	}
 
@@ -257,8 +263,18 @@ public class PolyCylinder implements Serializable {
 
 	private void readObject(ObjectInputStream ois) throws IOException, ClassNotFoundException {
 		ois.defaultReadObject();
-		preferences = SeeIT3DAPILocator.findPreferences();
+		SeeIT3D.injector().injectMembers(this);
 		representation = new NoEclipseRepresentation();
+	}
+
+	@Inject
+	public void setSeeIT3DVisualProperties(ISeeIT3DVisualProperties seeIT3DVisualProperties) {
+		this.seeIT3DVisualProperties = seeIT3DVisualProperties;
+	}
+
+	@Inject
+	public void setPreferences(ISeeIT3DPreferences preferences) {
+		this.preferences = preferences;
 	}
 
 }

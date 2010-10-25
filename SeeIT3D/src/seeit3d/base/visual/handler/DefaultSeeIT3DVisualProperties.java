@@ -21,9 +21,12 @@ import seeit3d.base.bus.IEvent;
 import seeit3d.base.bus.IEventListener;
 import seeit3d.base.bus.events.ChangeColorScaleEvent;
 import seeit3d.base.bus.events.ColorScaleChangedEvent;
-import seeit3d.base.model.Preferences;
-import seeit3d.base.visual.api.SeeIT3DVisualProperties;
+import seeit3d.base.core.api.ISeeIT3DPreferences;
+import seeit3d.base.visual.api.ISeeIT3DVisualProperties;
 import seeit3d.base.visual.colorscale.IColorScale;
+
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
 /**
  * Class to handle the visual properties module general state
@@ -31,12 +34,14 @@ import seeit3d.base.visual.colorscale.IColorScale;
  * @author David Montaño
  * 
  */
-public class SeeIT3DVisualPropertiesHandler implements SeeIT3DVisualProperties, IEventListener {
+@Singleton
+public class DefaultSeeIT3DVisualProperties implements ISeeIT3DVisualProperties, IEventListener {
 
 	private IColorScale colorScale;
 
-	public SeeIT3DVisualPropertiesHandler() {
-		colorScale = Preferences.getInstance().getColorScale();
+	@Inject
+	public DefaultSeeIT3DVisualProperties(ISeeIT3DPreferences preferences) {
+		colorScale = preferences.getColorScale();
 		registerListener(ChangeColorScaleEvent.class, this);
 	}
 
@@ -46,7 +51,6 @@ public class SeeIT3DVisualPropertiesHandler implements SeeIT3DVisualProperties, 
 			setColorScale(((ChangeColorScaleEvent) event).getColorScale());
 			publishEvent(new ColorScaleChangedEvent());
 		}
-
 	}
 
 	private void setColorScale(IColorScale colorScale) {
@@ -54,7 +58,7 @@ public class SeeIT3DVisualPropertiesHandler implements SeeIT3DVisualProperties, 
 	}
 
 	@Override
-	public IColorScale getColorScale() {
+	public IColorScale getCurrentColorScale() {
 		return colorScale;
 	}
 

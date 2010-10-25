@@ -22,7 +22,6 @@ import javax.media.j3d.*;
 import javax.vecmath.Color3f;
 import javax.vecmath.Vector3f;
 
-import seeit3d.base.SeeIT3DAPILocator;
 import seeit3d.base.model.Container;
 import seeit3d.base.visual.relationships.ISceneGraphRelationshipGenerator;
 import seeit3d.utils.Utils;
@@ -58,9 +57,9 @@ public class CommonBaseGenerator implements ISceneGraphRelationshipGenerator {
 	}
 
 	@Override
-	public List<Container> generateVisualRelationShips(Container baseContainer) {
+	public List<Container> generateVisualRelationShips(Container baseContainer, Color3f relationshipColor) {
 
-		Color3f baseColor = SeeIT3DAPILocator.findPreferences().getRelationMarkColor();
+		Color3f baseColor = relationshipColor;
 		Color3f darkerColor = new Color3f(baseColor.x - COLOR_OFFSET, baseColor.y - COLOR_OFFSET, baseColor.z - COLOR_OFFSET);
 
 		addMarkToContainer(baseContainer, darkerColor);

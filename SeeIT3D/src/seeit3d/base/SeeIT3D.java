@@ -15,8 +15,8 @@ import org.eclipse.ui.commands.ICommandService;
 import org.eclipse.ui.progress.UIJob;
 
 import seeit3d.Activator;
+import seeit3d.base.core.api.ISeeIT3DPreferences;
 import seeit3d.base.error.ErrorHandler;
-import seeit3d.base.model.Preferences;
 import seeit3d.base.ui.ide.commands.ChangeSortingPolyCylindersCriteriaCommand;
 import seeit3d.base.ui.ide.observers.WorkspaceClosedObserver;
 
@@ -42,7 +42,7 @@ public class SeeIT3D {
 	}
 
 	private static void initializePreferences() {
-		Preferences preferences = Preferences.getInstance();
+		ISeeIT3DPreferences preferences = injector.getInstance(ISeeIT3DPreferences.class);
 		IPreferenceStore preferenceStore = Activator.getDefault().getPreferenceStore();
 		preferences.setPreferencesDefaults(preferenceStore);
 		preferences.loadStoredPreferences(preferenceStore);

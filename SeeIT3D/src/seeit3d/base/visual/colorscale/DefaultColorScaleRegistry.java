@@ -23,7 +23,7 @@ import seeit3d.base.visual.api.IColorScaleRegistry;
 import com.google.inject.Singleton;
 
 /**
- * Factory class to provide access to the set of all color scales in the application.
+ * Default implementation of the color scales registry
  * 
  * @author David Montaño
  * 

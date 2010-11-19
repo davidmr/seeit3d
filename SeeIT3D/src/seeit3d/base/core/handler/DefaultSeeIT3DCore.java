@@ -296,7 +296,7 @@ public class DefaultSeeIT3DCore implements ISeeIT3DCore, IEventListener {
 			if (state.hasContainersSelected()) {
 				boolean selectionPolyCylinderChanged = false;
 				for (PolyCylinder polycylinder : polycylinders) {
-					selectionContainerChanged |= state.addPolyCylinderToSelection(polycylinder, togglePolycylinderSelection);
+					selectionPolyCylinderChanged |= state.addPolyCylinderToSelection(polycylinder, togglePolycylinderSelection);
 				}
 
 				selectionNeedsRefresh |= selectionPolyCylinderChanged;
@@ -308,6 +308,7 @@ public class DefaultSeeIT3DCore implements ISeeIT3DCore, IEventListener {
 
 			if (selectionNeedsRefresh) {
 				refreshSelection();
+				updateCurrentSelectionValues();
 			}
 
 			updateOrbitingState();
@@ -323,23 +324,23 @@ public class DefaultSeeIT3DCore implements ISeeIT3DCore, IEventListener {
 		}
 	}
 
-	private void updateCurrentSelectionValues(PolyCylinder poly) {
+	private void updateCurrentSelectionValues() {
+
 		boolean hasMultipleSelection = state.hasMultiplePolyCylindersSelected();
 		Map<String, String> currentMetricsValuesFromSelection = new HashMap<String, String>();
 
 		if (hasMultipleSelection) {
 			currentMetricsValuesFromSelection.put("Multiple selection", "-");
 		} else {
-			if (poly != null) {
-				if (state.hasContainersSelected()) {
-					Container selectedContainer = state.firstContainer();
-					Map<MetricCalculator, VisualProperty> propertiesMapAccordingToLevel = selectedContainer.getPropertiesMap();
-					for (Map.Entry<MetricCalculator, VisualProperty> entry : propertiesMapAccordingToLevel.entrySet()) {
-						VisualProperty visualProperty = entry.getValue();
-						VisualPropertyValue propertyValue = poly.getVisualProperty(visualProperty);
-						String value = propertyValue.getRealValue();
-						currentMetricsValuesFromSelection.put(entry.getKey().getMetricName(), value);
-					}
+			PolyCylinder selected = state.selectedPolycylinders().iterator().next();
+			if (state.hasContainersSelected()) {
+				Container selectedContainer = state.firstContainer();
+				Map<MetricCalculator, VisualProperty> propertiesMapAccordingToLevel = selectedContainer.getPropertiesMap();
+				for (Map.Entry<MetricCalculator, VisualProperty> entry : propertiesMapAccordingToLevel.entrySet()) {
+					VisualProperty visualProperty = entry.getValue();
+					VisualPropertyValue propertyValue = selected.getVisualProperty(visualProperty);
+					String value = propertyValue.getRealValue();
+					currentMetricsValuesFromSelection.put(entry.getKey().getMetricName(), value);
 				}
 			}
 		}
@@ -440,14 +441,10 @@ public class DefaultSeeIT3DCore implements ISeeIT3DCore, IEventListener {
 
 		state.validatePolycylindersSelection();
 
-		PolyCylinder lastSelectedPoly = null;
 		Iterable<PolyCylinder> iteratorOnPolycylinders = state.selectedPolycylinders();
 		for (PolyCylinder poly : iteratorOnPolycylinders) {
 			poly.setSelected(true);
-			lastSelectedPoly = poly;
 		}
-
-		updateCurrentSelectionValues(lastSelectedPoly);
 	}
 
 	private List<Container> unmodifiableSelectedContainers() {

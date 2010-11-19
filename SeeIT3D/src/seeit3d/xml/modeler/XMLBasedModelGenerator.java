@@ -78,7 +78,7 @@ public class XMLBasedModelGenerator implements IModelGenerator<seeit3d.xml.model
 				metrics.add(new XMLNumericMetricCalculator(metricName, maxValue));
 			} else if (type.equals(MetricCalculator.NOMINAL)) {
 				if (metricXML.getCategories() == null) {
-					throw new IllegalArgumentException("categories must be defined in XML when using Categorized metrics");
+					throw new IllegalArgumentException("Categories must be defined in XML when using Categorized metrics");
 				}
 				List<String> categories = Arrays.asList(metricXML.getCategories().split(" "));
 				metrics.add(new XMLNominalMetricCalculator(metricName, categories, categories.size()));
@@ -104,7 +104,7 @@ public class XMLBasedModelGenerator implements IModelGenerator<seeit3d.xml.model
 
 	private MetricCalculator findMetricByName(List<MetricCalculator> metrics, String name) {
 		for (MetricCalculator metric : metrics) {
-			if (metric.getMetricName().equals(name)) {
+			if (metric.getMetricName().trim().equals(name)) {
 				return metric;
 			}
 		}

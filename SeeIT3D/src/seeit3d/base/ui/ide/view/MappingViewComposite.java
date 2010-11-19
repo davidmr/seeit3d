@@ -300,7 +300,7 @@ public class MappingViewComposite extends Composite implements IEventListener {
 			for (int i = 1; i < currentContainers.size(); i++) {
 				Container container = currentContainers.get(i);
 				if (!relationClazz.equals(container.getSceneGraphRelationshipGenerator().getClass())) {
-					return null;
+					return NoRelationships.class;
 				}
 			}
 			return relationClazz;

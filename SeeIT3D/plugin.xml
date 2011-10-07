@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.2"?>
 <plugin>
+   <extension-point id="seeit3d.extensionpoint" name="visualization" schema="schema/seeit3d.extensionpoint.exsd"/>
    <extension
          point="org.eclipse.ui.views">
       <view
             category="seeit3d.category"
-            class="seeit3d.base.ui.ide.view.SeeIT3DView"
+            class="seeit3d.internal.base.ui.ide.view.SeeIT3DView"
             icon="icons/logoseeit3d.png"
             id="seeit3d.seeit3dview"
             name="SeeIT 3D View"
@@ -22,25 +23,25 @@
          point="org.eclipse.ui.commands">
       <command
             categoryId="seeit3d.commands"
-            defaultHandler="seeit3d.base.ui.ide.commands.DeleteContainerCommand"
+            defaultHandler="seeit3d.internal.base.ui.ide.commands.DeleteContainerCommand"
             id="seeit3d.deleteContainerInView"
             name="Delete Container in View">
       </command>
       <command
             categoryId="seeit3d.commands"
-            defaultHandler="seeit3d.base.ui.ide.commands.DeleteAllContainerCommand"
+            defaultHandler="seeit3d.internal.base.ui.ide.commands.DeleteAllContainerCommand"
             id="seeit3d.deleteAllContainersInView"
             name="Delete All Containers">
       </command>
       <command
             categoryId="seeit3d.commands"
-            defaultHandler="seeit3d.base.ui.ide.commands.ScaleUpContainerCommand"
+            defaultHandler="seeit3d.internal.base.ui.ide.commands.ScaleUpContainerCommand"
             id="seeit3d.scaleUpContainerInView"
             name="Scale Up Container">
       </command>
       <command
             categoryId="seeit3d.commands"
-            defaultHandler="seeit3d.base.ui.ide.commands.ScaleDownContainerCommand"
+            defaultHandler="seeit3d.internal.base.ui.ide.commands.ScaleDownContainerCommand"
             id="seeit3d.scaleDownContainerInView"
             name="Scale Down Container">
       </command>
@@ -51,31 +52,31 @@
       </command>
       <command
             categoryId="seeit3d.commands"
-            defaultHandler="seeit3d.base.ui.ide.commands.ToggleSynchPackageAndViewCommand"
+            defaultHandler="seeit3d.internal.base.ui.ide.commands.ToggleSynchPackageAndViewCommand"
             id="seeit3d.toggleSynchPackageAndView"
             name="Toggle Synchronization between View and Package Explorer">
       </command>
       <command
             categoryId="seeit3d.commands"
-            defaultHandler="seeit3d.base.ui.ide.commands.MakeMoreTransparentPolyCylindersSelectionCommand"
+            defaultHandler="seeit3d.internal.base.ui.ide.commands.MakeMoreTransparentPolyCylindersSelectionCommand"
             id="seeit3d.makeMoreTransparentPolycylindersSelection"
             name="Make more transparent selection">
       </command>
       <command
             categoryId="seeit3d.commands"
-            defaultHandler="seeit3d.base.ui.ide.commands.MakeLessTransparentPolyCylindersSelectionCommand"
+            defaultHandler="seeit3d.internal.base.ui.ide.commands.MakeLessTransparentPolyCylindersSelectionCommand"
             id="seeit3d.makeLessTransparentPolycylindersSelection"
             name="Make less transparent selection">
       </command>
       <command
             categoryId="seeit3d.commands"
-            defaultHandler="seeit3d.base.ui.ide.commands.SortPolyCylindersCommand"
+            defaultHandler="seeit3d.internal.base.ui.ide.commands.SortPolyCylindersCommand"
             id="seeit3d.sortPolyCylinders"
             name="Sort PolyCylinders">
       </command>
       <command
             categoryId="seeit3d.commands"
-            defaultHandler="seeit3d.base.ui.ide.commands.ChangeSortingPolyCylindersCriteriaCommand"
+            defaultHandler="seeit3d.internal.base.ui.ide.commands.ChangeSortingPolyCylindersCriteriaCommand"
             id="seeit3d.orderPolyCylindersByCriteria"
             name="Change Sorting Polycylinders Criteria">
          <commandParameter
@@ -86,19 +87,19 @@
       </command>
       <command
             categoryId="seeit3d.commands"
-            defaultHandler="seeit3d.base.ui.ide.commands.ChangeContainerSelectionIncrease"
+            defaultHandler="seeit3d.internal.base.ui.ide.commands.ChangeContainerSelectionIncrease"
             id="seeit3d.changeContainerSelectionIncrease"
             name="Change Container Selection Increase">
       </command>
       <command
             categoryId="seeit3d.commands"
-            defaultHandler="seeit3d.base.ui.ide.commands.ChangeContainerSelectionDecrease"
+            defaultHandler="seeit3d.internal.base.ui.ide.commands.ChangeContainerSelectionDecrease"
             id="seeit3d.changeContainerSelectionDecrease"
             name="Change Container Selection Decrease">
       </command>
       <command
             categoryId="seeit3d.commands"
-            defaultHandler="seeit3d.base.ui.ide.commands.ResetVisualizationCommand"
+            defaultHandler="seeit3d.internal.base.ui.ide.commands.ResetVisualizationCommand"
             id="seeit3d.resetCommand"
             name="Reset Visualization">
       </command>
@@ -108,7 +109,7 @@
       </category>
       <command
             categoryId="seeit3d.commands"
-            defaultHandler="seeit3d.java.ui.ide.VisualizeJavaElementFromEditor"
+            defaultHandler="seeit3d.internal.java.ui.ide.VisualizeJavaElementFromEditor"
             id="seeit3d.visualizeElementFromEditor"
             name="Visualize Element From Editor">
          <commandParameter
@@ -119,24 +120,24 @@
       </command>
       <command
             categoryId="seeit3d.commands"
-            defaultHandler="seeit3d.base.ui.ide.commands.SaveCurrentVisualizationCommand"
+            defaultHandler="seeit3d.internal.base.ui.ide.commands.SaveCurrentVisualizationCommand"
             id="seeit3d.saveCurrentVisualization"
             name="Save Visualization">
       </command>
       <command
             categoryId="seeit3d.commands"
-            defaultHandler="seeit3d.base.ui.ide.commands.LoadSavedVisualization"
+            defaultHandler="seeit3d.internal.base.ui.ide.commands.LoadSavedVisualization"
             id="seeit3d.loadSavedVisualization"
             name="Load Visualization">
       </command>
       <command
             categoryId="seeit3d.commands"
-            defaultHandler="seeit3d.base.ui.ide.commands.VisualizePolycylinderAsContainerCommand"
+            defaultHandler="seeit3d.internal.base.ui.ide.commands.VisualizePolycylinderAsContainerCommand"
             id="seeit3d.visualizePolycylinderAsContainer"
             name="Visualize Polycylinder as Container">
       </command>
       <command
-            defaultHandler="seeit3d.base.ui.ide.commands.ActivateSelectionToolCommand"
+            defaultHandler="seeit3d.internal.base.ui.ide.commands.ActivateSelectionToolCommand"
             id="seeit3d.activateSelecionTool"
             name="Activate Selection Tool">
       </command>d>ommand>
@@ -317,7 +318,7 @@
    <extension
          point="org.eclipse.ui.perspectives">
       <perspective
-            class="seeit3d.base.ui.ide.perspective.SeeIT3DPerspectiveFactory"
+            class="seeit3d.internal.base.ui.ide.perspective.SeeIT3DPerspectiveFactory"
             icon="icons/logoseeit3d.png"
             id="seeit3d.seeit3dperspective"
             name="SeeIT3D">
@@ -427,7 +428,7 @@
    <extension
          point="org.eclipse.ui.handlers">
       <handler
-            class="seeit3d.java.ui.ide.VisualizePackageInView3dCommand"
+            class="seeit3d.internal.java.ui.ide.VisualizePackageInView3dCommand"
             commandId="seeit3d.visualizeInSeeit3d">
          <activeWhen>
             <with
@@ -442,7 +443,7 @@
          </activeWhen>
       </handler>
       <handler
-            class="seeit3d.java.ui.ide.VisualizeJavaFileInView3dCommand"
+            class="seeit3d.internal.java.ui.ide.VisualizeJavaFileInView3dCommand"
             commandId="seeit3d.visualizeInSeeit3d">
          <activeWhen>
             <with
@@ -457,7 +458,7 @@
          </activeWhen>
       </handler>
       <handler
-            class="seeit3d.java.ui.ide.VisualizeMethodInView3dCommand"
+            class="seeit3d.internal.java.ui.ide.VisualizeMethodInView3dCommand"
             commandId="seeit3d.visualizeInSeeit3d">
          <activeWhen>
             <with
@@ -472,7 +473,7 @@
          </activeWhen>
       </handler>
       <handler
-            class="seeit3d.java.ui.ide.VisualizeProjectInView3dCommand"
+            class="seeit3d.internal.java.ui.ide.VisualizeProjectInView3dCommand"
             commandId="seeit3d.visualizeInSeeit3d">
          <activeWhen>
             <with
@@ -487,7 +488,7 @@
          </activeWhen>
       </handler>
       <handler
-            class="seeit3d.java.ui.ide.VisualizeTypeInView3dCommand"
+            class="seeit3d.internal.java.ui.ide.VisualizeTypeInView3dCommand"
             commandId="seeit3d.visualizeInSeeit3d">
          <activeWhen>
             <with
@@ -502,7 +503,7 @@
          </activeWhen>
       </handler>
       <handler
-            class="seeit3d.xml.ui.ide.VisualizeFromXMLFile"
+            class="seeit3d.internal.xml.ui.ide.VisualizeFromXMLFile"
             commandId="seeit3d.visualizeInSeeit3d">
          <activeWhen>
             <iterate>
@@ -564,7 +565,7 @@
    <extension
          point="org.eclipse.ui.preferencePages">
       <page
-            class="seeit3d.base.ui.ide.preferences.SeeIT3DPreferencesPage"
+            class="seeit3d.internal.base.ui.ide.preferences.SeeIT3DPreferencesPage"
             id="seeit3d.preferencesPage"
             name="SeeIT 3D">
       </page>

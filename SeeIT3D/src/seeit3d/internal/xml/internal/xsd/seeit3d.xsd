@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  
+   Copyright 2011 David Montaño
+ 
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+ 
+       http://www.apache.org/licenses/LICENSE-2.0
+ 
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+ 
+ -->
+<xs:schema targetNamespace="http://dl.dropbox.com/u/2416325/seeit3d_xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:seeit3d="http://dl.dropbox.com/u/2416325/seeit3d_xsd">
+    <xs:element name="container">
+        <xs:complexType>
+            <xs:sequence>            	
+            	<xs:element ref="seeit3d:metricsList" />
+            	<xs:element ref="seeit3d:mapping" minOccurs="0"
+            		maxOccurs="1" />
+            	<xs:element ref="seeit3d:polycylinder" minOccurs="1"
+            		maxOccurs="unbounded" />
+            </xs:sequence>
+            <xs:attribute name="name" type="xs:ID" use="required" />
+            <xs:attribute name="granularityLevelName" type="xs:string" use="required"></xs:attribute>
+            <xs:attribute name="related" type="xs:IDREFS" use="optional" />
+            <xs:attribute name="visible" type="xs:boolean" use="required" />
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="entryMetricValue">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="seeit3d:metricName" />
+                <xs:element ref="seeit3d:value" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="mapping">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="seeit3d:mappingValue" minOccurs="1" maxOccurs="unbounded"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="mappingValue">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="seeit3d:metricName" />
+                <xs:element name="visualProperty">
+                    <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                            <xs:enumeration value="COLOR" />
+                            <xs:enumeration value="HEIGHT" />
+                        </xs:restriction>
+                    </xs:simpleType>
+                </xs:element>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="metricName" type="xs:string"></xs:element>
+    <xs:element name="metricsList">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="seeit3d:metricDescription" minOccurs="1" maxOccurs="unbounded" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>   	
+    <xs:element name="metricDescription">
+        <xs:complexType>
+            <xs:simpleContent>
+                <xs:extension base="xs:string">
+                    <xs:attribute name="type" use="required">
+                        <xs:simpleType>
+                            <xs:restriction base="xs:string">
+                                <xs:enumeration value="NUMERIC"></xs:enumeration>
+                                <xs:enumeration value="NOMINAL"></xs:enumeration>
+                            </xs:restriction>
+                        </xs:simpleType>
+                    </xs:attribute>
+                    <xs:attribute name="max" type="xs:string" use="optional"></xs:attribute>
+                    <xs:attribute name="categories" use="optional">
+                        <xs:simpleType>
+                            <xs:restriction base="xs:string">
+                                <xs:pattern value="(\w+\s?)+"></xs:pattern>
+                            </xs:restriction>
+                        </xs:simpleType>
+                    </xs:attribute>
+                </xs:extension>
+            </xs:simpleContent>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="metricsValue">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="seeit3d:entryMetricValue" minOccurs="1" maxOccurs="unbounded" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="polycylinder">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="seeit3d:name" minOccurs="1" maxOccurs="1"/>                
+                <xs:element ref="seeit3d:metricsValue" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="name" type="xs:string"></xs:element>
+    <xs:element name="containers">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="seeit3d:container" minOccurs="1" maxOccurs="unbounded" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="value" type="xs:string"></xs:element>
+<!--    <xs:element name="relatedList">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="seeit3d:related" minOccurs="0" maxOccurs="unbounded" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="related">
+    	<xs:complexType>
+    		<xs:attribute name="relatedName" type="xs:IDREF"></xs:attribute>
+    	</xs:complexType>    	
+    </xs:element>-->
+</xs:schema>

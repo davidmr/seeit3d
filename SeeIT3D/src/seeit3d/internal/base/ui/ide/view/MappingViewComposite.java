@@ -23,7 +23,6 @@ import java.util.List;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
-import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -68,6 +67,12 @@ import com.google.inject.Inject;
  */
 public class MappingViewComposite extends Composite implements IEventListener {
 
+	private static final int LAST_COLUMN_WIDTH = 160;
+
+	private static final int FIRST_COLUMN_WIDTH = 200;
+
+	private static final int MIN_HEIGHT = 60;
+
 	public static final String VISUAL_PROPERTY = "visualProperty";
 
 	private ISeeIT3DVisualProperties seeIT3DVisualProperties;
@@ -83,19 +88,22 @@ public class MappingViewComposite extends Composite implements IEventListener {
 	public MappingViewComposite(Composite parent) {
 		super(parent, SWT.DOUBLE_BUFFERED);
 		SeeIT3D.injector().injectMembers(this);
-		this.setLayout(new FillLayout());
+		this.setLayout(new GridLayout(1, true));
 		updateComponents(new ArrayList<Container>());
 	}
 
 	private void updateComponents(List<Container> containers) {
 		cleanComposites();
 
-		scrollerComposite = new ScrolledComposite(this, SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER | SWT.DOUBLE_BUFFERED);
+		scrollerComposite = new ScrolledComposite(this, SWT.H_SCROLL | SWT.V_SCROLL | SWT.DOUBLE_BUFFERED);
+		scrollerComposite.setLayoutData(new GridData(GridData.FILL_BOTH));
+		scrollerComposite.setExpandHorizontal(true);
+		scrollerComposite.setMinWidth(800);
+
 		rootComposite = new Composite(scrollerComposite, SWT.DOUBLE_BUFFERED);
 		scrollerComposite.setContent(rootComposite);
 
-		GridLayout mappingLayout = new GridLayout(2 + VisualProperty.values().length, true);
-		rootComposite.setLayout(mappingLayout);
+		rootComposite.setLayout(new GridLayout(3, false));
 
 		updateCurrentGranularityLevelFromContainers(containers);
 
@@ -136,16 +144,19 @@ public class MappingViewComposite extends Composite implements IEventListener {
 		String currentGranularityLevelFromContainers = getCurrentGranularityLevelFromContainers(currentContainers);
 		SelectionComponentListener selectionComponentListener = new SelectionComponentListener();
 		Group componentSelectionGroup = new Group(rootComposite, SWT.SHADOW_OUT);
-		GridData componetLayoutData = new GridData(GridData.CENTER);
-		componetLayoutData.widthHint = 150;
+		GridData componetLayoutData = new GridData(GridData.FILL_VERTICAL);
+		componetLayoutData.widthHint = FIRST_COLUMN_WIDTH;
+		componetLayoutData.heightHint = MIN_HEIGHT;
+
 		componentSelectionGroup.setLayoutData(componetLayoutData);
 		componentSelectionGroup.setText("Granularity Level");
-		GridLayout groupLayout = new GridLayout(3, false);
-		componentSelectionGroup.setLayout(groupLayout);
+		componentSelectionGroup.setLayout(new GridLayout(3, false));
+
 		Button previousLevelButton = new Button(componentSelectionGroup, SWT.ARROW | SWT.LEFT);
 		previousLevelButton.setData(SelectionComponentListener.COMPONENT_LEVEL_DETAIL, ChangeLevelOption.PREVIOUS_LEVEL);
 		previousLevelButton.addSelectionListener(selectionComponentListener);
 		Label currentComponent = new Label(componentSelectionGroup, SWT.CENTER);
+
 		GridData currentComponentLayoutData = new GridData(GridData.CENTER | GridData.FILL_HORIZONTAL);
 		currentComponent.setLayoutData(currentComponentLayoutData);
 		currentComponent.setToolTipText("This is the current level of component selected");
@@ -174,16 +185,15 @@ public class MappingViewComposite extends Composite implements IEventListener {
 	private void updateMetricsFromContainers(List<Container> currentContainers, List<MetricCalculator> metricsInformation, int possibleMetricsToRecieve) {
 
 		GridData metricsLayoutData = new GridData(GridData.FILL_BOTH);
-		metricsLayoutData.horizontalSpan = VisualProperty.values().length;
-		metricsLayoutData.heightHint = 40;
+		metricsLayoutData.heightHint = MIN_HEIGHT;
+
 		Group metricsGroup = new Group(rootComposite, SWT.SHADOW_OUT | SWT.CENTER);
-		metricsGroup.setText("Avaible Metrics");
+		metricsGroup.setText("Available Metrics");
 		metricsGroup.setLayoutData(metricsLayoutData);
 
 		DragAndDropHelper.registerAsDroppable(metricsGroup, new DropMetricOnMetricContainerListener(metricsGroup));
 
-		int metricNumber = Math.max(1, metricsInformation.size());
-		metricsGroup.setLayout(new GridLayout(metricNumber + possibleMetricsToRecieve, true));
+		metricsGroup.setLayout(new GridLayout(4, false));
 
 		if (!metricsInformation.isEmpty()) {
 			for (MetricCalculator metricCalculator : metricsInformation) {
@@ -208,12 +218,16 @@ public class MappingViewComposite extends Composite implements IEventListener {
 	}
 
 	private void updateCurrentMappingAndVisualProperties(List<Container> containers, BiMap<MetricCalculator, VisualProperty> currentMapping) {
+		Composite visualPropertiesComposite = new Composite(rootComposite, SWT.DOUBLE_BUFFERED);
+		visualPropertiesComposite.setLayout(new GridLayout(VisualProperty.values().length, true));
+		GridData visualPropertiesLayoutData = new GridData(GridData.FILL_BOTH);
+		visualPropertiesLayoutData.minimumWidth = 150;
+		visualPropertiesComposite.setLayoutData(visualPropertiesLayoutData);
 
 		for (VisualProperty visualProperty : VisualProperty.values()) {
-			Group visualPropGroup = new Group(rootComposite, SWT.SHADOW_OUT);
-			GridData visualGroupLayoutData = new GridData(GridData.FILL_HORIZONTAL);
-			visualGroupLayoutData.heightHint = 50;
-			visualGroupLayoutData.minimumWidth = 90;
+			Group visualPropGroup = new Group(visualPropertiesComposite, SWT.SHADOW_OUT);
+			GridData visualGroupLayoutData = new GridData(GridData.FILL_BOTH);
+			visualGroupLayoutData.minimumHeight = MIN_HEIGHT;
 
 			visualPropGroup.setLayoutData(visualGroupLayoutData);
 			visualPropGroup.setText(visualProperty.toString());
@@ -249,7 +263,7 @@ public class MappingViewComposite extends Composite implements IEventListener {
 		Group colorScalesGroup = new Group(rootComposite, SWT.SHADOW_OUT);
 		GridData colorScalesLayoutData = new GridData(GridData.FILL_VERTICAL);
 		colorScalesLayoutData.verticalSpan = 2;
-		colorScalesLayoutData.widthHint = 160;
+		colorScalesLayoutData.widthHint = LAST_COLUMN_WIDTH;
 
 		colorScalesGroup.setLayoutData(colorScalesLayoutData);
 		colorScalesGroup.setLayout(new GridLayout(1, true));
@@ -289,7 +303,9 @@ public class MappingViewComposite extends Composite implements IEventListener {
 		Iterable<Class<? extends ISceneGraphRelationshipGenerator>> allRelationshipsGenerator = relationshipsRegistry.allRelationshipsGenerator();
 
 		Group relationshipsGroup = new Group(rootComposite, SWT.SHADOW_OUT);
-		GridData relationshipsLayoutData = new GridData(GridData.FILL_BOTH);
+		GridData relationshipsLayoutData = new GridData(GridData.FILL_VERTICAL);
+		relationshipsLayoutData.widthHint = FIRST_COLUMN_WIDTH;
+		relationshipsLayoutData.heightHint = MIN_HEIGHT;
 		relationshipsGroup.setLayoutData(relationshipsLayoutData);
 		relationshipsGroup.setLayout(new GridLayout(1, true));
 		relationshipsGroup.setText("Relationship visual type");

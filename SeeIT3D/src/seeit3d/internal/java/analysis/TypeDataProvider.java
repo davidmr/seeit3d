@@ -31,10 +31,10 @@ import org.eclipse.jdt.core.compiler.IScanner;
 import org.eclipse.jdt.core.compiler.ITerminalSymbols;
 
 import seeit3d.analysis.Child;
+import seeit3d.analysis.IContainerRepresentedObject;
 import seeit3d.analysis.IModelDataProvider;
 import seeit3d.analysis.metric.MetricCalculator;
 import seeit3d.internal.base.error.ErrorHandler;
-import seeit3d.internal.base.model.IContainerRepresentedObject;
 import seeit3d.internal.java.JavaContribution;
 import seeit3d.internal.java.analysis.metrics.JavaRepresentation;
 import seeit3d.internal.java.analysis.metrics.LOCCalculator;

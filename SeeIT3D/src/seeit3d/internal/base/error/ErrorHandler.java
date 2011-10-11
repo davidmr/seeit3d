@@ -17,6 +17,7 @@
 package seeit3d.internal.base.error;
 
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
 import seeit3d.internal.base.error.exception.SeeIT3DException;
@@ -35,18 +36,36 @@ public class ErrorHandler {
 		ErrorHandler.shell = shell;
 	}
 
-	public static void error(SeeIT3DException exception) {
-		MessageDialog.openError(shell, "SeeIT 3D message", exception.getMessage());
-		exception.printStackTrace();
+	public static void error(final SeeIT3DException exception) {
+		Display.getDefault().asyncExec(new Runnable() {
+			@Override
+			public void run() {
+				MessageDialog.openError(shell, "SeeIT 3D message", exception.getMessage());
+				exception.printStackTrace();
+			}
+		});
+
 	}
 
-	public static void error(Exception exception) {
-		MessageDialog.openError(shell, "Unexpected internal error", "An unexpected error has ocurred. \n" + exception.getMessage());
-		exception.printStackTrace();
+	public static void error(final Exception exception) {
+		Display.getDefault().asyncExec(new Runnable() {
+			@Override
+			public void run() {
+				MessageDialog.openError(shell, "Unexpected internal error", "An unexpected error has ocurred. \n" + exception.getMessage());
+				exception.printStackTrace();
+			}
+		});
+
 	}
 
-	public static void error(String errorText) {
-		MessageDialog.openError(shell, "SeeIT 3D message", errorText);
+	public static void error(final String errorText) {
+		Display.getDefault().asyncExec(new Runnable() {
+			@Override
+			public void run() {
+				MessageDialog.openError(shell, "SeeIT 3D message", errorText);
+			}
+		});
+
 	}
 
 }

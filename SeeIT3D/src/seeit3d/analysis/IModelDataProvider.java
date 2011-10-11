@@ -19,7 +19,6 @@ package seeit3d.analysis;
 import java.util.List;
 
 import seeit3d.analysis.metric.MetricCalculator;
-import seeit3d.internal.base.model.IContainerRepresentedObject;
 
 /**
  * Interface that must be implemented by all object that want to provide visualization data

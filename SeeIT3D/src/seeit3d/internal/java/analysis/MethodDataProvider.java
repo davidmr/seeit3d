@@ -24,9 +24,9 @@ import org.eclipse.jdt.core.IMethod;
 import org.eclipse.jdt.core.JavaModelException;
 
 import seeit3d.analysis.Child;
+import seeit3d.analysis.IContainerRepresentedObject;
 import seeit3d.analysis.IModelDataProvider;
 import seeit3d.analysis.metric.MetricCalculator;
-import seeit3d.internal.base.model.IContainerRepresentedObject;
 import seeit3d.internal.java.analysis.metrics.ControlStructureCalculator;
 import seeit3d.internal.java.analysis.metrics.JavaRepresentation;
 import seeit3d.internal.java.analysis.metrics.LOCCalculator;

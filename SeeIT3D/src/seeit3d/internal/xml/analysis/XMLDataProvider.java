@@ -21,10 +21,10 @@ import java.util.Arrays;
 import java.util.List;
 
 import seeit3d.analysis.Child;
+import seeit3d.analysis.IContainerRepresentedObject;
 import seeit3d.analysis.IModelDataProvider;
 import seeit3d.analysis.NoEclipseResourceRepresentation;
 import seeit3d.analysis.metric.MetricCalculator;
-import seeit3d.internal.base.model.IContainerRepresentedObject;
 import seeit3d.internal.xml.analysis.metrics.XMLNominalMetricCalculator;
 import seeit3d.internal.xml.analysis.metrics.XMLNumericMetricCalculator;
 import seeit3d.internal.xml.internal.Container;

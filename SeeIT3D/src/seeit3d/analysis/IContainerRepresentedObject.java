@@ -14,7 +14,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package seeit3d.internal.base.model;
+package seeit3d.analysis;
 
 import java.io.Serializable;
 

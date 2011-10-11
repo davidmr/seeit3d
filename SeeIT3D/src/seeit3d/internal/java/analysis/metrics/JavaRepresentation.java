@@ -27,7 +27,7 @@ import org.eclipse.jdt.core.IMethod;
 import org.eclipse.jdt.core.IPackageFragment;
 import org.eclipse.jdt.core.IType;
 
-import seeit3d.internal.base.model.IContainerRepresentedObject;
+import seeit3d.analysis.IContainerRepresentedObject;
 
 /**
  * This class represents a <code>IJavaElement</code> associated to a container in the view

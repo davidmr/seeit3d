@@ -16,7 +16,7 @@
  */
 package seeit3d.internal.xml.analysis;
 
-import seeit3d.internal.base.model.IContainerRepresentedObject;
+import seeit3d.analysis.IContainerRepresentedObject;
 import seeit3d.internal.xml.internal.Container;
 
 /**

@@ -63,7 +63,7 @@ public class VisualizeJob extends Job {
 		ModelGenerator generator = new ModelGenerator(provider);
 		try {
 			for (Object object : objects) {
-				Container container = generator.analize(object, true);
+				Container container = generator.analize(object, true, monitor);
 				if (container != null) {
 					containers.add(container);
 				}

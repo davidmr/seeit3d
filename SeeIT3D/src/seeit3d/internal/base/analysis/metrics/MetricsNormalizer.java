@@ -41,7 +41,7 @@ public class MetricsNormalizer {
 		}
 		if (calculator instanceof AbstractNumericMetricCalculator) {
 			AbstractNumericMetricCalculator numericCalculator = (AbstractNumericMetricCalculator) calculator;
-			float val = Float.parseFloat(value);
+			float val = Float.parseFloat(value.replaceAll(",", "."));
 			float maxValue = numericCalculator.getMaxValue();
 			if (val > maxValue) {
 				return 1.0f;

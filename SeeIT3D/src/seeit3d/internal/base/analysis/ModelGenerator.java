@@ -20,13 +20,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.core.runtime.IProgressMonitor;
+
 import seeit3d.analysis.Child;
+import seeit3d.analysis.IContainerRepresentedObject;
 import seeit3d.analysis.IEclipseResourceRepresentation;
 import seeit3d.analysis.IModelDataProvider;
 import seeit3d.analysis.metric.MetricCalculator;
 import seeit3d.internal.base.SeeIT3D;
+import seeit3d.internal.base.error.exception.SeeIT3DException;
 import seeit3d.internal.base.model.Container;
-import seeit3d.internal.base.model.IContainerRepresentedObject;
 import seeit3d.internal.base.model.PolyCylinder;
 
 /**
@@ -43,23 +46,27 @@ public class ModelGenerator {
 		this.provider = provider;
 	}
 
-	public final Container analize(Object element, boolean includeDependencies) {
+	public final Container analize(Object element, boolean includeDependencies, IProgressMonitor monitor) {
 		if (provider.accepts(element)) {
-
 			IContainerRepresentedObject representedObject = provider.representedObject(element);
+
 			List<MetricCalculator> metrics = provider.metrics(element);
-
 			Container container = new Container(representedObject, metrics);
-
 			List<Child> children = provider.children(element);
 
+			int totalEvaluations = children.size() * metrics.size();
+			int counter = 1;
 			for (Child child : children) {
+				checkCancelled(monitor);
 				String name = child.getName();
 				Object objectToEvaluate = child.getObject();
 				Map<MetricCalculator, String> metricValues = new HashMap<MetricCalculator, String>();
 				for (MetricCalculator metricCalculator : metrics) {
+					String taskName = taskName(representedObject, totalEvaluations, counter);
+					monitor.subTask(taskName);
 					String value = metricCalculator.calculate(objectToEvaluate);
 					metricValues.put(metricCalculator, value);
+					counter++;
 				}
 				IEclipseResourceRepresentation representation = child.getRepresentation();
 				PolyCylinder poly = new PolyCylinder(name, metricValues, representation);
@@ -71,7 +78,7 @@ public class ModelGenerator {
 				IModelDataProvider childrenProvider = SeeIT3D.getModelGenerator(childrenModelGeneratorKey);
 				ModelGenerator childrenModelGenerator = new ModelGenerator(childrenProvider);
 				for (Child child : children) {
-					Container childContainer = childrenModelGenerator.analize(child.getObject(), false);
+					Container childContainer = childrenModelGenerator.analize(child.getObject(), false, monitor);
 					container.addChildrenContainer(childContainer);
 				}
 			}
@@ -80,7 +87,7 @@ public class ModelGenerator {
 				List<Object> related = provider.related(element);
 				for (Object relObject : related) {
 					ModelGenerator relatedModelGenerator = new ModelGenerator(provider);
-					Container relatedContainer = relatedModelGenerator.analize(relObject, false);
+					Container relatedContainer = relatedModelGenerator.analize(relObject, false, monitor);
 					if (relatedContainer != null) {
 						container.addRelatedContainer(relatedContainer);
 					}
@@ -92,6 +99,16 @@ public class ModelGenerator {
 
 		System.out.println("Provider " + provider.getClass() + " does not accept " + element);
 		return null;
+	}
+
+	private void checkCancelled(IProgressMonitor monitor) {
+		if (monitor.isCanceled()) {
+			throw new SeeIT3DException("SeeIT3D analysis stopped by user");
+		}
+	}
+
+	private String taskName(IContainerRepresentedObject representedObject, int totalEvaluations, int counter) {
+		return representedObject.getName() + ". " + counter + " of " + totalEvaluations + " metric calculations";
 	}
 
 }

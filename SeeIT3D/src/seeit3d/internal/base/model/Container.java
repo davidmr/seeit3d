@@ -32,6 +32,7 @@ import javax.media.j3d.Transform3D;
 import javax.media.j3d.TransformGroup;
 import javax.vecmath.Vector3f;
 
+import seeit3d.analysis.IContainerRepresentedObject;
 import seeit3d.analysis.metric.MetricCalculator;
 import seeit3d.internal.base.SeeIT3D;
 import seeit3d.internal.base.core.api.ISeeIT3DPreferences;

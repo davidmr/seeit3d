@@ -28,6 +28,7 @@ import org.eclipse.jdt.core.IPackageFragment;
 import org.eclipse.jdt.core.IType;
 
 import seeit3d.analysis.IContainerRepresentedObject;
+import seeit3d.internal.java.util.NameGenerator;
 
 /**
  * This class represents a <code>IJavaElement</code> associated to a container in the view
@@ -56,7 +57,7 @@ public class JavaRepresentation implements IContainerRepresentedObject {
 	private final String granularityLevel;
 
 	public JavaRepresentation(IJavaElement javaElement) {
-		elementName = javaElement.getElementName();
+		elementName = NameGenerator.generateNameFor(javaElement);
 		granularityLevel = selectGranularityLevel(javaElement);
 	}
 

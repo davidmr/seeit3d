@@ -17,6 +17,7 @@
 package seeit3d.internal.base.ui.ide.view;
 
 import static seeit3d.internal.base.bus.EventBus.registerListener;
+import static seeit3d.internal.base.bus.EventBus.unregisterListener;
 
 import java.awt.Frame;
 
@@ -26,6 +27,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Sash;
 import org.eclipse.ui.contexts.IContextService;
 import org.eclipse.ui.internal.expressions.ActivePartExpression;
 import org.eclipse.ui.part.ViewPart;
@@ -51,22 +53,31 @@ public class SeeIT3DView extends ViewPart {
 
 	private ISeeIT3DCore seeIT3DCore;
 
+	private LabelInformation infoLabel;
+
 	@Override
 	public void createPartControl(Composite parent) {
+
 		SeeIT3D.injector().injectMembers(this);
 		IContextService contextService = (IContextService) getSite().getService(IContextService.class);
 		contextService.activateContext("seeit3d.seeit3dviewContext", new ActivePartExpression(getSite().getPart()));
 
 		GridLayout viewLayout = new GridLayout(1, true);
+		viewLayout.verticalSpacing = 0;
 		parent.setLayout(viewLayout);
 
-		Label label = new Label(parent, SWT.LEFT);
+		Label label = new Label(parent, SWT.LEFT | SWT.WRAP);
 		GridData labelData = new GridData(GridData.FILL_HORIZONTAL);
 		labelData.heightHint = 30;
 		label.setLayoutData(labelData);
 
-		LabelInformation infoLabel = new LabelInformation(label);
+		infoLabel = new LabelInformation(label);
 		registerListener(SelectedInformationChangedEvent.class, infoLabel);
+		
+		Sash sashInformationSize = new Sash(parent, SWT.BORDER | SWT.HORIZONTAL);
+		GridData sashInfoLayoutData = new GridData(GridData.FILL_HORIZONTAL);
+		sashInformationSize.setLayoutData(sashInfoLayoutData);
+		sashInformationSize.addListener(SWT.Selection, new ResizeListener(label, false));
 
 		Composite visualizationComposite = new Composite(parent, SWT.EMBEDDED);
 
@@ -75,11 +86,18 @@ public class SeeIT3DView extends ViewPart {
 
 		Frame glFrame = SWT_AWT.new_Frame(visualizationComposite);
 		glFrame.add(seeIT3DCore.getCanvas());
+		
+		Sash sashMappingViewSize = new Sash(parent, SWT.BORDER | SWT.HORIZONTAL);
+
+		GridData sashMappingLayoutData = new GridData(GridData.FILL_HORIZONTAL);
+		sashMappingViewSize.setLayoutData(sashMappingLayoutData);
 
 		MappingViewComposite mappingComposite = new MappingViewComposite(parent);
 		GridData mappingCompositeData = new GridData(GridData.FILL_HORIZONTAL);
 		mappingCompositeData.heightHint = 180;
 		mappingComposite.setLayoutData(mappingCompositeData);
+
+		sashMappingViewSize.addListener(SWT.Selection, new ResizeListener(mappingComposite, true));
 
 		registerListener(MappingViewNeedsUpdateEvent.class, mappingComposite);
 
@@ -87,6 +105,12 @@ public class SeeIT3DView extends ViewPart {
 
 	@Override
 	public void setFocus() {}
+
+	@Override
+	public void dispose() {
+		super.dispose();
+		unregisterListener(SelectedInformationChangedEvent.class, infoLabel);
+	}
 
 	@Inject
 	public void setSeeIT3DCore(ISeeIT3DCore seeIT3DCore) {

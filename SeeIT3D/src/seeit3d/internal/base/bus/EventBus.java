@@ -56,7 +56,7 @@ public class EventBus {
 		synchronized (listeners) {
 			Collection<IEventListener> listenersByClass = listeners.get(eventClass);
 			listenersByClass.remove(listener);
-			System.out.println("UnRegister listener for class: " + eventClass);
+			System.out.println("Unregister listener for class: " + eventClass);
 		}
 	}
 

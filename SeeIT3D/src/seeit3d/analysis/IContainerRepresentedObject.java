@@ -22,6 +22,8 @@ import java.io.Serializable;
  * Definition of what a container represents. This means the element that the container in the view is showing/representing. It must have a name and must be able to tell what is the name of the
  * granularity levels down of it.
  * 
+ * If a polycylinder can be represented using a container (i.e. going deeper in the granularity) names in container and polycylinder must match.
+ * 
  * @author David Montaño
  * 
  */

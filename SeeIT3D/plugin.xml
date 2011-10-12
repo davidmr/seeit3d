@@ -245,6 +245,15 @@
                      value="COLOR">
                </parameter>
             </command>
+            <command
+                  commandId="seeit3d.orderPolyCylindersByCriteria"
+                  label="Cross Section"
+                  style="radio">
+               <parameter
+                     name="seeit3d.commands.sortByParameter"
+                     value="CROSS_SECTION">
+               </parameter>
+            </command>
          </menu>
       </menuContribution>
       <menuContribution

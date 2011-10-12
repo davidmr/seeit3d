@@ -38,7 +38,9 @@ import seeit3d.analysis.metric.MetricCalculator;
 public class DragAndDropHelper {
 
 	public static Label createMetricDraggableLabel(Composite parent, MetricCalculator metric) {
-		Label label = new Label(parent, SWT.CENTER);
+		Label label = new Label(parent, SWT.CENTER | SWT.BORDER);
+		// label.setBackground(new Color(parent.getDisplay(), 255, 255, 255));
+
 		GridData labelData = new GridData(GridData.CENTER | GridData.FILL_HORIZONTAL);
 		label.setLayoutData(labelData);
 		DragSource dragSource = new DragSource(label, DND.DROP_MOVE);

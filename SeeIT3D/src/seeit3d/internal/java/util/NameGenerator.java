@@ -31,6 +31,25 @@ import org.eclipse.jdt.core.IType;
  */
 public class NameGenerator {
 
+	public static String generateNameFor(IJavaElement javaElement) {
+		if (javaElement instanceof IJavaProject) {
+			return generateNameFor((IJavaProject) javaElement);
+		}
+		if (javaElement instanceof IPackageFragment) {
+			return generateNameFor((IPackageFragment) javaElement);
+		}
+		if (javaElement instanceof IType) {
+			return generateNameFor((IType) javaElement);
+		}
+		if (javaElement instanceof ICompilationUnit) {
+			return generateNameFor((ICompilationUnit) javaElement);
+		}
+		if (javaElement instanceof IMethod) {
+			return generateNameFor((IMethod) javaElement);
+		}
+		throw new IllegalStateException("Name for " + javaElement + " could not be built");
+	}
+
 	public static String generateNameFor(IJavaProject project) {
 		return project.getElementName();
 	}

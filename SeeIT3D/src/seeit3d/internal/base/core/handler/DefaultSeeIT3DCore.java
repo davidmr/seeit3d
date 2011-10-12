@@ -234,7 +234,11 @@ public class DefaultSeeIT3DCore implements ISeeIT3DCore, IEventListener {
 			for (Container container : containers) {
 				if (container.hasPolycylinder(polycylinder)) {
 					Container converted = container.toContainer(polycylinder);
-					containersToAdd.add(converted);
+					if (converted == null) {
+						ErrorHandler.error("Polycylinder has not more representations");
+					} else {
+						containersToAdd.add(converted);
+					}
 				}
 			}
 		}

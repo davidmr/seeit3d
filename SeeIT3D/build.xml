@@ -1,0 +1,5 @@
+<project xmlns:ivy="antlib:org.apache.ivy.ant" name="seeit3d" default="resolve">
+    <target name="resolve" description="--> retrieve dependencies with ivy" >
+        <ivy:retrieve pattern="lib/[artifact]-[revision].[ext]" />
+    </target>
+</project>

@@ -13,12 +13,17 @@ Require-Bundle: org.eclipse.ui;bundle-version="3.5.0",
  org.eclipse.ui.ide;bundle-version="3.5.1"
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: .,
+ lib/aopalliance-1.0.jar,
+ lib/asm-3.1.jar,
+ lib/cglib-2.2.1-v20090111.jar,
+ lib/guava-10.0.1.jar,
+ lib/guava-bootstrap-10.0.1.jar,
+ lib/guice-3.0.jar,
  lib/j3dcore.jar,
  lib/j3dutils.jar,
- lib/vecmath.jar,
- lib/google-collect-1.0.jar,
- lib/guice-2.0.jar,
- lib/aopalliance.jar
+ lib/javax.inject-1.jar,
+ lib/jsr305-1.3.9.jar,
+ lib/vecmath.jar
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-NativeCode: native/libj3dcore-ogl.so; osname=linux; processor=x86, native/j3dcore-d3d.dll; native/j3dcore-ogl-cg.dll; native/j3dcore-ogl.dll; osname=win32; processor=x86, native/libj3dcore-ogl-amd64.so; osname=linux; processor=amd64, native/j3dcore-ogl-amd64.dll; osname=win32; processor=amd64
 Export-Package: seeit3d,

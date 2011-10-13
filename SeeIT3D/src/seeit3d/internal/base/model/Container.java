@@ -34,11 +34,12 @@ import javax.vecmath.Vector3f;
 
 import seeit3d.analysis.IContainerRepresentedObject;
 import seeit3d.analysis.metric.MetricCalculator;
-import seeit3d.internal.base.SeeIT3D;
+import seeit3d.internal.SeeIT3D;
 import seeit3d.internal.base.core.api.ISeeIT3DPreferences;
 import seeit3d.internal.base.error.exception.SeeIT3DException;
 import seeit3d.internal.base.visual.relationships.ISceneGraphRelationshipGenerator;
 import seeit3d.internal.base.visual.relationships.imp.NoRelationships;
+import seeit3d.internal.utils.Log;
 import seeit3d.internal.utils.Utils;
 import seeit3d.internal.utils.ViewConstants;
 
@@ -185,7 +186,7 @@ public class Container implements Serializable, Comparable<Container> {
 
 	private void buildBranchGroup() {
 
-		System.err.println("Build branch group " + identifier);
+		Log.i("Build branch group " + identifier);
 
 		if (propertiesMap.isEmpty()) {
 			throw new SeeIT3DException("In order to build the scene graph is necesary to determine the metric calculators that are going to be mapped");

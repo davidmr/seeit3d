@@ -34,7 +34,7 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 
 import seeit3d.analysis.metric.MetricCalculator;
-import seeit3d.internal.base.SeeIT3D;
+import seeit3d.internal.SeeIT3D;
 import seeit3d.internal.base.bus.IEvent;
 import seeit3d.internal.base.bus.IEventListener;
 import seeit3d.internal.base.bus.events.MappingViewNeedsUpdateEvent;

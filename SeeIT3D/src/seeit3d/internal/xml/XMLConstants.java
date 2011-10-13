@@ -16,31 +16,15 @@
  */
 package seeit3d.internal.xml;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import seeit3d.ISeeIT3DContributor;
-import seeit3d.analysis.IModelDataProvider;
-import seeit3d.internal.xml.analysis.XMLDataProvider;
 
 /**
- * The XML contribution to SeeIT 3D
+ * XML constants used in SeeIT 3D
  * 
  * @author David Montaño
  * 
  */
-public class XMLContribution implements ISeeIT3DContributor {
+public class XMLConstants {
 
 	public static final String MODEL_PROVIDER_KEY_XML = "seeit3d.local.xml";
-
-	@Override
-	public void initialize() {}
-
-	@Override
-	public Map<String, Class<? extends IModelDataProvider>> configureDataProviders() {
-		Map<String, Class<? extends IModelDataProvider>> map = new HashMap<String, Class<? extends IModelDataProvider>>();
-		map.put(MODEL_PROVIDER_KEY_XML, XMLDataProvider.class);
-		return map;
-	}
 
 }

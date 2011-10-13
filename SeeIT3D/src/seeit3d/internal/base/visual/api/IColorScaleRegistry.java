@@ -26,7 +26,7 @@ import seeit3d.internal.base.visual.colorscale.IColorScale;
  */
 public interface IColorScaleRegistry {
 
-	void registerColorScale(IColorScale... colorScale);
+	void registerColorScale(IColorScale colorScale);
 
 	Iterable<IColorScale> allColorScales();
 

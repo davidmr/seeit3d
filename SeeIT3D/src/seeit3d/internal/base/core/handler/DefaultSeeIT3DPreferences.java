@@ -163,7 +163,7 @@ public class DefaultSeeIT3DPreferences implements ISeeIT3DPreferences {
 	public void setPreferencesDefaults(IPreferenceStore preferenceStore) {
 		preferenceStore.setDefault(CONTAINERS_PER_ROW, 3);
 		preferenceStore.setDefault(POLYCYLINDERS_PER_ROW, 20);
-		preferenceStore.setDefault(BACKGROUND_COLOR, "255,255,238");
+		preferenceStore.setDefault(BACKGROUND_COLOR, "0,37,54");
 		preferenceStore.setDefault(HIGHLIGHT_COLOR, "0,255,0");
 		preferenceStore.setDefault(RELATION_COLOR, "255,255,0");
 		preferenceStore.setDefault(SCALE_STEP, 20);

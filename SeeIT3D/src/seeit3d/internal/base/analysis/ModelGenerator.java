@@ -16,6 +16,8 @@
  */
 package seeit3d.internal.base.analysis;
 
+import static seeit3d.internal.ModelDataProviderRegistry.getModelGenerator;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,10 +29,10 @@ import seeit3d.analysis.IContainerRepresentedObject;
 import seeit3d.analysis.IEclipseResourceRepresentation;
 import seeit3d.analysis.IModelDataProvider;
 import seeit3d.analysis.metric.MetricCalculator;
-import seeit3d.internal.base.SeeIT3D;
 import seeit3d.internal.base.error.exception.SeeIT3DException;
 import seeit3d.internal.base.model.Container;
 import seeit3d.internal.base.model.PolyCylinder;
+import seeit3d.internal.utils.Log;
 
 /**
  * Class in charge of generating the visualization model using a specific IModelDataProvider
@@ -75,7 +77,7 @@ public class ModelGenerator {
 
 			String childrenModelGeneratorKey = provider.getChildrenModelGeneratorKey();
 			if (childrenModelGeneratorKey != null) {
-				IModelDataProvider childrenProvider = SeeIT3D.getModelGenerator(childrenModelGeneratorKey);
+				IModelDataProvider childrenProvider = getModelGenerator(childrenModelGeneratorKey);
 				ModelGenerator childrenModelGenerator = new ModelGenerator(childrenProvider);
 				for (Child child : children) {
 					Container childContainer = childrenModelGenerator.analize(child.getObject(), false, monitor);
@@ -97,7 +99,7 @@ public class ModelGenerator {
 			return container;
 		}
 
-		System.out.println("Provider " + provider.getClass() + " does not accept " + element);
+		Log.e("Provider " + provider.getClass() + " does not accept " + element);
 		return null;
 	}
 

@@ -14,15 +14,11 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package seeit3d.internal.base;
-
-import java.util.HashMap;
-import java.util.Map;
+package seeit3d.internal;
 
 import org.eclipse.core.commands.Command;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -33,12 +29,9 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.commands.ICommandService;
 import org.eclipse.ui.progress.UIJob;
 
-import seeit3d.ISeeIT3DContributor;
-import seeit3d.analysis.IModelDataProvider;
-import seeit3d.internal.Activator;
+import seeit3d.internal.base.SeeIT3DModule;
 import seeit3d.internal.base.core.api.ISeeIT3DPreferences;
 import seeit3d.internal.base.error.ErrorHandler;
-import seeit3d.internal.base.error.exception.SeeIT3DException;
 import seeit3d.internal.base.ui.ide.commands.ChangeSortingPolyCylindersCriteriaCommand;
 import seeit3d.internal.base.ui.ide.observers.WorkspaceClosedObserver;
 import seeit3d.internal.base.visual.api.IColorScaleRegistry;
@@ -69,8 +62,6 @@ import com.google.inject.Injector;
  */
 public class SeeIT3D {
 
-	private static final Map<String, IModelDataProvider> modelGenerators = new HashMap<String, IModelDataProvider>();
-
 	private static Injector injector;
 
 	public static void initialize() {
@@ -83,54 +74,21 @@ public class SeeIT3D {
 			registerGlobalListener();
 			ErrorHandler.setShell(new Shell(Display.getDefault()));
 		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-	
-	public static void contribute(ISeeIT3DContributor contributor) {
-
-		contributor.initialize();
-
-		Map<String, Class<? extends IModelDataProvider>> dataProviders = contributor.configureDataProviders();
-		for (Map.Entry<String, Class<? extends IModelDataProvider>> provider : dataProviders.entrySet()) {
-			try {
-				IModelDataProvider modelDataProvider = provider.getValue().newInstance();
-				addModelGenerator(provider.getKey(), modelDataProvider);
-			} catch (Exception e) {
-				ErrorHandler.error(e);
-			}
-		}
-
-	}
-
-	public static void contributeExternal(IConfigurationElement configurationElement) {
-		try {
-			ISeeIT3DContributor contribution = (ISeeIT3DContributor) configurationElement.createExecutableExtension("class");
-			contribute(contribution);
-		} catch (Exception e) {
 			ErrorHandler.error(e);
 		}
 	}
 
-	private static void addModelGenerator(String key, IModelDataProvider modelGenerator) {
-		if(modelGenerators.containsKey(key)){
-			throw new SeeIT3DException(key  + " is already registered in model generators");
-		}
-		modelGenerators.put(key, modelGenerator);
-	}
-	
-	public static IModelDataProvider getModelGenerator(String modelGeneratorKey) {
-		IModelDataProvider modelGenerator = modelGenerators.get(modelGeneratorKey);
-		if(modelGenerator == null){
-			throw new SeeIT3DException("No model generator register for " + modelGeneratorKey);
-		}
-		return modelGenerator;
-	}
-
 	private static void initializeColorScales() {
 		IColorScaleRegistry registry = injector.getInstance(IColorScaleRegistry.class);
-		registry.registerColorScale(new BlueTone(), new BlueToYellow(), new BlueGreenRed(), new ColdToHotColorScale(), new GrayColorScale(), new HeatedObject(), new LinearOptimal(),
-				new MagentaTone(), new Rainbow());
+		registry.registerColorScale(new BlueTone());
+		registry.registerColorScale(new BlueToYellow());
+		registry.registerColorScale(new BlueGreenRed());
+		registry.registerColorScale(new ColdToHotColorScale());
+		registry.registerColorScale(new GrayColorScale());
+		registry.registerColorScale(new HeatedObject());
+		registry.registerColorScale(new LinearOptimal());
+		registry.registerColorScale(new MagentaTone());
+		registry.registerColorScale(new Rainbow());
 	}
 
 	private static void initializeRelationshipsGenerator() {

@@ -16,6 +16,7 @@
  */
 package seeit3d.jobs;
 
+import static seeit3d.internal.ModelDataProviderRegistry.getModelGenerator;
 import static seeit3d.internal.base.bus.EventBus.publishEvent;
 
 import java.util.ArrayList;
@@ -28,7 +29,6 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.swt.widgets.Shell;
 
 import seeit3d.analysis.IModelDataProvider;
-import seeit3d.internal.base.SeeIT3D;
 import seeit3d.internal.base.analysis.ModelGenerator;
 import seeit3d.internal.base.bus.events.AddContainerEvent;
 import seeit3d.internal.base.bus.events.OpenSeeIT3DViewEvent;
@@ -59,7 +59,7 @@ public class VisualizeJob extends Job {
 	protected IStatus run(IProgressMonitor monitor) {
 		monitor.beginTask("Analizing", IProgressMonitor.UNKNOWN);
 		List<Container> containers = new ArrayList<Container>();
-		IModelDataProvider provider = SeeIT3D.getModelGenerator(modelGeneratorKey);
+		IModelDataProvider provider = getModelGenerator(modelGeneratorKey);
 		ModelGenerator generator = new ModelGenerator(provider);
 		try {
 			for (Object object : objects) {

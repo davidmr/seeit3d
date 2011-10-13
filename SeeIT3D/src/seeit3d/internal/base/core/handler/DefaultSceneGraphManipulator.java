@@ -37,6 +37,7 @@ import seeit3d.internal.base.World;
 import seeit3d.internal.base.core.api.ISceneGraphManipulator;
 import seeit3d.internal.base.core.api.ISeeIT3DPreferences;
 import seeit3d.internal.base.core.api.IVisualizationState;
+import seeit3d.internal.base.error.ErrorHandler;
 import seeit3d.internal.base.error.exception.SeeIT3DException;
 import seeit3d.internal.base.model.Container;
 import seeit3d.internal.base.ui.behavior.MouseClickedBehavior;
@@ -286,7 +287,7 @@ public class DefaultSceneGraphManipulator implements ISceneGraphManipulator {
 				containersTG.addChild(containerBG);
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			ErrorHandler.error(e);
 		}
 
 		rootObj.addChild(containersGroup);

@@ -28,7 +28,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.handlers.HandlerUtil;
 
-import seeit3d.internal.java.JavaContribution;
+import seeit3d.internal.java.JavaConstants;
 import seeit3d.jobs.VisualizeJob;
 
 import com.google.common.collect.Lists;
@@ -61,14 +61,14 @@ public class VisualizeJavaElementFromEditor extends AbstractHandler {
 	}
 
 	private String modelProviderkey(String parameter) {
-		if(parameter.equals(JavaContribution.JAVA_FILE)){
-			return JavaContribution.MODEL_PROVIDER_KEY_TYPE;
+		if(parameter.equals(JavaConstants.JAVA_FILE)){
+			return JavaConstants.MODEL_PROVIDER_KEY_TYPE;
 		}
-		if(parameter.equals(JavaContribution.PACKAGE)){
-			return JavaContribution.MODEL_PROVIDER_KEY_PACKAGE;
+		if(parameter.equals(JavaConstants.PACKAGE)){
+			return JavaConstants.MODEL_PROVIDER_KEY_PACKAGE;
 		}
-		if(parameter.equals(JavaContribution.PROJECT)){
-			return JavaContribution.MODEL_PROVIDER_KEY_PROJECT;
+		if(parameter.equals(JavaConstants.PROJECT)){
+			return JavaConstants.MODEL_PROVIDER_KEY_PROJECT;
 		}
 		return null;
 	}

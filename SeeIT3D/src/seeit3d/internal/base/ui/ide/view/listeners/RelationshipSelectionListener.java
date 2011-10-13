@@ -22,7 +22,7 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.widgets.Combo;
 
-import seeit3d.internal.base.SeeIT3D;
+import seeit3d.internal.SeeIT3D;
 import seeit3d.internal.base.bus.events.PerformOperationOnSelectedContainersEvent;
 import seeit3d.internal.base.bus.utils.FunctionToApplyOnContainer;
 import seeit3d.internal.base.ui.actions.ApplyChangeRelationShipGenerator;

@@ -18,7 +18,7 @@ package seeit3d.internal.java.ui.ide;
 
 import org.eclipse.jdt.core.ICompilationUnit;
 
-import seeit3d.internal.java.JavaContribution;
+import seeit3d.internal.java.JavaConstants;
 
 /**
  * Concrete implementation of <code>AbstracVisualizaJavaElement</code> to show Java files in the visualization area
@@ -30,7 +30,7 @@ public class VisualizeJavaFileInView3dCommand extends AbstractVisualizeJavaEleme
 
 	@Override
 	protected String getModelProviderKey() {
-		return JavaContribution.MODEL_PROVIDER_KEY_TYPE;
+		return JavaConstants.MODEL_PROVIDER_KEY_TYPE;
 	}
 
 }

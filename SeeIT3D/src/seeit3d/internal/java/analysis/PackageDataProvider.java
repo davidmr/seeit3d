@@ -32,7 +32,7 @@ import seeit3d.analysis.IContainerRepresentedObject;
 import seeit3d.analysis.IModelDataProvider;
 import seeit3d.analysis.metric.MetricCalculator;
 import seeit3d.internal.base.error.ErrorHandler;
-import seeit3d.internal.java.JavaContribution;
+import seeit3d.internal.java.JavaConstants;
 import seeit3d.internal.java.analysis.metrics.JavaRepresentation;
 import seeit3d.internal.java.analysis.metrics.LCOMCalculator;
 import seeit3d.internal.java.analysis.metrics.LOCCalculator;
@@ -87,7 +87,7 @@ public class PackageDataProvider implements IModelDataProvider {
 
 	@Override
 	public String getChildrenModelGeneratorKey() {
-		return JavaContribution.MODEL_PROVIDER_KEY_TYPE;
+		return JavaConstants.MODEL_PROVIDER_KEY_TYPE;
 	}
 
 	@Override

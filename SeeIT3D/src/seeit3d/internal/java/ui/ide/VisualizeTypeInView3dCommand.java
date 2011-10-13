@@ -18,7 +18,7 @@ package seeit3d.internal.java.ui.ide;
 
 import org.eclipse.jdt.core.IType;
 
-import seeit3d.internal.java.JavaContribution;
+import seeit3d.internal.java.JavaConstants;
 
 /**
  * Concrete implementation of <code>AbstracVisualizaJavaElement</code> to show Types (Classes) in the visualization area
@@ -30,7 +30,7 @@ public class VisualizeTypeInView3dCommand extends AbstractVisualizeJavaElement<I
 
 	@Override
 	protected String getModelProviderKey() {
-		return JavaContribution.MODEL_PROVIDER_KEY_TYPE;
+		return JavaConstants.MODEL_PROVIDER_KEY_TYPE;
 	}
 
 }

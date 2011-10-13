@@ -34,7 +34,7 @@ import org.eclipse.ui.handlers.HandlerUtil;
 
 import seeit3d.internal.base.error.ErrorHandler;
 import seeit3d.internal.base.error.exception.SeeIT3DXMLParsingException;
-import seeit3d.internal.xml.XMLContribution;
+import seeit3d.internal.xml.XMLConstants;
 import seeit3d.internal.xml.internal.Containers;
 import seeit3d.jobs.VisualizeJob;
 
@@ -60,7 +60,7 @@ public class VisualizeFromXMLFile extends AbstractHandler {
 			Unmarshaller unmarshaller = context.createUnmarshaller();
 			Containers containers = (Containers) unmarshaller.unmarshal(contents);
 			Shell shell = HandlerUtil.getActiveShell(event);
-			VisualizeJob job = new VisualizeJob(shell, XMLContribution.MODEL_PROVIDER_KEY_XML, containers.getContainer());
+			VisualizeJob job = new VisualizeJob(shell, XMLConstants.MODEL_PROVIDER_KEY_XML, containers.getContainer());
 			job.schedule();
 		} catch (CoreException e) {
 			ErrorHandler.error(e);

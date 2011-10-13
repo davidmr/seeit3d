@@ -32,7 +32,7 @@ import org.eclipse.ui.contexts.IContextService;
 import org.eclipse.ui.internal.expressions.ActivePartExpression;
 import org.eclipse.ui.part.ViewPart;
 
-import seeit3d.internal.base.SeeIT3D;
+import seeit3d.internal.SeeIT3D;
 import seeit3d.internal.base.bus.events.MappingViewNeedsUpdateEvent;
 import seeit3d.internal.base.bus.events.SelectedInformationChangedEvent;
 import seeit3d.internal.base.core.api.ISeeIT3DCore;

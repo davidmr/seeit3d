@@ -37,7 +37,7 @@ import javax.vecmath.Color3f;
 import javax.vecmath.Point3f;
 import javax.vecmath.Vector3f;
 
-import seeit3d.internal.base.SeeIT3D;
+import seeit3d.internal.SeeIT3D;
 import seeit3d.internal.base.bus.IEvent;
 import seeit3d.internal.base.bus.IEventListener;
 import seeit3d.internal.base.bus.events.ContainersLayoutDoneEvent;

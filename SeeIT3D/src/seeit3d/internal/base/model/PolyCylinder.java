@@ -32,7 +32,7 @@ import javax.vecmath.Color3f;
 import seeit3d.analysis.IEclipseResourceRepresentation;
 import seeit3d.analysis.NoEclipseResourceRepresentation;
 import seeit3d.analysis.metric.MetricCalculator;
-import seeit3d.internal.base.SeeIT3D;
+import seeit3d.internal.SeeIT3D;
 import seeit3d.internal.base.core.api.ISeeIT3DPreferences;
 import seeit3d.internal.base.model.utils.NoOpMetricCalculator;
 import seeit3d.internal.base.visual.api.ISeeIT3DVisualProperties;

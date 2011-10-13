@@ -16,15 +16,9 @@
  */
 package seeit3d.internal;
 
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IConfigurationElement;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
-import seeit3d.internal.base.SeeIT3D;
-import seeit3d.internal.java.JavaContribution;
-import seeit3d.internal.xml.XMLContribution;
 
 /**
  * The activator class controls the plug-in life cycle
@@ -53,20 +47,6 @@ public class Activator extends AbstractUIPlugin {
 		super.start(context);
 		plugin = this;
 		SeeIT3D.initialize();
-		loadLocalExtensions();
-		loadExternalExtensions();
-	}
-
-	private void loadLocalExtensions() {
-		SeeIT3D.contribute(new JavaContribution());
-		SeeIT3D.contribute(new XMLContribution());
-	}
-
-	private void loadExternalExtensions() throws CoreException {
-		IConfigurationElement[] elements = Platform.getExtensionRegistry().getConfigurationElementsFor("seeit3d.extensionpoint");
-		for (IConfigurationElement element : elements) {
-			SeeIT3D.contributeExternal(element);
-		}
 	}
 
 	/*

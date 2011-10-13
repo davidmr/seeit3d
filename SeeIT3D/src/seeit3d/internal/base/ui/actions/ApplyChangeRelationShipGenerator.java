@@ -16,7 +16,7 @@
  */
 package seeit3d.internal.base.ui.actions;
 
-import seeit3d.internal.base.SeeIT3D;
+import seeit3d.internal.SeeIT3D;
 import seeit3d.internal.base.bus.utils.FunctionToApplyOnContainer;
 import seeit3d.internal.base.model.Container;
 import seeit3d.internal.base.visual.api.IRelationshipsRegistry;

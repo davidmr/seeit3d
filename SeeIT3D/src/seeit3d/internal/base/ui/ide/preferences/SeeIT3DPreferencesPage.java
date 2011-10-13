@@ -27,7 +27,7 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 
 import seeit3d.internal.Activator;
-import seeit3d.internal.base.SeeIT3D;
+import seeit3d.internal.SeeIT3D;
 import seeit3d.internal.base.core.api.ISeeIT3DPreferences;
 import seeit3d.internal.base.visual.api.IColorScaleRegistry;
 import seeit3d.internal.base.visual.colorscale.IColorScale;

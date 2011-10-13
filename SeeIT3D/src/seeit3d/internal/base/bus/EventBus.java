@@ -20,6 +20,7 @@ import java.util.Collection;
 import java.util.concurrent.ArrayBlockingQueue;
 
 import seeit3d.internal.base.error.ErrorHandler;
+import seeit3d.internal.utils.Log;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
@@ -48,7 +49,7 @@ public class EventBus {
 	public static void registerListener(Class<? extends IEvent> eventClass, IEventListener listener) {
 		synchronized (listeners) {
 			listeners.put(eventClass, listener);
-			System.out.println("Register listener for class: " + eventClass);
+			Log.i("Register listener for class: " + eventClass);
 		}
 	}
 
@@ -56,7 +57,7 @@ public class EventBus {
 		synchronized (listeners) {
 			Collection<IEventListener> listenersByClass = listeners.get(eventClass);
 			listenersByClass.remove(listener);
-			System.out.println("Unregister listener for class: " + eventClass);
+			Log.i("Unregister listener for class: " + eventClass);
 		}
 	}
 
@@ -76,7 +77,7 @@ public class EventBus {
 		@Override
 		public void run() {
 			try {
-				// System.out.println("Publishing event: " + event);
+				Log.i("Publishing event: " + event);
 				eventQueue.put(event);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
@@ -94,8 +95,7 @@ public class EventBus {
 					IEvent event = eventQueue.take();
 					dispatchEvent(event);
 				} catch (InterruptedException e) {
-					System.err.println("Error retrieving event from queue");
-					e.printStackTrace();
+					Log.e("Error retrieving event from queue", e);
 				}
 			}
 		}
@@ -103,11 +103,11 @@ public class EventBus {
 		private void dispatchEvent(IEvent event) {
 			synchronized (listeners) {
 				try {
-					// System.out.println("Dispatching event: " + event);
+					Log.i("Dispatching event: " + event);
 					Collection<IEventListener> listenersByClass = listeners.get(event.getClass());
 
 					if (listenersByClass == null || listenersByClass.isEmpty()) {
-						System.err.println("No listeners for class: " + event.getClass());
+						Log.e("No listeners for class: " + event.getClass());
 					} else {
 						for (IEventListener listener : listenersByClass) {
 							listener.processEvent(event);

@@ -31,7 +31,7 @@ import seeit3d.analysis.IContainerRepresentedObject;
 import seeit3d.analysis.IModelDataProvider;
 import seeit3d.analysis.metric.MetricCalculator;
 import seeit3d.internal.base.error.ErrorHandler;
-import seeit3d.internal.java.JavaContribution;
+import seeit3d.internal.java.JavaConstants;
 import seeit3d.internal.java.analysis.metrics.JavaRepresentation;
 import seeit3d.internal.java.analysis.metrics.LOCCalculator;
 import seeit3d.internal.java.analysis.metrics.McCabeComplexityCalculator;
@@ -88,7 +88,7 @@ public class ProjectDataProvider implements IModelDataProvider {
 
 	@Override
 	public String getChildrenModelGeneratorKey() {
-		return JavaContribution.MODEL_PROVIDER_KEY_PACKAGE;
+		return JavaConstants.MODEL_PROVIDER_KEY_PACKAGE;
 	}
 
 	@Override

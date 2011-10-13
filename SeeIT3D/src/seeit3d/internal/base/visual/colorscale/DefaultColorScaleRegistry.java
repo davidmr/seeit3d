@@ -17,7 +17,6 @@
 package seeit3d.internal.base.visual.colorscale;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import seeit3d.internal.base.visual.api.IColorScaleRegistry;
@@ -40,8 +39,8 @@ public class DefaultColorScaleRegistry implements IColorScaleRegistry {
 	}
 
 	@Override
-	public void registerColorScale(IColorScale... colorScale) {
-		colorScales.addAll(Arrays.asList(colorScale));
+	public void registerColorScale(IColorScale colorScale) {
+		colorScales.add(colorScale);
 	}
 
 

@@ -22,7 +22,7 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.widgets.Combo;
 
-import seeit3d.internal.base.SeeIT3D;
+import seeit3d.internal.SeeIT3D;
 import seeit3d.internal.base.bus.events.ChangeColorScaleEvent;
 import seeit3d.internal.base.visual.api.IColorScaleRegistry;
 import seeit3d.internal.base.visual.colorscale.IColorScale;

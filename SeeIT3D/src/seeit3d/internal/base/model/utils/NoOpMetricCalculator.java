@@ -38,13 +38,8 @@ public class NoOpMetricCalculator extends AbstractNumericMetricCalculator {
 	}
 
 	@Override
-	public float getMaxValue() {
-		return 1;
-	}
-
-	@Override
-	public String calculate(Object element) {
-		return "1";
+	protected Float calculateNumericValue(Object element) {
+		return 1f;
 	}
 
 }

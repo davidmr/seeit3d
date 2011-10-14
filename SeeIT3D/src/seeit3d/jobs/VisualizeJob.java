@@ -71,9 +71,11 @@ public class VisualizeJob extends Job {
 		} catch (SeeIT3DException e) {
 			ErrorHandler.error(e);
 		}
+		monitor.done();
+
 		publishEvent(new AddContainerEvent(containers));
 		publishEvent(new OpenSeeIT3DViewEvent());
-		monitor.done();
+
 		return Status.OK_STATUS;
 	}
 

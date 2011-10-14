@@ -23,7 +23,9 @@ import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.media.j3d.BranchGroup;
 import javax.media.j3d.Shape3D;
@@ -33,6 +35,8 @@ import javax.media.j3d.TransformGroup;
 import javax.vecmath.Vector3f;
 
 import seeit3d.analysis.IContainerRepresentedObject;
+import seeit3d.analysis.metric.AbstractNominalMetricCalculator;
+import seeit3d.analysis.metric.AbstractNumericMetricCalculator;
 import seeit3d.analysis.metric.MetricCalculator;
 import seeit3d.internal.SeeIT3D;
 import seeit3d.internal.base.core.api.ISeeIT3DPreferences;
@@ -129,12 +133,6 @@ public class Container implements Serializable, Comparable<Container> {
 		}
 	}
 
-	private void initializePolycylinders() {
-		for (PolyCylinder polyCylinder : polycylinders) {
-			polyCylinder.initializePolyCylinder(propertiesMap);
-		}
-	}
-
 	public int countPolyCylinders() {
 		return polycylinders.size();
 	}
@@ -214,7 +212,8 @@ public class Container implements Serializable, Comparable<Container> {
 
 		resetDimensions();
 		sortPolyCylinders();
-		initializePolycylinders();
+		updatePolycylindersMapping();
+		normalize();
 		calculateDimensions();
 
 		float widestPoly = findWidestPolycylinderValue();
@@ -224,11 +223,17 @@ public class Container implements Serializable, Comparable<Container> {
 
 		for (int i = 1; i <= polycylinders.size(); i++) {
 			PolyCylinder poly = polycylinders.get(i - 1);
+			poly.updateState();
+
 			TransformGroup polyTG = poly.getPolyCylinderTG();
 
 			float polyHeight = poly.getHeight();
 			Vector3f newPosition = new Vector3f(currentXPosition, polyHeight - height, currentZPosition);
+			try {
 			Utils.translateTranformGroup(polyTG, newPosition);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 
 			if (i % preferences.getPolycylindersPerRow() == 0) {
 				currentZPosition += 2 * (widestPoly + ViewConstants.POLYCYLINDER_SPACING);
@@ -252,6 +257,12 @@ public class Container implements Serializable, Comparable<Container> {
 		this.containerTG = containerTG;
 		containerBG.addChild(containerTG);
 		setPosition(oldPosition);
+	}
+
+	private void updatePolycylindersMapping() {
+		for (PolyCylinder poly : polycylinders) {
+			poly.updateMapping(propertiesMap);
+		}
 	}
 
 	private float findWidestPolycylinderValue() {
@@ -349,17 +360,11 @@ public class Container implements Serializable, Comparable<Container> {
 
 	public void updateMapping(MetricCalculator metric, VisualProperty property) {
 		propertiesMap.forcePut(metric, property);
-		for (PolyCylinder poly : polycylinders) {
-			poly.updateMapping(propertiesMap);
-		}
 	}
 
 	public void removeFromMapping(MetricCalculator metric) {
 		if (propertiesMap.size() > 1) {
 			propertiesMap.remove(metric);
-			for (PolyCylinder poly : polycylinders) {
-				poly.updateMapping(propertiesMap);
-			}
 		}
 	}
 
@@ -368,10 +373,8 @@ public class Container implements Serializable, Comparable<Container> {
 			Collections.sort(polycylinders, new Comparator<PolyCylinder>() {
 				@Override
 				public int compare(PolyCylinder poly1, PolyCylinder poly2) {
-					VisualPropertyValue vProp1 = poly1.getVisualProperty(sortingProperty);
-					VisualPropertyValue vProp2 = poly2.getVisualProperty(sortingProperty);
-					Float value1 = vProp1.getFloatValue();
-					Float value2 = vProp2.getFloatValue();
+					Float value1 = poly1.getNormalizedValueForVisualProperty(sortingProperty);
+					Float value2 = poly2.getNormalizedValueForVisualProperty(sortingProperty);
 					return value1.compareTo(value2);
 				}
 			});
@@ -610,5 +613,58 @@ public class Container implements Serializable, Comparable<Container> {
 		this.preferences = preferences;
 	}
 
+	public void normalize() {
+
+		Map<AbstractNumericMetricCalculator, Float> maxValues = new HashMap<AbstractNumericMetricCalculator, Float>();
+		Map<AbstractNominalMetricCalculator, Map<String, Float>> nominalValues = new HashMap<AbstractNominalMetricCalculator, Map<String, Float>>();
+
+		for (PolyCylinder poly : polycylinders) {
+			for (MetricCalculator metric : metrics) {
+				if (metric instanceof AbstractNumericMetricCalculator) {
+					AbstractNumericMetricCalculator numericCalculator = (AbstractNumericMetricCalculator) metric;
+
+					Map<MetricCalculator, String> metricsValues = poly.getMetricsValues();
+					String value = metricsValues.get(metric);
+
+					Float floatValue = Float.parseFloat(value);
+					Float maxBefore = maxValues.get(metric);
+					float max = Math.max(maxBefore != null ? maxBefore.floatValue() : 0, floatValue.floatValue());
+					maxValues.put(numericCalculator, max);
+				}
+			}
+		}
+
+		for (MetricCalculator metric : metrics) {
+			if (metric instanceof AbstractNominalMetricCalculator) {
+				AbstractNominalMetricCalculator nominalCalculator = (AbstractNominalMetricCalculator) metric;
+				Map<String, Float> values = valuesForNominalMetricCalculator(nominalCalculator);
+				nominalValues.put(nominalCalculator, values);
+			}
+		}
+
+		for (PolyCylinder poly : polycylinders) {
+			poly.normalize(maxValues, nominalValues);
+		}
+
+	}
+
+	private Map<String, Float> valuesForNominalMetricCalculator(AbstractNominalMetricCalculator calculator) {
+
+		Map<String, Float> metricValues = new HashMap<String, Float>();
+
+		List<String> sortedCategories = new ArrayList<String>(calculator.getCategories());
+		Collections.sort(sortedCategories);
+
+		float maxValue = sortedCategories.size();
+		float step = 1.0f / maxValue;
+		float value = 0.0f;
+
+		for (String category : sortedCategories) {
+			metricValues.put(category, value);
+			value += step;
+		}
+
+		return metricValues;
+	}
 
 }

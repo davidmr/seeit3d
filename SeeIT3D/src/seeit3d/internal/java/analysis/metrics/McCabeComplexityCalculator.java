@@ -46,8 +46,6 @@ public class McCabeComplexityCalculator extends AbstractNumericMetricCalculator 
 
 	public static final McCabeComplexityCalculator INSTANCE = new McCabeComplexityCalculator();
 
-	private static final float maxValue = 10.0f;
-
 	public static final String name = "McCabe Complexity";
 
 	private McCabeComplexityCalculator() {
@@ -55,7 +53,7 @@ public class McCabeComplexityCalculator extends AbstractNumericMetricCalculator 
 	}
 
 	@Override
-	public String calculate(Object element) {
+	public Float calculateNumericValue(Object element) {
 		try {
 			List<IMethod> methods = new ArrayList<IMethod>();
 			if (element instanceof IPackageFragment) {
@@ -78,7 +76,7 @@ public class McCabeComplexityCalculator extends AbstractNumericMetricCalculator 
 				methods.add(method);
 			} else if (element instanceof LineOfCode) {
 				LineOfCode line = (LineOfCode) element;
-				return Integer.toString(calculateComplexity(line.getLine()));
+				return Integer.valueOf(calculateComplexity(line.getLine())).floatValue();
 			}
 			double complexity = 0;
 			for (IMethod method : methods) {
@@ -88,7 +86,7 @@ public class McCabeComplexityCalculator extends AbstractNumericMetricCalculator 
 				complexity /= methods.size();
 			}
 
-			return new BigDecimal(complexity).setScale(2, BigDecimal.ROUND_HALF_UP).toString();
+			return new BigDecimal(complexity).setScale(2, BigDecimal.ROUND_HALF_UP).floatValue();
 		} catch (JavaModelException e) {
 			ErrorHandler.error(e);
 		}
@@ -135,10 +133,4 @@ public class McCabeComplexityCalculator extends AbstractNumericMetricCalculator 
 		}
 		return count;
 	}
-
-	@Override
-	public float getMaxValue() {
-		return maxValue;
-	}
-
 }

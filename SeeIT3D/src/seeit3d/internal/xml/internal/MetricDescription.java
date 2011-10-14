@@ -59,6 +59,7 @@ public class MetricDescription {
     protected String value;
     @XmlAttribute(required = true)
     protected String type;
+	// TODO remove max
     @XmlAttribute
     protected String max;
     @XmlAttribute

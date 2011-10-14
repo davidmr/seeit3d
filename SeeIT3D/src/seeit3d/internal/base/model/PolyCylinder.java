@@ -19,8 +19,7 @@ package seeit3d.internal.base.model;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
 import java.util.Map;
 
 import javax.media.j3d.Appearance;
@@ -31,6 +30,8 @@ import javax.vecmath.Color3f;
 
 import seeit3d.analysis.IEclipseResourceRepresentation;
 import seeit3d.analysis.NoEclipseResourceRepresentation;
+import seeit3d.analysis.metric.AbstractNominalMetricCalculator;
+import seeit3d.analysis.metric.AbstractNumericMetricCalculator;
 import seeit3d.analysis.metric.MetricCalculator;
 import seeit3d.internal.SeeIT3D;
 import seeit3d.internal.base.core.api.ISeeIT3DPreferences;
@@ -75,7 +76,7 @@ public class PolyCylinder implements Serializable {
 
 	private final String name;
 
-	private final List<VisualPropertyValue> visualPropertyValues;
+	private final Map<MetricCalculator, Float> normalizedMetricValues;
 
 	private final Map<MetricCalculator, String> metricsValues;
 
@@ -89,19 +90,14 @@ public class PolyCylinder implements Serializable {
 		this.name = name;
 		this.metricsValues = metricsValues;
 		this.representation = representation;
-		visualPropertyValues = new ArrayList<VisualPropertyValue>();
 		identifier = Utils.generatePolyCylinderIdentifier();
 		propertiesMap = HashBiMap.create();
+		normalizedMetricValues = new HashMap<MetricCalculator, Float>();
 		SeeIT3D.injector().injectMembers(this);
 	}
 
 	public PolyCylinder(String name, Map<MetricCalculator, String> metricsValues) {
 		this(name, metricsValues, NoEclipseResourceRepresentation.INSTANCE);
-	}
-
-	public void initializePolyCylinder(BiMap<MetricCalculator, VisualProperty> propertiesMap) {
-		updateMapping(propertiesMap);
-		updateState();
 	}
 
 	public void changeTransparency(boolean moreTransparent) {
@@ -139,17 +135,16 @@ public class PolyCylinder implements Serializable {
 		}
 	}
 
-	private void updateState() {
+	public void updateState() {
 
 		polyCylinderTG = new TransformGroup();
-
-		updateMetricValues();
 
 		float height = getHeight();
 		float width = getWidth();
 
-		VisualPropertyValue visualProperty = getVisualProperty(VisualProperty.COLOR);
-		baseColor = visualProperty.getColorFromValue();
+		IColorScale colorScale = seeIT3DVisualProperties.getCurrentColorScale();
+		float colorValue = getNormalizedValueForVisualProperty(VisualProperty.COLOR);
+		baseColor = colorScale.generate(colorValue);
 
 		Appearance app = new Appearance();
 
@@ -172,14 +167,29 @@ public class PolyCylinder implements Serializable {
 		polyCylinderTG.addChild(box);
 	}
 
-	private void updateMetricValues() {
-		// assign values to visual properties
-		visualPropertyValues.clear();
-		for (VisualProperty visualProperty : VisualProperty.values()) {
-			MetricCalculator metric = propertiesMap.inverse().get(visualProperty);
-			String value = metricsValues.get(metric) != null ? metricsValues.get(metric) : Float.toString(visualProperty.getDefaultValue());
-			IColorScale currentColorScale = seeIT3DVisualProperties.getCurrentColorScale();
-			visualPropertyValues.add(new VisualPropertyValue(visualProperty, value, metric, currentColorScale));
+	public float getNormalizedValueForVisualProperty(VisualProperty visualProperty) {
+		MetricCalculator metricCalculator = propertiesMap.inverse().get(visualProperty);
+		Float value = normalizedMetricValues.get(metricCalculator);
+		return Math.max(value != null ? value : 0, visualProperty.getMinValue());
+	}
+
+	public void normalize(Map<AbstractNumericMetricCalculator, Float> maxValues, Map<AbstractNominalMetricCalculator, Map<String, Float>> nominalValues) {
+		normalizedMetricValues.clear();
+
+		for (Map.Entry<MetricCalculator, String> entry : metricsValues.entrySet()) {
+			MetricCalculator calculator = entry.getKey();
+			String value = entry.getValue();
+			if (calculator instanceof AbstractNumericMetricCalculator) {
+				Float maxValue = maxValues.get(calculator);
+				Float floatValue = Float.parseFloat(value);
+				float normalized = maxValue.floatValue() > 0 ? (floatValue.floatValue() / maxValue.floatValue()) : 0;
+				normalizedMetricValues.put(calculator, normalized);
+			}
+			if (calculator instanceof AbstractNominalMetricCalculator) {
+				Map<String, Float> valuesForNominalMetricCalculator = nominalValues.get(calculator);
+				Float floatValue = valuesForNominalMetricCalculator.get(value);
+				normalizedMetricValues.put(calculator, floatValue);
+			}
 		}
 	}
 
@@ -221,22 +231,13 @@ public class PolyCylinder implements Serializable {
 	}
 
 	public float getHeight() {
-		float height = getVisualProperty(VisualProperty.HEIGHT).getFloatValue();
+		float height = getNormalizedValueForVisualProperty(VisualProperty.HEIGHT);
 		return height / HEIGHT_SCALING_FACTOR;
 	}
 
 	public float getWidth() {
-		float value = getVisualProperty(VisualProperty.CROSS_SECTION).getFloatValue();
+		float value = getNormalizedValueForVisualProperty(VisualProperty.CROSS_SECTION);
 		return value / WIDTH_REDUCTION_FACTOR;
-	}
-
-	public VisualPropertyValue getVisualProperty(VisualProperty prop) {
-		for (VisualPropertyValue vprop : visualPropertyValues) {
-			if (vprop.getProperty().equals(prop)) {
-				return vprop;
-			}
-		}
-		return null;
 	}
 
 	public TransformGroup getPolyCylinderTG() {

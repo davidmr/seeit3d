@@ -45,14 +45,12 @@ public class LOCCalculator extends AbstractNumericMetricCalculator {
 
 	public static final String name = "LOC";
 
-	private static final float maxValue = 400;
-
 	private LOCCalculator() {
 		super(name);
 	}
 
 	@Override
-	public String calculate(Object element) {
+	public Float calculateNumericValue(Object element) {
 		try {
 			String source = "";
 			if (element instanceof IPackageFragment) {
@@ -70,7 +68,7 @@ public class LOCCalculator extends AbstractNumericMetricCalculator {
 			}
 			List<String> lines = cleanLines(source.split("\n"));
 
-			return String.valueOf(lines.size());
+			return Integer.valueOf(lines.size()).floatValue();
 		} catch (JavaModelException e) {
 			ErrorHandler.error(e);
 		}
@@ -109,11 +107,5 @@ public class LOCCalculator extends AbstractNumericMetricCalculator {
 			}
 		}
 	}
-
-	@Override
-	public float getMaxValue() {
-		return maxValue;
-	}
-
 
 }

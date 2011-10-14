@@ -47,7 +47,7 @@ public class LCOMCalculator extends AbstractNumericMetricCalculator {
 	}
 
 	@Override
-	public String calculate(Object element) {
+	public Float calculateNumericValue(Object element) {
 		try {
 			if (element instanceof ICompilationUnit) {
 				IType primaryType = ((ICompilationUnit) element).findPrimaryType();
@@ -68,7 +68,7 @@ public class LCOMCalculator extends AbstractNumericMetricCalculator {
 
 					float value = (numberMethods - (sumAttributesUsedInMethods / numberAttributes)) / (numberMethods - 1);
 
-					return String.valueOf(value);
+					return value;
 
 				}
 			}
@@ -110,11 +110,6 @@ public class LCOMCalculator extends AbstractNumericMetricCalculator {
 			e.printStackTrace();
 		}
 		return false;
-	}
-
-	@Override
-	public float getMaxValue() {
-		return 2;
 	}
 
 }

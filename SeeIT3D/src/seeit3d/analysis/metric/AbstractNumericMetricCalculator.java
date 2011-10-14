@@ -16,6 +16,8 @@
  */
 package seeit3d.analysis.metric;
 
+import seeit3d.internal.base.error.exception.SeeIT3DException;
+
 /**
  * This class represents a metric calculator whose values are numerical and continuous. For example the McCabe complexity.
  * 
@@ -26,12 +28,21 @@ public abstract class AbstractNumericMetricCalculator extends MetricCalculator {
 
 	private static final long serialVersionUID = 5441554592035195840L;
 
-	protected static final String DEFAULT_VALUE = "0.0";
+	protected static final Float DEFAULT_VALUE = 0f;
 
 	public AbstractNumericMetricCalculator(String name) {
 		super(name);
 	}
 
-	public abstract float getMaxValue();
+	@Override
+	public final String calculate(Object element) {
+		Float value = calculateNumericValue(element);
+		if (value.isInfinite() || value.isNaN()) {
+			throw new SeeIT3DException("Value " + value + " in metric " + name() + " is not a valid number");
+		}
+		return value.toString();
+	}
+
+	protected abstract Float calculateNumericValue(Object element);
 
 }

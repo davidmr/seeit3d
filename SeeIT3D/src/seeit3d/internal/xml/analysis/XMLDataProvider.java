@@ -61,9 +61,7 @@ public class XMLDataProvider implements IModelDataProvider {
 			String type = metricXML.getType();
 			String metricName = metricXML.getValue();
 			if (type.equals(MetricCalculator.NUMERIC)) {
-				String max = metricXML.getMax();
-				float maxValue = Float.parseFloat(max);
-				metrics.add(new XMLNumericMetricCalculator(metricName, maxValue));
+				metrics.add(new XMLNumericMetricCalculator(metricName));
 			} else if (type.equals(MetricCalculator.NOMINAL)) {
 				if (metricXML.getCategories() == null) {
 					throw new IllegalArgumentException("Categories must be defined in XML when using Categorized metrics");

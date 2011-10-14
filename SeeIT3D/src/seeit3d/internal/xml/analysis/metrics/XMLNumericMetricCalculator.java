@@ -34,26 +34,18 @@ public class XMLNumericMetricCalculator extends AbstractNumericMetricCalculator 
 
 	private static final long serialVersionUID = -1527870355609839773L;
 
-	private final float maxValue;
-
-	public XMLNumericMetricCalculator(String name, float maxValue) {
+	public XMLNumericMetricCalculator(String name) {
 		super(name);
-		this.maxValue = maxValue;
 	}
 
 	@Override
-	public float getMaxValue() {
-		return maxValue;
-	}
-
-	@Override
-	public String calculate(Object element) {
+	public Float calculateNumericValue(Object element) {
 		Polycylinder polyXML = (Polycylinder) element;
 		MetricsValue metricsValue = polyXML.getMetricsValue();
 		List<EntryMetricValue> entryMetricValues = metricsValue.getEntryMetricValue();
 		for (EntryMetricValue entryMetricValue : entryMetricValues) {
 			if (entryMetricValue.getMetricName().equals(this.name())) {
-				return entryMetricValue.getValue();
+				return Float.parseFloat(entryMetricValue.getValue());
 			}
 		}
 		throw new SeeIT3DException("XML metric not found");

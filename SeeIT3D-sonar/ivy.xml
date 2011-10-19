@@ -1,0 +1,6 @@
+<ivy-module version="2.0">
+    <info organisation="org.apache" module="seeit3d-sonar"/>
+    <dependencies>
+        <dependency org="org.codehaus.sonar" name="sonar-ws-client" rev="2.11" conf="*->*,!sources,!javadoc" />
+    </dependencies>
+</ivy-module>

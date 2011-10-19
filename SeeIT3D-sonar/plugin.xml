@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            allPopups="false"
+            locationURI="toolbar:org.eclipse.jdt.ui.PackageExplorer">
+         <command
+               commandId="seeit3d-sonar.explore"
+               style="push">
+         </command>
+      </menuContribution>
+   </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            defaultHandler="seeit3d.sonar.command.ExploreSonarCommand"
+            id="seeit3d-sonar.explore"
+            name="Explore Sonar">
+      </command>
+   </extension>
+   <extension
+         point="seeit3d.extensionpoint">
+      <contribution
+            class="seeit3d.sonar.analysis.SonarModelDataProvider"
+            id="seeit3d-sonar.generator">
+      </contribution>
+   </extension>
+
+</plugin>

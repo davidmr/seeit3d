@@ -56,6 +56,11 @@ public class ModelGenerator {
 			Container container = new Container(representedObject, metrics);
 			List<Child> children = provider.children(element);
 
+			if (children.isEmpty()) {
+				Log.e("Container " + representedObject.getName() + " has not children");
+				return null;
+			}
+
 			int totalEvaluations = children.size() * metrics.size();
 			int counter = 1;
 			for (Child child : children) {

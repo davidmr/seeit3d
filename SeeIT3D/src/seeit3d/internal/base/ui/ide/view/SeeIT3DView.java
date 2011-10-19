@@ -23,10 +23,10 @@ import java.awt.Frame;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.awt.SWT_AWT;
+import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Sash;
 import org.eclipse.ui.contexts.IContextService;
 import org.eclipse.ui.internal.expressions.ActivePartExpression;
@@ -66,18 +66,19 @@ public class SeeIT3DView extends ViewPart {
 		viewLayout.verticalSpacing = 0;
 		parent.setLayout(viewLayout);
 
-		Label label = new Label(parent, SWT.LEFT | SWT.WRAP);
+		StyledText text = new StyledText(parent, SWT.READ_ONLY | SWT.WRAP);
+		text.setBackground(parent.getBackground());
 		GridData labelData = new GridData(GridData.FILL_HORIZONTAL);
 		labelData.heightHint = 30;
-		label.setLayoutData(labelData);
+		text.setLayoutData(labelData);
 
-		infoLabel = new LabelInformation(label);
+		infoLabel = new LabelInformation(text);
 		registerListener(SelectedInformationChangedEvent.class, infoLabel);
 		
 		Sash sashInformationSize = new Sash(parent, SWT.BORDER | SWT.HORIZONTAL);
 		GridData sashInfoLayoutData = new GridData(GridData.FILL_HORIZONTAL);
 		sashInformationSize.setLayoutData(sashInfoLayoutData);
-		sashInformationSize.addListener(SWT.Selection, new ResizeListener(label, false));
+		sashInformationSize.addListener(SWT.Selection, new ResizeListener(text, false));
 
 		Composite visualizationComposite = new Composite(parent, SWT.EMBEDDED);
 

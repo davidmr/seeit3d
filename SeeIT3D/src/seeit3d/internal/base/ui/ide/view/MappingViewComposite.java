@@ -185,7 +185,7 @@ public class MappingViewComposite extends Composite implements IEventListener {
 	private void updateMetricsFromContainers(List<Container> currentContainers, List<MetricCalculator> metricsInformation, int possibleMetricsToRecieve) {
 
 		GridData metricsLayoutData = new GridData(GridData.FILL_BOTH);
-		metricsLayoutData.heightHint = MIN_HEIGHT;
+		metricsLayoutData.minimumHeight = MIN_HEIGHT;
 
 		Group metricsGroup = new Group(rootComposite, SWT.SHADOW_OUT | SWT.CENTER);
 		metricsGroup.setText("Available Metrics");
@@ -194,6 +194,7 @@ public class MappingViewComposite extends Composite implements IEventListener {
 		DragAndDropHelper.registerAsDroppable(metricsGroup, new DropMetricOnMetricContainerListener(metricsGroup));
 
 		metricsGroup.setLayout(new GridLayout(4, false));
+
 
 		if (!metricsInformation.isEmpty()) {
 			for (MetricCalculator metricCalculator : metricsInformation) {
@@ -305,7 +306,7 @@ public class MappingViewComposite extends Composite implements IEventListener {
 		Group relationshipsGroup = new Group(rootComposite, SWT.SHADOW_OUT);
 		GridData relationshipsLayoutData = new GridData(GridData.FILL_VERTICAL);
 		relationshipsLayoutData.widthHint = FIRST_COLUMN_WIDTH;
-		relationshipsLayoutData.heightHint = MIN_HEIGHT;
+		relationshipsLayoutData.minimumHeight = MIN_HEIGHT;
 		relationshipsGroup.setLayoutData(relationshipsLayoutData);
 		relationshipsGroup.setLayout(new GridLayout(1, true));
 		relationshipsGroup.setText("Relationship visual type");

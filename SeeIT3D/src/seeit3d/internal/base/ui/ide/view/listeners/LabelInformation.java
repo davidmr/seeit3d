@@ -16,15 +16,17 @@
  */
 package seeit3d.internal.base.ui.ide.view.listeners;
 
+import java.util.Collection;
 import java.util.Map;
 
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.StyleRange;
+import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Label;
 
 import seeit3d.internal.base.bus.IEvent;
 import seeit3d.internal.base.bus.IEventListener;
 import seeit3d.internal.base.bus.events.SelectedInformationChangedEvent;
-import seeit3d.internal.base.model.Container;
 
 /**
  * This class is the feedback listener that is shown to the user
@@ -35,30 +37,21 @@ import seeit3d.internal.base.model.Container;
 
 public class LabelInformation implements IEventListener {
 
-	private final Label label;
+	private final StyledText text;
 
-	public LabelInformation(Label label) {
-		this.label = label;
+	public LabelInformation(StyledText text) {
+		this.text = text;
 	}
 
 	@Override
 	public void processEvent(IEvent event) {
 		if (event instanceof SelectedInformationChangedEvent) {
-			SelectedInformationChangedEvent information = (SelectedInformationChangedEvent) event;
-			Iterable<Container> selectedContainers = information.getSelectedContainers();
+			final SelectedInformationChangedEvent information = (SelectedInformationChangedEvent) event;
+			
 			Map<String, String> metricValues = information.getCurrentMetricsValuesFromSelection();
-
 			String formattedString = "";
-			if (!selectedContainers.iterator().hasNext()) {
-				formattedString += "Select a Container to show information";
-			} else {
-				formattedString += "Current selected container: ";
-			}
-			for (Container container : selectedContainers) {
-				formattedString += container.getName();
-				formattedString += ",";
-			}
-			formattedString = formattedString.replaceAll(",$", "");
+			formattedString += information.isContainerSelected() ? "Current selected container: " : "Select a Container to show information";
+			formattedString += information.getSelectedContainersName();
 			formattedString += "\n";
 			if (metricValues.isEmpty()) {
 				formattedString += "Select a Polycylinder to show information";
@@ -72,11 +65,19 @@ public class LabelInformation implements IEventListener {
 			Display.getDefault().asyncExec(new Runnable() {
 				@Override
 				public void run() {
-					label.setText(stringToShow);
+					text.setText(stringToShow);
+					Collection<String> metrics = information.metricNamesInMapping();
+					for (String metric : metrics) {
+						StyleRange style = new StyleRange();
+						style.fontStyle = SWT.BOLD;
+						style.start = stringToShow.indexOf(metric + ":");
+						style.length = metric.length();
+						text.setStyleRange(style);
+					}
+					
 				}
 			});
 		}
 
 	}
-
 }

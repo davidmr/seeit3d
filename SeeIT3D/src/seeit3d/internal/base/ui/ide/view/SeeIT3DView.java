@@ -75,7 +75,7 @@ public class SeeIT3DView extends ViewPart {
 		infoLabel = new LabelInformation(text);
 		registerListener(SelectedInformationChangedEvent.class, infoLabel);
 		
-		Sash sashInformationSize = new Sash(parent, SWT.BORDER | SWT.HORIZONTAL);
+		Sash sashInformationSize = new Sash(parent, SWT.HORIZONTAL);
 		GridData sashInfoLayoutData = new GridData(GridData.FILL_HORIZONTAL);
 		sashInformationSize.setLayoutData(sashInfoLayoutData);
 		sashInformationSize.addListener(SWT.Selection, new ResizeListener(text, false));
@@ -88,7 +88,7 @@ public class SeeIT3DView extends ViewPart {
 		Frame glFrame = SWT_AWT.new_Frame(visualizationComposite);
 		glFrame.add(seeIT3DCore.getCanvas());
 		
-		Sash sashMappingViewSize = new Sash(parent, SWT.BORDER | SWT.HORIZONTAL);
+		Sash sashMappingViewSize = new Sash(parent, SWT.HORIZONTAL);
 
 		GridData sashMappingLayoutData = new GridData(GridData.FILL_HORIZONTAL);
 		sashMappingViewSize.setLayoutData(sashMappingLayoutData);

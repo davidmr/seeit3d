@@ -43,7 +43,7 @@ public class ExploreSonarCommand extends AbstractHandler {
 			int code = dialog.open();
 
 			if (code == Dialog.OK) {
-				SonarArtifact artifact = new SonarArtifact("http://nemo.sonarsource.org", null, null, "org.apache.commons:commons-lang3");
+				SonarArtifact artifact = dialog.getSonarArtifact();
 				IProxyService proxyService = proxyTracker.getService();
 				IProxyData[] proxyDatas = proxyService.select(new URI(artifact.getHost()));
 				for (IProxyData data : proxyDatas) {

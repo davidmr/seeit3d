@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="seei3d.feature.sonar"
+      label="SeeIT3D Sonar"
+      version="0.1.0"
+      license-feature="seeit3d.feature.core"
+      license-feature-version="2.0.1">
+
+   <description>
+      Sonar integration with SeeIT 3D
+   </description>
+
+   <requires>
+      <import plugin="org.eclipse.core.net" version="1.2.100" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.ui" version="3.6.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.core.runtime" version="3.6.0" match="greaterOrEqual"/>
+      <import plugin="seeit3d.visualization" version="1.0.1" match="greaterOrEqual"/>
+   </requires>
+
+   <plugin
+         id="seeit3d-sonar"
+         download-size="0"
+         install-size="0"
+         version="0.1.0"
+         unpack="false"/>
+
+</feature>

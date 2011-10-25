@@ -4,9 +4,9 @@ Bundle-Name: seeit3d-sonar
 Bundle-SymbolicName: seeit3d-sonar;singleton:=true
 Bundle-Version: 0.1
 Bundle-Activator: seeit3d.sonar.Activator
-Require-Bundle: org.eclipse.ui,
- org.eclipse.core.runtime,
- seeit3d.visualization;bundle-version="1.0.1",
+Require-Bundle: org.eclipse.ui;bundle-version="3.7.0",
+ org.eclipse.core.runtime;bundle-version="3.7.0",
+ seeit3d.visualization;bundle-version="2.0.1",
  org.eclipse.core.net;bundle-version="1.2.100"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6

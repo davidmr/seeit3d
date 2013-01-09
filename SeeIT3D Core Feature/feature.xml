@@ -2,15 +2,14 @@
 <feature
       id="seeit3d.feature.core"
       label="SeeIT3D Core"
-      version="2.0.1">
+      version="2.0.2">
 
    <description>
       SeeIT 3D provides a three-dimensional view of the code in order to detect possible errors, with ease of navigation.
    </description>
 
    <license url="http://www.apache.org/licenses/LICENSE-2.0.txt">
-   
-      							Apache License
+      Apache License
                            Version 2.0, January 2004
                         http://www.apache.org/licenses/
 
@@ -192,7 +191,7 @@
          id="seeit3d.visualization"
          download-size="0"
          install-size="0"
-         version="2.0.1"
+         version="0.0.0"
          unpack="false"/>
 
 </feature>

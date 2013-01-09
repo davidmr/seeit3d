@@ -25,7 +25,7 @@ Bundle-ClassPath: .,
  lib/jsr305-1.3.9.jar,
  lib/vecmath.jar
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Bundle-NativeCode: native/libj3dcore-ogl.so; osname=linux; processor=x86, native/j3dcore-d3d.dll; native/j3dcore-ogl-cg.dll; native/j3dcore-ogl.dll; osname=win32; processor=x86, native/libj3dcore-ogl-amd64.so; osname=linux; processor=amd64, native/j3dcore-ogl-amd64.dll; osname=win32; processor=amd64
+Bundle-NativeCode: native/x86/libj3dcore-ogl.so; osname=linux; processor=x86, native/x86/j3dcore-d3d.dll; native/x86/j3dcore-ogl-cg.dll; native/x86/j3dcore-ogl.dll; osname=win32; processor=x86, native/amd64/libj3dcore-ogl.so; osname=linux; processor=amd64, native/amd64/j3dcore-ogl.dll; osname=win32; processor=amd64
 Export-Package: seeit3d.analysis,
  seeit3d.analysis.metric,
  seeit3d.jobs

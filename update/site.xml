@@ -3,7 +3,7 @@
    <feature url="features/seei3d.feature.sonar_0.1.0.jar" id="seei3d.feature.sonar" version="0.1.0">
       <category name="seeit3d.category.extensions"/>
    </feature>
-   <feature url="features/seeit3d.feature.core_2.0.1.jar" id="seeit3d.feature.core" version="2.0.1">
+   <feature url="features/seeit3d.feature.core_2.0.2.jar" id="seeit3d.feature.core" version="2.0.2">
       <category name="seeit3d.category.core"/>
    </feature>
    <category-def name="seeit3d.category.core" label="SeeIT 3D Core"/>

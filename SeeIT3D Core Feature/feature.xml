@@ -2,7 +2,7 @@
 <feature
       id="seeit3d.feature.core"
       label="SeeIT3D Core"
-      version="2.0.2">
+      version="2.0.3">
 
    <description>
       SeeIT 3D provides a three-dimensional view of the code in order to detect possible errors, with ease of navigation.

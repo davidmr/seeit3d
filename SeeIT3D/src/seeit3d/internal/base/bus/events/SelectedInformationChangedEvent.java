@@ -90,7 +90,7 @@ public class SelectedInformationChangedEvent implements IEvent {
 	public String getSelectedContainersName() {
 		StringBuilder builder = new StringBuilder();
 		for (Container container : selectedContainers) {
-			builder.append(container.getName());
+			builder.append(container.getName() + "(P=" + container.countPolyCylinders() + ")");
 			builder.append(", ");
 		}
 		return builder.substring(0, Math.max(builder.length() - 2, 0));
